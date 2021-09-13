@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 @Component({
   selector: 'app-scene',
@@ -20,7 +21,16 @@ export class SceneComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
+    const fov = 75;
+    const width = window.innerWidth * 0.8;
+    const height = window.innerHeight;
+    const aspect = width / height;
+    const near = 0.1;
+    const far = 100000;
+    const camera_pos = { x: 2000, y: 1000, z: -2000 };
+    const spotlight_pos = { x: 5000, y: 5000, z: 5000 };
     var scene = new THREE.Scene();
+    scene.background = new THREE.Color('white');
     var camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -31,9 +41,9 @@ export class SceneComponent implements OnInit, AfterViewInit {
       canvas: this.canvas.nativeElement,
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-
+    var controls = new OrbitControls(camera, renderer.domElement);
     var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    var material = new THREE.MeshBasicMaterial({ color: 0x2929e7 });
     var cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
