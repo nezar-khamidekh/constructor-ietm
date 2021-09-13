@@ -1,0 +1,71 @@
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-Light.woff2") format("woff2"),
+    url("./Roboto/Roboto-Light.woff") format("woff"),
+    url("./Roboto/Roboto-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-LightItalic.woff2") format("woff2"),
+    url("./Roboto/Roboto-LightItalic.woff") format("woff"),
+    url("./Roboto/Roboto-LightItalic.ttf") format("truetype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-Regular.woff2") format("woff2"),
+    url("./Roboto/Roboto-Regular.woff") format("woff"),
+    url("./Roboto/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-Italic.woff2") format("woff2"),
+    url("./Roboto/Roboto-Italic.woff") format("woff"),
+    url("./Roboto/Roboto-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-Medium.woff2") format("woff2"),
+    url("./Roboto/Roboto-Medium.woff") format("woff"),
+    url("./Roboto/Roboto-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-MediumItalic.woff2") format("woff2"),
+    url("./Roboto/Roboto-MediumItalic.woff") format("woff"),
+    url("./Roboto/Roboto-MediumItalic.ttf") format("truetype");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-Bold.woff2") format("woff2"),
+    url("./Roboto/Roboto-Bold.woff") format("woff"),
+    url("./Roboto/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto/Roboto-BoldItalic.woff2") format("woff2"),
+    url("./Roboto/Roboto-BoldItalic.woff") format("woff"),
+    url("./Roboto/Roboto-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+}
