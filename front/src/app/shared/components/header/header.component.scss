@@ -93,6 +93,12 @@
     padding: 0 8px !important;
   }
 
+  &__avatar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
   &__avatar-icon {
     display: block;
     border-radius: 50%;
@@ -103,4 +109,8 @@
     object-fit: cover;
     object-position: center;
   }
+}
+
+input.search-bar__input::placeholder {
+  color: #24292F;
 }
