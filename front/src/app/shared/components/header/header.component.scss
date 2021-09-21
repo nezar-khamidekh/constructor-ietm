@@ -1,0 +1,106 @@
+@import '_variables';
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  background-color: $headerBgColor;
+  height: 62px;
+
+  &__nav {
+    height: 100%;
+  }
+
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 18px;
+  height: 100%;
+
+  &__item {
+    padding: 0 16px;
+    cursor: pointer;
+    height: 100%;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:hover {
+      .nav-list__link {
+        color: #fff;
+      }
+    }
+  }
+
+  &__link {
+    color: rgba(255, 255, 255, 0.85);
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    &_active {
+      color: #fff;
+    }
+
+    &_fs-24 {
+      font-size: 24px;
+    }
+  }
+}
+
+.vertical-line {
+  height: 38px;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.search-bar {
+  display: flex;
+  flex-direction: row;
+
+  &__input {
+    width: 320px;
+    border-radius: 8px;
+    padding: 3px 10px;
+    line-height: 24px;
+  }
+
+  &__btn {
+    border-radius: 8px;
+    height: 30px !important;
+    line-height: 30px !important;
+    width: 30px !important;
+    padding-left: 6px;
+  }
+
+  &__btn-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.user-actions {
+  display: flex;
+  flex-direction: row;
+
+  &__btn {
+    padding: 0 8px !important;
+  }
+
+  &__avatar-icon {
+    display: block;
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: 16px;
+    object-fit: cover;
+    object-position: center;
+  }
+}

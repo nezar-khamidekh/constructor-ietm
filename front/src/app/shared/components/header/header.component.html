@@ -1,3 +1,73 @@
-<mat-toolbar color="primary">
-  <span>Конструктор ИЭТР</span>
-</mat-toolbar>
+<header class="header">
+  <nav class="header__nav">
+    <ul class="nav-list">
+      <li class="nav-list__item">
+        <a
+          class="nav-list__link nav-list__link_fs-24"
+          routerLink=""
+          routerLinkActive="nav-list__link_active"
+          >Конструктор ИЭТР</a
+        >
+      </li>
+      <div class="vertical-line"></div>
+      <li class="nav-list__item">
+        <a
+          class="nav-list__link"
+          routerLink="#"
+          routerLinkActive="nav-list__link_active"
+          >Проекты</a
+        >
+      </li>
+      <li class="nav-list__item">
+        <a
+          class="nav-list__link"
+          routerLink="#"
+          routerLinkActive="nav-list__link_active"
+          >Команды</a
+        >
+      </li>
+      <li class="nav-list__item">
+        <a
+          class="nav-list__link"
+          routerLink="#"
+          routerLinkActive="nav-list__link_active"
+          >О нас</a
+        >
+      </li>
+    </ul>
+  </nav>
+  <div class="search-bar">
+    <input class="search-bar__input" type="text" />
+    <button class="search-bar__btn" mat-icon-button color="primary">
+      <img
+        class="search-bar__btn-icon"
+        src="../../../assets/svg/search-bar.svg"
+        alt=""
+      />
+    </button>
+  </div>
+  <div class="user-actions">
+    <button class="user-actions__btn" mat-icon-button color="primary">
+      <img
+        class="user-actions__btn-icon"
+        src="../../../assets/svg/notification.svg"
+        alt=""
+      />
+    </button>
+    <button class="user-actions__btn" mat-icon-button color="primary">
+      <img
+        class="user-actions__btn-icon"
+        src="../../../assets/svg/plus.svg"
+        alt=""
+      />
+    </button>
+    <div class="vertical-line"></div>
+    <div class="user-actions__avatar">
+      <img
+        class="user-actions__avatar-icon"
+        src="../../../assets/png/avatar.png"
+        alt=""
+      />
+    </div>
+  </div>
+</header>
