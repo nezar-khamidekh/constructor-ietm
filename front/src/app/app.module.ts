@@ -10,10 +10,10 @@ import { SidenavComponent } from './shared/components/sidenav/sidenav.component'
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { TestComponent } from './shared/components/test/test.component';
+import { Test2Component } from './shared/components/test2/test2.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, SidenavComponent, TestComponent],
+  declarations: [AppComponent, HeaderComponent, SidenavComponent, Test2Component],
   imports: [
     BrowserModule,
     AppRoutingModule,
