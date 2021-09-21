@@ -8,8 +8,7 @@ const routes: Routes = [
   },
   {
     path: 'scene',
-    loadChildren: () =>
-      import('./scene/scene.module').then((m) => m.SceneModule),
+    loadChildren: () => import('./scene/scene.module').then((m) => m.SceneModule),
   },
   {
     path: '**',
