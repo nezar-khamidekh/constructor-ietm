@@ -30,6 +30,12 @@ module.exports = {
             style: 'kebab-case',
           },
         ],
+        'prettier/prettier': [
+          'error',
+          {
+            endOfLine: 'auto',
+          },
+        ],
       },
     },
     {

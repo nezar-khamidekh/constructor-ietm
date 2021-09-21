@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "prepare": "cd .. && husky install front/.husky"
   },
   "husky": {
     "hooks": {
@@ -16,7 +17,7 @@
   },
   "lint-staged": {
     "*.{js,ts}": [
-       "npm run lint --fix"
+      "npm run lint --fix"
     ]
   },
   "private": true,
@@ -53,7 +54,7 @@
     "eslint": "^7.26.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.2",
+    "husky": "^7.0.0",
     "jasmine-core": "~3.8.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",
