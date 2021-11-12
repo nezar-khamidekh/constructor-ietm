@@ -7,6 +7,7 @@ import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { ViewerModule } from './viewer/viewer.module';
 
 const modules = [
   ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', './.env'] }),
