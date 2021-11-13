@@ -19,6 +19,7 @@ const modules = [
   }),
   UserModule,
   AuthModule,
+  ViewerModule
 ];
 
 if (process.env.NODE_ENV !== 'development') {

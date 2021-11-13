@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -9,8 +10,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 })
 export class SceneComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
+  
+  private model: any;
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {}
 
@@ -36,6 +39,9 @@ export class SceneComponent implements OnInit, AfterViewInit {
     var cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
 
+    this.loadDefaultModel();
+    this.model? console.log(this.model) : console.error(this.model, 'Model is empty');
+
     camera.position.z = 5;
 
     var animate = function () {
@@ -48,5 +54,14 @@ export class SceneComponent implements OnInit, AfterViewInit {
     };
 
     animate();
+  }
+
+  loadDefaultModel() {
+    console.log("Loading");
+    const url ='http://localhost:8080/api/viewer/default';
+    this.http.get(url).subscribe((res) => {
+      console.log('Model is ', res);
+      this.model = res;
+    });
   }
 }
