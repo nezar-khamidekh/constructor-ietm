@@ -11,6 +11,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { Test3Component } from './shared/components/test3/test3.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent, SidenavComponent, Test3Component],
@@ -22,6 +23,7 @@ import { Test3Component } from './shared/components/test3/test3.component';
     MatSidenavModule,
     MatListModule,
     MatButtonModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
