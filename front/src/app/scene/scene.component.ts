@@ -11,8 +11,10 @@ import { SceneService } from './services/scene.service';
   styleUrls: ['./scene.component.scss'],
 })
 export class SceneComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('canvas') canvas: ElementRef;
   private subs = new SubSink();
+
+  @ViewChild('canvas') canvas: ElementRef;
+
   spotlight_pos = { x: 5000, y: 5000, z: 5000 };
   model: any;
 

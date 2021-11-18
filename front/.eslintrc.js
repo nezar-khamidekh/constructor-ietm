@@ -6,6 +6,7 @@ module.exports = {
       files: ['*.ts'],
       parserOptions: {
         project: ['tsconfig.json'],
+        tsconfigRootDir: __dirname,
         createDefaultProgram: true,
       },
       extends: [
@@ -30,6 +31,8 @@ module.exports = {
             style: 'kebab-case',
           },
         ],
+        '@angular-eslint/no-empty-lifecycle-method': 'warn',
+        '@angular-eslint/no-host-metadata-property': 'warn',
         'prettier/prettier': [
           'error',
           {

@@ -69,9 +69,7 @@ export class UserService {
   }
 
   login(loginUserDto: LoginUserDto): Observable<SessionI> {
-    return this.findUserByEmailOrLogin(
-      loginUserDto.login || loginUserDto.email,
-    ).pipe(
+    return this.findUserByEmailOrLogin(loginUserDto.login).pipe(
       switchMap((user: UserI) => {
         if (user) {
           return this.validatePassword(

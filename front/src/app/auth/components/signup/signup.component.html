@@ -1,0 +1,71 @@
+<div class="auth">
+  <form class="auth__form auth-form" (ngSubmit)="onSubmit()" [formGroup]="registrationFormGroup">
+    <div class="auth-form__header">
+      <a class="auth-form__back back" mat-icon-button [routerLink]="'../login'">
+        <img class="back__icon" src="assets/svg/west.svg" alt="Назад" />
+      </a>
+      <h1 class="auth-title">Регистрация</h1>
+    </div>
+    <mat-form-field class="auth-form__field" appearance="standard">
+      <mat-label class="auth-form__label">Введите эл. почту</mat-label>
+      <input
+        class="auth-form__input"
+        matInput
+        placeholder="pat@example.com"
+        formControlName="email"
+        autocomplete="off"
+      />
+      <mat-error *ngIf="registrationFormGroup.get('email')?.invalid">
+        {{ getErrorMessage(registrationFormGroup.get('email'), 'Некорректный email') }}</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="auth-form__field" appearance="standard">
+      <mat-label class="auth-form__label">Введите логин</mat-label>
+      <input class="auth-form__input" matInput formControlName="login" autocomplete="off" />
+      <mat-error *ngIf="registrationFormGroup.get('login')?.invalid">
+        {{
+          getErrorMessage(registrationFormGroup.get('login'), 'Только латинские символы')
+        }}</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="auth-form__field" appearance="standard">
+      <mat-label class="auth-form__label">Введите пароль</mat-label>
+      <input
+        class="auth-form__input"
+        matInput
+        [type]="hidePass ? 'password' : 'text'"
+        placeholder="paSsword!"
+        formControlName="password"
+        autocomplete="off"
+      />
+      <mat-error *ngIf="registrationFormGroup.get('password')?.invalid">
+        {{
+          getErrorMessage(
+            registrationFormGroup.get('password'),
+            'Пароль должен содержать не менее 8 знаков, включать минимум 1 заглавную букву и спецсимвол'
+          )
+        }}
+      </mat-error>
+      <button
+        class="auth-form__pass-hidePass"
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hidePass = !hidePass"
+        [attr.aria-label]="'hidePass password'"
+        [attr.aria-pressed]="hidePass"
+      >
+        <img
+          class="auth-form__icon"
+          [src]="hidePass ? 'assets/svg/visibility_off.svg' : 'assets/svg/visibility.svg'"
+          alt="Показать пароль"
+        />
+      </button>
+    </mat-form-field>
+    <div class="auth-form__action auth-form__action_flex">
+      <button class="auth-form__action-btn" mat-flat-button color="primary">
+        Зарегистрироваться
+      </button>
+    </div>
+  </form>
+</div>
