@@ -8,5 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 @NgModule({
   declarations: [SceneComponent],
   imports: [CommonModule, SceneRoutingModule, MatButtonModule],
+  exports: [SceneComponent],
 })
 export class SceneModule {}

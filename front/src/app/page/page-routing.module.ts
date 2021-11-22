@@ -5,8 +5,18 @@ import { PageComponent } from './page.component';
 const routes: Routes = [
   {
     path: '',
-    pathMatch: 'full',
     component: PageComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'editor',
+      },
+      {
+        path: 'editor',
+        loadChildren: () =>
+          import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
+      },
+    ],
   },
 ];
 
