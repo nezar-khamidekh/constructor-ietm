@@ -1,7 +1,9 @@
+import MainScene from '../classes/MainScene';
+
 export interface ViewerI {
-  scene: THREE.Scene;
+  scene: MainScene;
   renderer: THREE.WebGLRenderer;
-  camera: THREE.Camera;
+  camera: THREE.PerspectiveCamera;
   controls: any;
   modelBoundingBox: any;
   raycaster: any;
