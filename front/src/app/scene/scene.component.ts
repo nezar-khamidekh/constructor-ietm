@@ -18,7 +18,7 @@ import MainScene from '../shared/classes/MainScene';
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
 const CAMERA_FAR = 1000;
-const CAMERA_POSITION_Z_RATE = 1.2;
+const CAMERA_POSITION_RATE = 0.9;
 const RENDERER_PIXEL_RATIO = 2;
 const GRID_HELPER_SIZE_RATE = 2;
 const GRID_HELPER_DIVISIONS = 10;
@@ -146,8 +146,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   }
 
   setCamera(translateValue: number) {
-    this.viewer.camera.position.x = translateValue * CAMERA_POSITION_Z_RATE;
-    this.viewer.camera.position.z = translateValue * CAMERA_POSITION_Z_RATE;
+    this.viewer.camera.position.x = translateValue * CAMERA_POSITION_RATE;
+    this.viewer.camera.position.z = translateValue * CAMERA_POSITION_RATE;
     this.viewer.controls.update();
   }
 }

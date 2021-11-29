@@ -43,7 +43,7 @@ class MainScene extends THREE.Scene {
         if (node.name !== 'cubeMesh') {
           if (typeof node.material !== 'undefined') {
             node.material.polygonOffset = true;
-            node.material.polygonOffsetFactor = 0.5;
+            node.material.polygonOffsetFactor = 1;
             node.material.polygonOffsetUnits = 1;
             node.material.color.convertSRGBToLinear();
 
