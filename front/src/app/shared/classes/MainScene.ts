@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import { AmbientLight, DirectionalLight } from 'three';
 
-const AMBIENT_LIGHT_COLOR = '#BFBFBF';
+const AMBIENT_LIGHT_COLOR = '#D6D6D6';
 const AMBIENT_LIGHT_INTENSITY = 0.5;
-const DIRECTIONAL_LIGHT_COLOR = '#D2D1CD';
+const DIRECTIONAL_LIGHT_COLOR = '#A9A7A0';
 const DIRECTIONAL_LIGHT_INTENSITY = 0.5;
 const DIRECTIONAL_LIGHT_KOEF = 5;
-const BACKGROUND_COLOR = '#F7F7F7';
+const BACKGROUND_COLOR = '#FCFCFC';
 
 class MainScene extends THREE.Scene {
   private _ambientLight: AmbientLight;
