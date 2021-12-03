@@ -1,32 +1,22 @@
 import * as THREE from 'three';
 import { AmbientLight, DirectionalLight } from 'three';
 
+const AMBIENT_LIGHT_COLOR = '#BFBFBF';
+const AMBIENT_LIGHT_INTENSITY = 0.5;
+const DIRECTIONAL_LIGHT_COLOR = '#D2D1CD';
+const DIRECTIONAL_LIGHT_INTENSITY = 0.5;
+const DIRECTIONAL_LIGHT_KOEF = 5;
+const BACKGROUND_COLOR = '#F7F7F7';
+
 class MainScene extends THREE.Scene {
   private _ambientLight: AmbientLight;
-  private _keyLight: DirectionalLight;
-  private _fillLight: DirectionalLight;
-  private _backLight: DirectionalLight;
+  private _leftFrontLight: DirectionalLight;
+  private _rightFrontLight: DirectionalLight;
+  private _leftBackLight: DirectionalLight;
+  private _rightBackLight: DirectionalLight;
 
   constructor() {
     super();
-
-    this._ambientLight = new THREE.AmbientLight(0xebebeb, 0.7);
-
-    this._keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 0.3);
-    this._keyLight.position.set(-100, 0, 100);
-
-    this._fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.3);
-    this._fillLight.position.set(100, 0, 100);
-
-    this._backLight = new THREE.DirectionalLight(0xebebeb, 0.5);
-    this._backLight.position.set(100, 0, -100).normalize();
-
-    this.background = new THREE.Color('#fbfbfb');
-
-    this.add(this._ambientLight);
-    this.add(this._keyLight);
-    this.add(this._fillLight);
-    this.add(this._backLight);
   }
 
   add(obj: any) {
@@ -42,10 +32,10 @@ class MainScene extends THREE.Scene {
       if (node.type === 'Mesh') {
         if (node.name !== 'cubeMesh') {
           if (typeof node.material !== 'undefined') {
-            node.material.polygonOffset = true;
+            /*  node.material.polygonOffset = true;
             node.material.polygonOffsetFactor = 1;
             node.material.polygonOffsetUnits = 1;
-            node.material.color.convertSRGBToLinear();
+            node.material.color.convertSRGBToLinear(); */
 
             let mat = node.material.clone();
             node.material = mat.clone();
@@ -54,6 +44,68 @@ class MainScene extends THREE.Scene {
       }
     });
     return super.add(obj);
+  }
+
+  setLight(longestSide: number) {
+    this._ambientLight = new THREE.AmbientLight(AMBIENT_LIGHT_COLOR, AMBIENT_LIGHT_INTENSITY);
+
+    this._leftFrontLight = new THREE.DirectionalLight(
+      new THREE.Color(DIRECTIONAL_LIGHT_COLOR),
+      DIRECTIONAL_LIGHT_INTENSITY,
+    );
+    this._leftFrontLight.position.set(
+      -longestSide * DIRECTIONAL_LIGHT_KOEF,
+      0,
+      longestSide * DIRECTIONAL_LIGHT_KOEF,
+    );
+
+    this._rightFrontLight = new THREE.DirectionalLight(
+      new THREE.Color(DIRECTIONAL_LIGHT_COLOR),
+      DIRECTIONAL_LIGHT_INTENSITY,
+    );
+    this._rightFrontLight.position.set(
+      longestSide * DIRECTIONAL_LIGHT_KOEF,
+      0,
+      longestSide * DIRECTIONAL_LIGHT_KOEF,
+    );
+
+    this._leftBackLight = new THREE.DirectionalLight(
+      new THREE.Color(DIRECTIONAL_LIGHT_COLOR),
+      DIRECTIONAL_LIGHT_INTENSITY,
+    );
+    this._leftBackLight.position.set(
+      -longestSide * DIRECTIONAL_LIGHT_KOEF,
+      0,
+      -longestSide * DIRECTIONAL_LIGHT_KOEF,
+    );
+
+    this._rightBackLight = new THREE.DirectionalLight(
+      new THREE.Color(DIRECTIONAL_LIGHT_COLOR),
+      DIRECTIONAL_LIGHT_INTENSITY,
+    );
+    this._rightBackLight.position.set(
+      longestSide * DIRECTIONAL_LIGHT_KOEF,
+      0,
+      -longestSide * DIRECTIONAL_LIGHT_KOEF,
+    );
+
+    this.background = new THREE.Color(BACKGROUND_COLOR);
+
+    /* const helperLeftFrontLight = new THREE.DirectionalLightHelper(this._leftFrontLight, 5);
+    const helperRightFrontLight = new THREE.DirectionalLightHelper(this._rightFrontLight, 5);
+    const helperLeftBackLight = new THREE.DirectionalLightHelper(this._leftBackLight, 5);
+    const helperRightBackLight = new THREE.DirectionalLightHelper(this._rightBackLight, 5); */
+
+    this.add(this._ambientLight);
+    this.add(this._leftFrontLight);
+    this.add(this._rightFrontLight);
+    this.add(this._leftBackLight);
+    this.add(this._rightBackLight);
+
+    /* this.add(helperLeftFrontLight);
+    this.add(helperRightFrontLight);
+    this.add(helperLeftBackLight);
+    this.add(helperRightBackLight); */
   }
 }
 

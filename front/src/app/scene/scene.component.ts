@@ -20,8 +20,8 @@ const CAMERA_NEAR = 0.1;
 const CAMERA_FAR = 1000;
 const CAMERA_POSITION_RATE = 0.9;
 const RENDERER_PIXEL_RATIO = 2;
-const GRID_HELPER_SIZE_RATE = 2;
-const GRID_HELPER_DIVISIONS = 10;
+const GRID_HELPER_SIZE_RATE = 3;
+const GRID_HELPER_DIVISIONS = 20;
 
 @Component({
   selector: 'app-scene',
@@ -105,6 +105,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   setRenderer() {
     this.viewer.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas.nativeElement,
+      powerPreference: 'high-performance',
+      antialias: true,
     });
     this.viewer.renderer.setSize(
       this.viewerWrapper.nativeElement.clientWidth,
@@ -134,7 +136,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     gridHelper.position.set(center.x, boundBox.min.y, center.z);
     gridHelper.name = '__Grid';
     gltf.scene.add(gridHelper);
-
+    this.viewer.scene.setLight(longestSide);
     this.setCamera(longestSide);
   }
 
