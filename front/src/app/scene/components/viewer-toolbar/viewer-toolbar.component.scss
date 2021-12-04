@@ -1,0 +1,23 @@
+:host {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  z-index: 11;
+  width: 100%;
+}
+
+.toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  &__container {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+    border-radius: 8px;
+    background-color: rgba(34, 34, 34, .94);
+    box-shadow: 1px 3px 10px 0 rgb(0 0 0 / 50%);
+    color: #f4f4f4;
+  }
+}

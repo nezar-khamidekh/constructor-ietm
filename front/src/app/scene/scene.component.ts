@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -14,6 +15,7 @@ import { SceneService } from './services/scene.service';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { ViewerI } from '../shared/interfaces/viewer.interface';
 import MainScene from '../shared/classes/MainScene';
+import * as TWEEN from '@tweenjs/tween.js';
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
@@ -22,6 +24,7 @@ const CAMERA_POSITION_RATE = 0.9;
 const RENDERER_PIXEL_RATIO = 2;
 const GRID_HELPER_SIZE_RATE = 3;
 const GRID_HELPER_DIVISIONS = 20;
+const CAMERA_ANIM_DUR = 300;
 
 @Component({
   selector: 'app-scene',
@@ -40,6 +43,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   spotlight_pos = { x: 5000, y: 5000, z: 5000 };
   model: any;
+  viewerInitialized = false;
+  modelLongestSide = 0;
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -56,7 +61,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     plant: new THREE.Vector3(),
   };
 
-  constructor(private sceneService: SceneService) {}
+  constructor(private sceneService: SceneService, private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
     this.subs.add(
@@ -70,7 +75,6 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     const loader = new GLTFLoader();
     loader.setDRACOLoader(new DRACOLoader().setDecoderPath('/draco/'));
 
-    this.viewer.scene = new MainScene();
     this.viewer.camera = new THREE.PerspectiveCamera(
       CAMERA_FOV,
       this.viewerWrapper.nativeElement.clientWidth / this.viewerWrapper.nativeElement.clientHeight,
@@ -88,9 +92,14 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     loader.parse(JSON.stringify(file), '', (gltf) => {
       this.viewer.scene.add(gltf.scene);
       this.setGridHelper(gltf);
+      this.viewer.scene.setLight(this.modelLongestSide);
+      this.setCamera(this.modelLongestSide);
+      this.viewerInitialized = true;
+      this.cdr.detectChanges();
     });
 
     var animate = () => {
+      TWEEN.update();
       requestAnimationFrame(animate);
       this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
       this.viewer.controls.update();
@@ -125,9 +134,9 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     const boundBox = new THREE.Box3().setFromObject(gltf.scene);
     const size = new THREE.Vector3();
     boundBox.getSize(size);
-    const longestSide = Math.max(size.x, size.y, size.z);
+    this.modelLongestSide = Math.max(size.x, size.y, size.z);
     const gridHelper = new THREE.GridHelper(
-      longestSide * GRID_HELPER_SIZE_RATE,
+      this.modelLongestSide * GRID_HELPER_SIZE_RATE,
       GRID_HELPER_DIVISIONS,
     );
 
@@ -136,8 +145,6 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     gridHelper.position.set(center.x, boundBox.min.y, center.z);
     gridHelper.name = '__Grid';
     gltf.scene.add(gridHelper);
-    this.viewer.scene.setLight(longestSide);
-    this.setCamera(longestSide);
   }
 
   resizeCanvas() {
@@ -149,7 +156,29 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   setCamera(translateValue: number) {
     this.viewer.camera.position.x = translateValue * CAMERA_POSITION_RATE;
+    this.viewer.camera.position.y = 0;
     this.viewer.camera.position.z = translateValue * CAMERA_POSITION_RATE;
     this.viewer.controls.update();
+  }
+
+  onResetCamera() {
+    this.viewer.controls.enabled = false;
+    const oldCameraPos = this.viewer.camera.position.clone();
+    const newCameraPos = new THREE.Vector3(
+      this.modelLongestSide * CAMERA_POSITION_RATE,
+      0,
+      this.modelLongestSide * CAMERA_POSITION_RATE,
+    );
+    const tween = new TWEEN.Tween(oldCameraPos)
+      .to(newCameraPos, CAMERA_ANIM_DUR)
+      .easing(TWEEN.Easing.Linear.None)
+      .onUpdate(() => {
+        this.viewer.camera.position.set(oldCameraPos.x, oldCameraPos.y, oldCameraPos.z);
+        this.viewer.camera.lookAt(new THREE.Vector3(0, 0, 0));
+      })
+      .onComplete(() => {
+        this.viewer.controls.enabled = true;
+      })
+      .start();
   }
 }

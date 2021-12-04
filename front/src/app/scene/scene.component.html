@@ -1,3 +1,6 @@
 <div class="viewer-wrapper" #viewerWrapper>
+  <ng-container *ngIf="viewerInitialized">
+    <app-viewer-toolbar (resetCamera)="onResetCamera()"></app-viewer-toolbar>
+  </ng-container>
   <canvas #canvas [ngStyle]="{ width: '100%', height: '100%', position: 'absolute' }"></canvas>
 </div>

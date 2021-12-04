@@ -1,0 +1,9 @@
+<div class="toolbar">
+  <div class="toolbar__container">
+    <app-viewer-button
+      [iconPath]="'assets/svg/home.svg'"
+      [buttonName]="'Сброс камеры'"
+      (btnClicked)="resetCamera.emit()"
+    ></app-viewer-button>
+  </div>
+</div>
