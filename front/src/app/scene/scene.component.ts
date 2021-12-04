@@ -25,6 +25,7 @@ const RENDERER_PIXEL_RATIO = 2;
 const GRID_HELPER_SIZE_RATE = 3;
 const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
+const CAMERA_ROTATE_SPEED = -2;
 
 @Component({
   selector: 'app-scene',
@@ -83,11 +84,6 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     );
     this.setRenderer();
     this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
-
-    //Вращение
-    /* this.viewer.controls.autoRotate = true;
-    this.viewer.controls.autoRotateSpeed = -1;
-    this.viewer.controls.target = new THREE.Vector3(0, 0, 0); */
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
       this.viewer.scene.add(gltf.scene);
@@ -155,13 +151,15 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   }
 
   setCamera(translateValue: number) {
-    this.viewer.camera.position.x = translateValue * CAMERA_POSITION_RATE;
-    this.viewer.camera.position.y = 0;
-    this.viewer.camera.position.z = translateValue * CAMERA_POSITION_RATE;
+    this.viewer.camera.position.set(
+      translateValue * CAMERA_POSITION_RATE,
+      0,
+      translateValue * CAMERA_POSITION_RATE,
+    );
     this.viewer.controls.update();
   }
 
-  onResetCamera() {
+  moveCameraWithAnimation(onCompleteCallback: () => void) {
     this.viewer.controls.enabled = false;
     const oldCameraPos = this.viewer.camera.position.clone();
     const newCameraPos = new THREE.Vector3(
@@ -176,9 +174,21 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         this.viewer.camera.position.set(oldCameraPos.x, oldCameraPos.y, oldCameraPos.z);
         this.viewer.camera.lookAt(new THREE.Vector3(0, 0, 0));
       })
-      .onComplete(() => {
-        this.viewer.controls.enabled = true;
-      })
+      .onComplete(onCompleteCallback)
       .start();
+  }
+
+  onResetCamera() {
+    this.moveCameraWithAnimation(() => {
+      this.viewer.controls.enabled = true;
+    });
+  }
+
+  onRotateCamera() {
+    this.moveCameraWithAnimation(() => {
+      this.viewer.controls.autoRotate = true;
+      this.viewer.controls.autoRotateSpeed = CAMERA_ROTATE_SPEED;
+      this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+    });
   }
 }

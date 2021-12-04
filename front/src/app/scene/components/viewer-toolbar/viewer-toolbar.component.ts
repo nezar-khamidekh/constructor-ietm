@@ -8,6 +8,7 @@ import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from
 })
 export class ViewerToolbarComponent implements OnInit {
   @Output() resetCamera = new EventEmitter();
+  @Output() rotateCamera = new EventEmitter();
 
   constructor() {}
 

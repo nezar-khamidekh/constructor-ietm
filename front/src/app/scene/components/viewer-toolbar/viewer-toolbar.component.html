@@ -5,5 +5,11 @@
       [buttonName]="'Сброс камеры'"
       (btnClicked)="resetCamera.emit()"
     ></app-viewer-button>
+    <app-viewer-button
+      [iconPath]="'assets/svg/rotationCamera.svg'"
+      [buttonName]="'Облёт модели'"
+      (btnClicked)="rotateCamera.emit()"
+    >
+    </app-viewer-button>
   </div>
 </div>
