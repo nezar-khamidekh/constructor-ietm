@@ -26,7 +26,6 @@ const GRID_HELPER_SIZE_RATE = 3;
 const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
 const CAMERA_ROTATE_SPEED = 2;
-const EXPLODE_POWER = 0;
 
 @Component({
   selector: 'app-scene',
@@ -49,7 +48,6 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   rotateAnimationBtnIsActive = false;
   rotateAnimationCameraSpeed = -CAMERA_ROTATE_SPEED;
   explodeBtnIsActive = false;
-  explodePower = EXPLODE_POWER;
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -86,8 +84,6 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       CAMERA_NEAR,
       CAMERA_FAR,
     );
-    const cameraHelper = new THREE.CameraHelper(this.viewer.camera);
-    this.viewer.scene.add(cameraHelper);
     this.setRenderer();
     this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
 
@@ -105,8 +101,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     var animate = () => {
       TWEEN.update();
       requestAnimationFrame(animate);
-      this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
       this.viewer.controls.update();
+      this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
     };
     animate();
   }
@@ -210,47 +206,45 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.controls.autoRotateSpeed = this.rotateAnimationCameraSpeed;
   }
 
-  explodeModel(distance: number) {
-    const centers: any = [];
-    this.viewer.model.traverse((child: any) => {
-      if (child instanceof THREE.Mesh) {
-        child.geometry.computeBoundingSphere();
-        centers.push(child.geometry.boundingSphere.center);
-      }
-    });
+  explodeModel(node: any, power = 0, plant = new THREE.Vector3(), level = 0) {
+    if (!node) return;
 
-    let center = new THREE.Vector3();
-    centers.forEach((vec: THREE.Vector3) => {
-      center = center.add(vec);
-    });
-    center.x /= centers.length;
-    center.y /= centers.length;
-    center.z /= centers.length;
+    if (!node._originalPosition) {
+      node.updateWorldMatrix(true, true);
+      node._originalPosition = node.position.clone();
+    }
 
-    this.viewer.model.traverse((child: any) => {
-      if (child instanceof THREE.Mesh) {
-        let childCenter = child.geometry.boundingSphere.center.clone();
-        let direction = childCenter.sub(center);
-        child.translateOnAxis(direction, distance);
-      }
+    const toVec = new THREE.Vector3();
+    if (level === 0) toVec.copy(node._originalPosition.clone());
+    else if (level === 1) {
+      const plantLocal = node.parent.worldToLocal(plant.clone());
+      toVec.copy(node._originalPosition.clone().sub(plantLocal).multiplyScalar(3));
+    }
+    node._explode = { from: node._originalPosition.clone(), to: toVec };
+    const explodeVec = node._explode.from.clone();
+    explodeVec.lerp(node._explode.to, power);
+    node.position.copy(explodeVec);
+    node.children.forEach((child: any) => {
+      if (
+        node.children.length > 1 &&
+        node.children[0].type !== 'Mesh' &&
+        node.children[0].type !== 'LineSegments'
+      )
+        this.explodeModel(child, power, plant, level + 1);
     });
   }
 
-  onExplode(distance: number) {
+  onExplode() {
     if (!this.explodeBtnIsActive) {
       this.explodeBtnIsActive = true;
-      this.explodeModel(distance);
+      this.explodeModel(this.viewer.model, 0);
     } else {
       this.explodeBtnIsActive = false;
-      this.explodeModel(EXPLODE_POWER - distance);
+      this.explodeModel(this.viewer.model, 0);
     }
   }
 
   onExplodePowerChanged(explodeValue: any) {
-    this.explodePower =
-      explodeValue > this.explodePower
-        ? Math.abs(explodeValue - this.explodePower)
-        : -Math.abs(explodeValue - this.explodePower);
-    this.explodeModel(this.explodePower);
+    this.explodeModel(this.viewer.model, explodeValue);
   }
 }
