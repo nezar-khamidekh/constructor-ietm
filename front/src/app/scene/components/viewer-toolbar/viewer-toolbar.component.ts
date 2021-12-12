@@ -15,9 +15,12 @@ import {
 })
 export class ViewerToolbarComponent implements OnInit {
   @Input() rotateAnimationBtnIsActive = false;
+  @Input() explodeBtnIsActive = false;
   @Output() resetCamera = new EventEmitter();
   @Output() rotateCamera = new EventEmitter();
   @Output() rotateCameraSpeedChanged = new EventEmitter();
+  @Output() explode = new EventEmitter();
+  @Output() explodePowerChanged = new EventEmitter();
 
   constructor() {}
 

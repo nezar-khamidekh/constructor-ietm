@@ -28,5 +28,21 @@
         ></mat-slider>
       </div>
     </div>
+    <div class="toolbar__btn">
+      <app-viewer-button
+        [iconPath]="'assets/svg/explode.svg'"
+        [buttonName]="'Разнос модели'"
+        (btnClicked)="explode.emit()"
+      ></app-viewer-button>
+      <div class="toolbar__panel" [hidden]="!explodeBtnIsActive">
+        <mat-slider
+          min="0"
+          max="5"
+          step="1"
+          value="0"
+          (input)="explodePowerChanged.emit($event.value)"
+        ></mat-slider>
+      </div>
+    </div>
   </div>
 </div>

@@ -2,9 +2,12 @@
   <ng-container *ngIf="viewerInitialized">
     <app-viewer-toolbar
       [rotateAnimationBtnIsActive]="rotateAnimationBtnIsActive"
+      [explodeBtnIsActive]="explodeBtnIsActive"
       (resetCamera)="onResetCamera()"
       (rotateCamera)="onRotateCamera()"
       (rotateCameraSpeedChanged)="onRotateCameraSpeedChanged($event)"
+      (explode)="onExplode(explodePower)"
+      (explodePowerChanged)="onExplodePowerChanged($event)"
     ></app-viewer-toolbar>
   </ng-container>
   <canvas #canvas [ngStyle]="{ width: '100%', height: '100%', position: 'absolute' }"></canvas>

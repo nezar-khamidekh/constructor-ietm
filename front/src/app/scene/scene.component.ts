@@ -26,6 +26,7 @@ const GRID_HELPER_SIZE_RATE = 3;
 const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
 const CAMERA_ROTATE_SPEED = 2;
+const EXPLODE_POWER = 0;
 
 @Component({
   selector: 'app-scene',
@@ -43,11 +44,12 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   }
 
   spotlight_pos = { x: 5000, y: 5000, z: 5000 };
-  model: any;
   viewerInitialized = false;
   modelLongestSide = 0;
   rotateAnimationBtnIsActive = false;
   rotateAnimationCameraSpeed = -CAMERA_ROTATE_SPEED;
+  explodeBtnIsActive = false;
+  explodePower = EXPLODE_POWER;
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -84,10 +86,14 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       CAMERA_NEAR,
       CAMERA_FAR,
     );
+    const cameraHelper = new THREE.CameraHelper(this.viewer.camera);
+    this.viewer.scene.add(cameraHelper);
     this.setRenderer();
     this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
+      this.viewer.model = gltf.scene.children[0];
+
       this.viewer.scene.add(gltf.scene);
       this.setGridHelper(gltf);
       this.viewer.scene.setLight(this.modelLongestSide);
@@ -114,6 +120,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       canvas: this.canvas.nativeElement,
       powerPreference: 'high-performance',
       antialias: true,
+      logarithmicDepthBuffer: true,
     });
     this.viewer.renderer.setSize(
       this.viewerWrapper.nativeElement.clientWidth,
@@ -201,5 +208,49 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   onRotateCameraSpeedChanged(valueSpeed: any) {
     this.rotateAnimationCameraSpeed = -valueSpeed;
     this.viewer.controls.autoRotateSpeed = this.rotateAnimationCameraSpeed;
+  }
+
+  explodeModel(distance: number) {
+    const centers: any = [];
+    this.viewer.model.traverse((child: any) => {
+      if (child instanceof THREE.Mesh) {
+        child.geometry.computeBoundingSphere();
+        centers.push(child.geometry.boundingSphere.center);
+      }
+    });
+
+    let center = new THREE.Vector3();
+    centers.forEach((vec: THREE.Vector3) => {
+      center = center.add(vec);
+    });
+    center.x /= centers.length;
+    center.y /= centers.length;
+    center.z /= centers.length;
+
+    this.viewer.model.traverse((child: any) => {
+      if (child instanceof THREE.Mesh) {
+        let childCenter = child.geometry.boundingSphere.center.clone();
+        let direction = childCenter.sub(center);
+        child.translateOnAxis(direction, distance);
+      }
+    });
+  }
+
+  onExplode(distance: number) {
+    if (!this.explodeBtnIsActive) {
+      this.explodeBtnIsActive = true;
+      this.explodeModel(distance);
+    } else {
+      this.explodeBtnIsActive = false;
+      this.explodeModel(EXPLODE_POWER - distance);
+    }
+  }
+
+  onExplodePowerChanged(explodeValue: any) {
+    this.explodePower =
+      explodeValue > this.explodePower
+        ? Math.abs(explodeValue - this.explodePower)
+        : -Math.abs(explodeValue - this.explodePower);
+    this.explodeModel(this.explodePower);
   }
 }
