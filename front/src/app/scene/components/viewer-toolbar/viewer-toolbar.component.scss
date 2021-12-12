@@ -16,8 +16,23 @@
     justify-content: center;
     padding: 8px 0;
     border-radius: 8px;
-    background-color: rgba(34, 34, 34, .94);
+    background-color: #fefcfe;
     box-shadow: 1px 3px 10px 0 rgb(0 0 0 / 50%);
     color: #f4f4f4;
+  }
+
+  &__btn {
+    position: relative;
+  }
+
+  &__panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px + 8px);
+    padding: 0 4px;
+    border-radius: 8px;
+    background-color: #fefcfe;
+    box-shadow: 1px 3px 10px 0 rgb(0 0 0 / 50%);
+    transform: translateX(calc(-50% + 23px));
   }
 }

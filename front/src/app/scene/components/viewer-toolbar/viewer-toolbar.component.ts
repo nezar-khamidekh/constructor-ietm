@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  Input,
+} from '@angular/core';
 
 @Component({
   selector: 'app-viewer-toolbar',
@@ -7,8 +14,10 @@ import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewerToolbarComponent implements OnInit {
+  @Input() rotateAnimationBtnIsActive = false;
   @Output() resetCamera = new EventEmitter();
   @Output() rotateCamera = new EventEmitter();
+  @Output() rotateCameraSpeedChanged = new EventEmitter();
 
   constructor() {}
 

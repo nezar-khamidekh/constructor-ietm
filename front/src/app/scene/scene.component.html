@@ -1,8 +1,10 @@
 <div class="viewer-wrapper" #viewerWrapper>
   <ng-container *ngIf="viewerInitialized">
     <app-viewer-toolbar
+      [rotateAnimationBtnIsActive]="rotateAnimationBtnIsActive"
       (resetCamera)="onResetCamera()"
       (rotateCamera)="onRotateCamera()"
+      (rotateCameraSpeedChanged)="onRotateCameraSpeedChanged($event)"
     ></app-viewer-toolbar>
   </ng-container>
   <canvas #canvas [ngStyle]="{ width: '100%', height: '100%', position: 'absolute' }"></canvas>

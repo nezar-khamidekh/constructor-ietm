@@ -25,7 +25,7 @@ const RENDERER_PIXEL_RATIO = 2;
 const GRID_HELPER_SIZE_RATE = 3;
 const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
-const CAMERA_ROTATE_SPEED = -2;
+const CAMERA_ROTATE_SPEED = 2;
 
 @Component({
   selector: 'app-scene',
@@ -46,6 +46,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   model: any;
   viewerInitialized = false;
   modelLongestSide = 0;
+  rotateAnimationBtnIsActive = false;
+  rotateAnimationCameraSpeed = -CAMERA_ROTATE_SPEED;
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -185,10 +187,19 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   }
 
   onRotateCamera() {
-    this.moveCameraWithAnimation(() => {
+    if (this.rotateAnimationBtnIsActive) {
+      this.rotateAnimationBtnIsActive = false;
+      this.viewer.controls.autoRotate = false;
+    } else {
+      this.rotateAnimationBtnIsActive = true;
       this.viewer.controls.autoRotate = true;
-      this.viewer.controls.autoRotateSpeed = CAMERA_ROTATE_SPEED;
+      this.viewer.controls.autoRotateSpeed = this.rotateAnimationCameraSpeed;
       this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
-    });
+    }
+  }
+
+  onRotateCameraSpeedChanged(valueSpeed: any) {
+    this.rotateAnimationCameraSpeed = -valueSpeed;
+    this.viewer.controls.autoRotateSpeed = this.rotateAnimationCameraSpeed;
   }
 }

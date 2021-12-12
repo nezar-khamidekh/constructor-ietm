@@ -1,15 +1,32 @@
 <div class="toolbar">
   <div class="toolbar__container">
-    <app-viewer-button
-      [iconPath]="'assets/svg/home.svg'"
-      [buttonName]="'Сброс камеры'"
-      (btnClicked)="resetCamera.emit()"
-    ></app-viewer-button>
-    <app-viewer-button
-      [iconPath]="'assets/svg/rotationCamera.svg'"
-      [buttonName]="'Облёт модели'"
-      (btnClicked)="rotateCamera.emit()"
-    >
-    </app-viewer-button>
+    <div class="toolbar__btn">
+      <app-viewer-button
+        [iconPath]="'assets/svg/home.svg'"
+        [buttonName]="'Сброс камеры'"
+        (btnClicked)="resetCamera.emit()"
+      ></app-viewer-button>
+    </div>
+    <div class="toolbar__btn">
+      <app-viewer-button
+        [iconPath]="
+          rotateAnimationBtnIsActive
+            ? 'assets/svg/rotationCameraActive.svg'
+            : 'assets/svg/rotationCamera.svg'
+        "
+        [buttonName]="'Облёт модели'"
+        (btnClicked)="rotateCamera.emit()"
+      >
+      </app-viewer-button>
+      <div class="toolbar__panel" [hidden]="!rotateAnimationBtnIsActive">
+        <mat-slider
+          min="2"
+          max="20"
+          step="1"
+          value="2"
+          (input)="rotateCameraSpeedChanged.emit($event.value)"
+        ></mat-slider>
+      </div>
+    </div>
   </div>
 </div>
