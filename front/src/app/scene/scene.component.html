@@ -1,12 +1,11 @@
 <div class="viewer-wrapper" #viewerWrapper>
   <ng-container *ngIf="viewerInitialized">
     <app-viewer-toolbar
-      [rotateAnimationBtnIsActive]="rotateAnimationBtnIsActive"
-      [explodeBtnIsActive]="explodeBtnIsActive"
-      (resetCamera)="onResetCamera()"
-      (rotateCamera)="onRotateCamera()"
+      [activeBtnIndex]="activeBtnIndex"
+      [rotateAnimationSliderValue]="rotateSpeedValue"
+      [explodeSliderValue]="explodePowerValue"
+      (viewerBtnClicked)="onViewerBtnClicked($event)"
       (rotateCameraSpeedChanged)="onRotateCameraSpeedChanged($event)"
-      (explode)="onExplode()"
       (explodePowerChanged)="onExplodePowerChanged($event)"
     ></app-viewer-toolbar>
   </ng-container>

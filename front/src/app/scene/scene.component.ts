@@ -25,7 +25,15 @@ const RENDERER_PIXEL_RATIO = 2;
 const GRID_HELPER_SIZE_RATE = 3;
 const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
-const CAMERA_ROTATE_SPEED = 2;
+export const CAMERA_ROTATE_SPEED = 2;
+export const EXPLODE_POWER = 0;
+
+export enum VIEWER_BUTTONS {
+  Default,
+  Home,
+  RotateAnimation,
+  Explode,
+}
 
 @Component({
   selector: 'app-scene',
@@ -42,12 +50,13 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.resizeCanvas();
   }
 
-  spotlight_pos = { x: 5000, y: 5000, z: 5000 };
   viewerInitialized = false;
   modelLongestSide = 0;
   rotateAnimationBtnIsActive = false;
-  rotateAnimationCameraSpeed = -CAMERA_ROTATE_SPEED;
-  explodeBtnIsActive = false;
+  rotateSpeedValue = CAMERA_ROTATE_SPEED;
+  explodePowerValue = EXPLODE_POWER;
+  activeBtnIndex = VIEWER_BUTTONS.Default;
+  btnIsInAction = false;
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -183,27 +192,49 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       .start();
   }
 
-  onResetCamera() {
+  onViewerBtnClicked(activeBtnIndex: number) {
+    if (this.activeBtnIndex !== activeBtnIndex) this.resetPrevBtnAction();
+    this.activeBtnIndex = this.btnIsInAction ? VIEWER_BUTTONS.Default : activeBtnIndex;
+    switch (activeBtnIndex) {
+      case VIEWER_BUTTONS.Home:
+        this.resetCamera();
+        break;
+      case VIEWER_BUTTONS.RotateAnimation:
+        if (!this.btnIsInAction) this.rotateCamera();
+        else this.stopRotatingCamera();
+        break;
+      case VIEWER_BUTTONS.Explode:
+        if (!this.btnIsInAction) this.explode();
+        else this.stopExplodingModel();
+        break;
+      default:
+        break;
+    }
+  }
+
+  resetCamera() {
     this.moveCameraWithAnimation(() => {
       this.viewer.controls.enabled = true;
     });
   }
 
-  onRotateCamera() {
-    if (this.rotateAnimationBtnIsActive) {
-      this.rotateAnimationBtnIsActive = false;
-      this.viewer.controls.autoRotate = false;
-    } else {
-      this.rotateAnimationBtnIsActive = true;
-      this.viewer.controls.autoRotate = true;
-      this.viewer.controls.autoRotateSpeed = this.rotateAnimationCameraSpeed;
-      this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
-    }
+  rotateCamera() {
+    this.btnIsInAction = true;
+    this.viewer.controls.enabled = false;
+    this.viewer.controls.autoRotate = true;
+    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
+    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+  }
+
+  stopRotatingCamera() {
+    this.btnIsInAction = false;
+    this.viewer.controls.enabled = true;
+    this.viewer.controls.autoRotate = false;
   }
 
   onRotateCameraSpeedChanged(valueSpeed: any) {
-    this.rotateAnimationCameraSpeed = -valueSpeed;
-    this.viewer.controls.autoRotateSpeed = this.rotateAnimationCameraSpeed;
+    this.rotateSpeedValue = valueSpeed;
+    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
   }
 
   explodeModel(node: any, power = 0, plant = new THREE.Vector3(), level = 0) {
@@ -234,17 +265,35 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  onExplode() {
-    if (!this.explodeBtnIsActive) {
-      this.explodeBtnIsActive = true;
-      this.explodeModel(this.viewer.model, 0);
-    } else {
-      this.explodeBtnIsActive = false;
-      this.explodeModel(this.viewer.model, 0);
-    }
+  explode() {
+    this.btnIsInAction = true;
+    this.explodeModel(this.viewer.model, this.explodePowerValue);
+  }
+
+  stopExplodingModel() {
+    this.btnIsInAction = false;
+    this.explodeModel(this.viewer.model, 0);
   }
 
   onExplodePowerChanged(explodeValue: any) {
-    this.explodeModel(this.viewer.model, explodeValue);
+    this.explodePowerValue = explodeValue;
+    this.explodeModel(this.viewer.model, this.explodePowerValue);
+  }
+
+  resetPrevBtnAction() {
+    switch (this.activeBtnIndex) {
+      case VIEWER_BUTTONS.RotateAnimation:
+        this.stopRotatingCamera();
+        this.rotateSpeedValue = CAMERA_ROTATE_SPEED;
+        this.resetCamera();
+        break;
+      case VIEWER_BUTTONS.Explode:
+        this.stopExplodingModel();
+        this.explodePowerValue = EXPLODE_POWER;
+        this.resetCamera();
+        break;
+      default:
+        break;
+    }
   }
 }

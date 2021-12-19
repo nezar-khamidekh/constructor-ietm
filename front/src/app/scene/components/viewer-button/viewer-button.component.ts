@@ -14,7 +14,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewerButtonComponent implements OnInit {
+  @Input() isActive = false;
   @Input() iconPath = '';
+  @Input() iconActivePath = '';
   @Input() buttonName = '';
   @Output() btnClicked = new EventEmitter();
 

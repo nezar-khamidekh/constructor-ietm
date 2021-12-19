@@ -1,5 +1,16 @@
 <div class="button-wrapper">
   <button class="button" type="button" (click)="btnClicked.emit()">
-    <img class="button__img" [src]="iconPath" />
+    <ng-container *ngIf="iconPath && iconActivePath; else btnIcon">
+      <img class="button__img" [hidden]="isActive" [src]="iconPath" />
+      <img
+        class="button__img"
+        *ngIf="iconPath && iconActivePath"
+        [hidden]="!isActive"
+        [src]="iconActivePath"
+      />
+    </ng-container>
+    <ng-template #btnIcon>
+      <img class="button__img" [src]="iconPath" />
+    </ng-template>
   </button>
 </div>

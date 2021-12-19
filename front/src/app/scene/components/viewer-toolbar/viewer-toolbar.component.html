@@ -4,43 +4,43 @@
       <app-viewer-button
         [iconPath]="'assets/svg/home.svg'"
         [buttonName]="'Сброс камеры'"
-        (btnClicked)="resetCamera.emit()"
+        (btnClicked)="resetCamera()"
       ></app-viewer-button>
     </div>
     <div class="toolbar__btn">
       <app-viewer-button
-        [iconPath]="
-          rotateAnimationBtnIsActive
-            ? 'assets/svg/rotationCameraActive.svg'
-            : 'assets/svg/rotationCamera.svg'
-        "
+        [isActive]="rotateAnimationBtnIsActive()"
+        [iconPath]="'assets/svg/rotationCamera.svg'"
+        [iconActivePath]="'assets/svg/rotationCameraActive.svg'"
         [buttonName]="'Облёт модели'"
-        (btnClicked)="rotateCamera.emit()"
+        (btnClicked)="rotateCamera()"
       >
       </app-viewer-button>
-      <div class="toolbar__panel" [hidden]="!rotateAnimationBtnIsActive">
+      <div class="toolbar__panel" [hidden]="!rotateAnimationBtnIsActive()">
         <mat-slider
-          min="2"
-          max="20"
-          step="1"
-          value="2"
-          (input)="rotateCameraSpeedChanged.emit($event.value)"
+          [min]="rotateAnimationSliderMinValue"
+          [max]="rotateAnimationSliderMaxValue"
+          [step]="rotateAnimationSliderStep"
+          [value]="rotateAnimationSliderValue"
+          (input)="rotateCameraSpeedChanged.emit($event.value!)"
         ></mat-slider>
       </div>
     </div>
     <div class="toolbar__btn">
       <app-viewer-button
+        [isActive]="explodeBtnIsActive()"
         [iconPath]="'assets/svg/explode.svg'"
+        [iconActivePath]="'assets/svg/explodeActive.svg'"
         [buttonName]="'Разнос модели'"
-        (btnClicked)="explode.emit()"
+        (btnClicked)="explode()"
       ></app-viewer-button>
-      <div class="toolbar__panel" [hidden]="!explodeBtnIsActive">
+      <div class="toolbar__panel" [hidden]="!explodeBtnIsActive()">
         <mat-slider
-          min="0"
-          max="1.5"
-          step="0.1"
-          value="0"
-          (input)="explodePowerChanged.emit($event.value)"
+          [min]="explodeSliderMinValue"
+          [max]="explodeSliderMaxValue"
+          [step]="explodeSliderStep"
+          [value]="explodeSliderValue"
+          (input)="explodePowerChanged.emit($event.value!)"
         ></mat-slider>
       </div>
     </div>
