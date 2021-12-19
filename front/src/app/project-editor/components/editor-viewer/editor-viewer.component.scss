@@ -9,21 +9,54 @@
   flex: 1;
   display: flex;
   flex-direction: row;
+
   &__viewer {
     flex: 1 1 auto;
     border: 1px solid #d3d3d3;
     border-radius: 12px;
   }
-  &__toolbar {
-  }
+
+  &__toolbar {}
 }
+
 .toolbar {
   margin-left: 20px;
   border: 1px solid #d3d3d3;
   border-radius: 12px;
   width: 565px;
+
   &__tabs {
+    height: 100%;
   }
-  &__content {
+
+  &__tab {}
+
+  &__content {}
+}
+
+:host ::ng-deep .mat-tab-label {
+  padding: 0 20px;
+  min-width: auto;
+  flex-grow: 1;
+  user-select: none;
+
+  &:first-child {
+    border-radius: 12px 0 0 0;
   }
+
+  &:last-child {
+    border-radius: 0 12px 0 0;
+  }
+}
+
+:host ::ng-deep .mat-tab-label-active {
+  opacity: 1;
+}
+
+::ng-deep .mat-tab-group {
+  height: 100%;
+}
+
+::ng-deep .mat-tab-body-wrapper {
+  flex-grow: 1;
 }

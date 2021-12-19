@@ -3,7 +3,29 @@
     <app-scene></app-scene>
   </div>
   <div class="editor-viewer__toolbar toolbar">
-    <!-- <div class="toolbar__tabs"></div>
-    <div class="toolbar__content"></div> -->
+    <div class="toolbar__tabs">
+      <mat-tab-group>
+        <mat-tab class="toolbar__tab" label="Анимации">
+          <div class="toolbar__content">
+            <app-editor-animations></app-editor-animations>
+          </div>
+        </mat-tab>
+        <mat-tab class="toolbar__tab" label="Аннотации">
+          <div class="toolbar__content">
+            <app-editor-annotations></app-editor-annotations>
+          </div>
+        </mat-tab>
+        <mat-tab class="toolbar__tab" label="Спецификация">
+          <div class="toolbar__content">
+            <app-specifications></app-specifications>
+          </div>
+        </mat-tab>
+        <mat-tab class="toolbar__tab" label="Дерево элементов">
+          <div class="toolbar__content">
+            <app-tree-elements></app-tree-elements>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
   </div>
 </div>
