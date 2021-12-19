@@ -7,6 +7,7 @@ export interface ViewerI {
   controls: any;
   modelBoundingBox: any;
   raycaster: any;
+  mixer?: THREE.AnimationMixer;
   clock: THREE.Clock;
   actions: any;
   time: number;

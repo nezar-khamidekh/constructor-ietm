@@ -97,6 +97,19 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
+      this.viewer.mixer = new THREE.AnimationMixer(gltf.scene);
+      const clips = gltf.animations;
+
+      console.log(clips);
+
+      clips.forEach((clip) => {
+        const action = this.viewer.mixer!.clipAction(clip);
+        console.log(action);
+        action.loop = THREE.LoopOnce;
+        action.clampWhenFinished = true;
+        action.play();
+      });
+
       this.viewer.model = gltf.scene.children[0];
 
       this.viewer.scene.add(gltf.scene);
@@ -110,6 +123,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     var animate = () => {
       TWEEN.update();
       requestAnimationFrame(animate);
+      this.viewer.mixer?.update(this.viewer.clock.getDelta() / 3);
       this.viewer.controls.update();
       this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
     };
