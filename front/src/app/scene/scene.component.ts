@@ -27,6 +27,8 @@ const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
 export const CAMERA_ROTATE_SPEED = 2;
 export const EXPLODE_POWER = 0;
+const CLICKED_OBJ_COLOR = 0xffff00;
+const HOVERED_OBJ_COLOR = 0xffff00;
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -50,6 +52,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.resizeCanvas();
   }
 
+  canvasRect: any;
+
   viewerInitialized = false;
   modelLongestSide = 0;
   rotateAnimationBtnIsActive = false;
@@ -57,6 +61,13 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   explodePowerValue = EXPLODE_POWER;
   activeBtnIndex = VIEWER_BUTTONS.Default;
   btnIsInAction = false;
+
+  mouseCoords: any = new THREE.Vector2(-1, 1);
+  mouseDownPos: any;
+  mouseUpPos: any;
+
+  selectedObj: any = null;
+  hoveredObj: any = null;
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -81,6 +92,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         this.setUpViewer(file);
       }),
     );
+    this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
   }
 
   setUpViewer(file: any) {
@@ -95,6 +107,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     );
     this.setRenderer();
     this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
+    this.viewer.raycaster = new THREE.Raycaster();
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
       this.viewer.mixer = new THREE.AnimationMixer(gltf.scene);
@@ -102,13 +115,13 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
       console.log(clips);
 
-      clips.forEach((clip) => {
+      /*  clips.forEach((clip) => {
         const action = this.viewer.mixer!.clipAction(clip);
         console.log(action);
         action.loop = THREE.LoopOnce;
         action.clampWhenFinished = true;
         action.play();
-      });
+      }); */
 
       this.viewer.model = gltf.scene.children[0];
 
@@ -123,6 +136,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     var animate = () => {
       TWEEN.update();
       requestAnimationFrame(animate);
+      this.setHoveredObjColor();
       this.viewer.mixer?.update(this.viewer.clock.getDelta() / 3);
       this.viewer.controls.update();
       this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
@@ -176,6 +190,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.renderer.setSize(box.width, box.height);
     this.viewer.camera.aspect = box.width / box.height;
     this.viewer.camera.updateProjectionMatrix();
+    this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
   }
 
   setCamera(translateValue: number) {
@@ -308,6 +323,77 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         break;
       default:
         break;
+    }
+  }
+
+  onMouseUp(e: MouseEvent) {
+    this.mouseUpPos = { ...this.getMouseCoorsByMouseEvent(e) };
+  }
+
+  onMouseDown(e: MouseEvent) {
+    this.mouseDownPos = { ...this.getMouseCoorsByMouseEvent(e) };
+  }
+
+  onMouseClick(e: MouseEvent) {
+    if (this.mouseDownPos.x === this.mouseUpPos.x && this.mouseDownPos.y === this.mouseUpPos.y) {
+      this.setMouseCoords(e);
+      this.setClickedObjColor();
+    }
+  }
+
+  getMouseCoorsByMouseEvent(e: MouseEvent) {
+    return {
+      x: ((e.clientX - this.canvasRect.left) / this.canvasRect.width) * 2 - 1,
+      y: -((e.clientY - this.canvasRect.top) / this.canvasRect.height) * 2 + 1,
+    };
+  }
+
+  setMouseCoords(e: MouseEvent) {
+    this.mouseCoords = { ...this.getMouseCoorsByMouseEvent(e) };
+  }
+
+  setClickedObjColor() {
+    this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
+    const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
+    if (intersects.length > 0) {
+      if (this.selectedObj) {
+        this.selectedObj.material.color.setHex(this.selectedObj.defaultColor);
+      }
+      if (this.selectedObj?.uuid === intersects[0].object.uuid) {
+        this.selectedObj.material.color.setHex(this.selectedObj.defaultColor);
+      } else {
+        this.selectedObj = intersects[0].object;
+        /* this.selectedObj.defaultColor = this.changedObjColor; */
+        intersects[0].object.material.color.setHex(CLICKED_OBJ_COLOR);
+      }
+    } else {
+      if (this.selectedObj) {
+        this.selectedObj.material.color.setHex(this.selectedObj.defaultColor);
+      }
+    }
+  }
+
+  setHoveredObjColor() {
+    this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
+    const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
+    if (intersects.length > 0) {
+      if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
+        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultColor);
+      }
+      /* if (this.hoveredObj?.uuid !== intersects[0].object.uuid) {
+        this.changedObjColor = intersects[0].object.material.color.getHex();
+        console.log(this.changedObjColor);
+      } */
+      this.hoveredObj = intersects[0].object;
+      if (!this.hoveredObj.defaultColor)
+        this.hoveredObj.defaultColor = intersects[0].object.material.color.getHex();
+      intersects[0].object.material.color.setHex(
+        this.sceneService.shadeColor(this.hoveredObj.defaultColor, 120),
+      );
+    } else {
+      if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
+        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultColor);
+      }
     }
   }
 }

@@ -9,5 +9,12 @@
       (explodePowerChanged)="onExplodePowerChanged($event)"
     ></app-viewer-toolbar>
   </ng-container>
-  <canvas #canvas [ngStyle]="{ width: '100%', height: '100%', position: 'absolute' }"></canvas>
+  <canvas
+    #canvas
+    [ngStyle]="{ width: '100%', height: '100%', position: 'absolute' }"
+    (click)="onMouseClick($event)"
+    (mouseup)="onMouseUp($event)"
+    (mousedown)="onMouseDown($event)"
+    (mousemove)="setMouseCoords($event)"
+  ></canvas>
 </div>
