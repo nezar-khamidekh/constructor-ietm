@@ -230,8 +230,12 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   resizeCanvas() {
     const box = this.viewerWrapper.nativeElement.getBoundingClientRect();
     this.viewer.renderer.setSize(box.width, box.height);
+    const pixelRatio = this.viewer.renderer.getPixelRatio();
     if (this.viewer.composer) this.viewer.composer.setSize(box.width, box.height);
-    this.effectFXAA.uniforms['resolution'].value.set(1 / box.width, 1 / box.height);
+    this.effectFXAA.uniforms['resolution'].value.set(
+      (1 / box.width) * pixelRatio,
+      (1 / box.height) * pixelRatio,
+    );
     this.viewer.camera.aspect = box.width / box.height;
     this.viewer.camera.updateProjectionMatrix();
     this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
