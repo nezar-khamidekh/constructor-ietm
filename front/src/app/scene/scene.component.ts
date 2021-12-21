@@ -27,8 +27,14 @@ const GRID_HELPER_DIVISIONS = 20;
 const CAMERA_ANIM_DUR = 300;
 export const CAMERA_ROTATE_SPEED = 2;
 export const EXPLODE_POWER = 0;
-const CLICKED_OBJ_COLOR = 0xffff00;
-const HOVERED_OBJ_COLOR = 0xffff00;
+const CLICKED_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
+  color: 0x7092d4,
+  roughness: 1.0,
+  metalness: 0.0,
+  side: THREE.DoubleSide,
+  opacity: 0.75,
+  transparent: true,
+});
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -357,18 +363,21 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
       if (this.selectedObj) {
-        this.selectedObj.material.color.setHex(this.selectedObj.defaultColor);
-      }
-      if (this.selectedObj?.uuid === intersects[0].object.uuid) {
-        this.selectedObj.material.color.setHex(this.selectedObj.defaultColor);
+        this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
+        if (this.selectedObj?.uuid === intersects[0].object.uuid) {
+          this.selectedObj = null;
+        } else {
+          this.selectedObj = intersects[0].object;
+          this.selectedObj.material = CLICKED_OBJ_MATERIAL;
+        }
       } else {
         this.selectedObj = intersects[0].object;
-        /* this.selectedObj.defaultColor = this.changedObjColor; */
-        intersects[0].object.material.color.setHex(CLICKED_OBJ_COLOR);
+        this.selectedObj.material = CLICKED_OBJ_MATERIAL;
       }
     } else {
       if (this.selectedObj) {
-        this.selectedObj.material.color.setHex(this.selectedObj.defaultColor);
+        this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
+        this.selectedObj = null;
       }
     }
   }
@@ -378,21 +387,19 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
       if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultColor);
+        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
       }
-      /* if (this.hoveredObj?.uuid !== intersects[0].object.uuid) {
-        this.changedObjColor = intersects[0].object.material.color.getHex();
-        console.log(this.changedObjColor);
-      } */
       this.hoveredObj = intersects[0].object;
-      if (!this.hoveredObj.defaultColor)
-        this.hoveredObj.defaultColor = intersects[0].object.material.color.getHex();
-      intersects[0].object.material.color.setHex(
-        this.sceneService.shadeColor(this.hoveredObj.defaultColor, 120),
-      );
+      if (!this.hoveredObj.defaultMaterial)
+        this.hoveredObj.defaultMaterial = intersects[0].object.material.clone();
+      if (this.hoveredObj.uuid !== this.selectedObj?.uuid) {
+        this.hoveredObj.material.color.setHex(
+          this.sceneService.shadeColor(this.hoveredObj.defaultMaterial.color.getHex(), 40),
+        );
+      }
     } else {
       if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultColor);
+        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
       }
     }
   }
