@@ -16,6 +16,11 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { ViewerI } from '../shared/interfaces/viewer.interface';
 import MainScene from '../shared/classes/MainScene';
 import * as TWEEN from '@tweenjs/tween.js';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
@@ -75,9 +80,13 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   selectedObj: any = null;
   hoveredObj: any = null;
 
+  effectFXAA = new ShaderPass(FXAAShader);
+
   viewer: ViewerI = {
     scene: new MainScene(),
     renderer: new THREE.WebGLRenderer(),
+    composer: null,
+    outlinePass: {},
     camera: new THREE.PerspectiveCamera(),
     controls: {},
     modelBoundingBox: {},
@@ -112,6 +121,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       CAMERA_FAR,
     );
     this.setRenderer();
+    this.setComposer();
     this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
     this.viewer.raycaster = new THREE.Raycaster();
 
@@ -145,7 +155,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       this.setHoveredObjColor();
       this.viewer.mixer?.update(this.viewer.clock.getDelta() / 3);
       this.viewer.controls.update();
-      this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
+      // this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
+      if (this.viewer.composer) this.viewer.composer.render();
     };
     animate();
   }
@@ -160,7 +171,10 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       powerPreference: 'high-performance',
       antialias: true,
       logarithmicDepthBuffer: true,
+      alpha: true,
     });
+    this.viewer.renderer.shadowMap.enabled = true;
+    this.viewer.renderer.setClearColor(0xffffff, 0);
     this.viewer.renderer.setSize(
       this.viewerWrapper.nativeElement.clientWidth,
       this.viewerWrapper.nativeElement.clientHeight,
@@ -172,6 +186,28 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     );
     this.viewer.renderer.setClearColor(new THREE.Color(0xffffff));
     this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
+  }
+
+  setComposer() {
+    this.viewer.composer = new EffectComposer(this.viewer.renderer);
+    const renderPass = new RenderPass(this.viewer.scene, this.viewer.camera);
+    this.viewer.composer.addPass(renderPass);
+    this.effectFXAA = new ShaderPass(FXAAShader);
+    this.effectFXAA.uniforms['resolution'].value.set(
+      1 / this.canvasRect.width,
+      1 / this.canvasRect.height,
+    );
+    this.viewer.composer.addPass(this.effectFXAA);
+    this.viewer.outlinePass = new OutlinePass(
+      new THREE.Vector2(this.canvasRect.width, this.canvasRect.height),
+      this.viewer.scene,
+      this.viewer.camera,
+    );
+    this.viewer.outlinePass.edgeStrength = 2;
+    this.viewer.outlinePass.edgeThickness = 1;
+    this.viewer.outlinePass.visibleEdgeColor.set('#0159d3');
+    this.viewer.outlinePass.hiddenEdgeColor.set('#0159d3');
+    this.viewer.composer.addPass(this.viewer.outlinePass);
   }
 
   setGridHelper(gltf: any) {
@@ -194,6 +230,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   resizeCanvas() {
     const box = this.viewerWrapper.nativeElement.getBoundingClientRect();
     this.viewer.renderer.setSize(box.width, box.height);
+    if (this.viewer.composer) this.viewer.composer.setSize(box.width, box.height);
+    this.effectFXAA.uniforms['resolution'].value.set(1 / box.width, 1 / box.height);
     this.viewer.camera.aspect = box.width / box.height;
     this.viewer.camera.updateProjectionMatrix();
     this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
@@ -362,6 +400,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
+      this.viewer.outlinePass.selectedObjects = [intersects[0].object];
       if (this.selectedObj) {
         this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
         if (this.selectedObj?.uuid === intersects[0].object.uuid) {
@@ -376,6 +415,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       }
     } else {
       if (this.selectedObj) {
+        this.viewer.outlinePass.selectedObjects = [];
         this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
         this.selectedObj = null;
       }
