@@ -21,6 +21,7 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { Mesh } from 'three';
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
@@ -46,6 +47,8 @@ export enum VIEWER_BUTTONS {
   Home,
   RotateAnimation,
   Explode,
+  Hide,
+  RestoreView,
 }
 
 @Component({
@@ -81,6 +84,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
   hoveredObj: any = null;
 
   effectFXAA = new ShaderPass(FXAAShader);
+
+  hiddenObjects: any = [];
 
   viewer: ViewerI = {
     scene: new MainScene(),
@@ -284,6 +289,12 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         if (!this.btnIsInAction) this.explode();
         else this.stopExplodingModel();
         break;
+      case VIEWER_BUTTONS.Hide:
+        this.hideObject();
+        break;
+      case VIEWER_BUTTONS.RestoreView:
+        this.restoreView();
+        break;
       default:
         break;
     }
@@ -352,6 +363,31 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.explodeModel(this.viewer.model, 0);
   }
 
+  hideObject() {
+    if (this.selectedObj) {
+      this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
+      this.viewer.outlinePass.selectedObjects = [];
+      this.selectedObj.visible = false;
+      this.hiddenObjects.push(this.selectedObj);
+      this.selectedObj = null;
+    }
+  }
+
+  restoreView() {
+    if (this.hiddenObjects.length) {
+      // this.viewer.model.traverse((child: any) => {
+      //   if (child instanceof THREE.Mesh && this.objectByUuidIsHidden(child.uuid)) {
+      //     child.visible = true;
+      //   }
+      // });
+      this.hiddenObjects.forEach((obj: any) => {
+        obj.visible = true;
+      });
+      this.hiddenObjects = [];
+      this.viewer.outlinePass.selectedObjects = [];
+    }
+  }
+
   onExplodePowerChanged(explodeValue: any) {
     this.explodePowerValue = explodeValue;
     this.explodeModel(this.viewer.model, this.explodePowerValue);
@@ -368,6 +404,9 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         this.stopExplodingModel();
         this.explodePowerValue = EXPLODE_POWER;
         this.resetCamera();
+        break;
+      case VIEWER_BUTTONS.Hide:
+        this.restoreView();
         break;
       default:
         break;
@@ -404,18 +443,23 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
-      this.viewer.outlinePass.selectedObjects = [intersects[0].object];
-      if (this.selectedObj) {
-        this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
-        if (this.selectedObj?.uuid === intersects[0].object.uuid) {
-          this.selectedObj = null;
+      const filteredIntersects = intersects.filter(
+        (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
+      );
+      if (filteredIntersects.length > 0) {
+        this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
+        if (this.selectedObj) {
+          this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
+          if (this.selectedObj?.uuid === filteredIntersects[0].object.uuid) {
+            this.selectedObj = null;
+          } else {
+            this.selectedObj = filteredIntersects[0].object;
+            this.selectedObj.material = CLICKED_OBJ_MATERIAL;
+          }
         } else {
-          this.selectedObj = intersects[0].object;
+          this.selectedObj = filteredIntersects[0].object;
           this.selectedObj.material = CLICKED_OBJ_MATERIAL;
         }
-      } else {
-        this.selectedObj = intersects[0].object;
-        this.selectedObj.material = CLICKED_OBJ_MATERIAL;
       }
     } else {
       if (this.selectedObj) {
@@ -430,21 +474,30 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
-      if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
-      }
-      this.hoveredObj = intersects[0].object;
-      if (!this.hoveredObj.defaultMaterial)
-        this.hoveredObj.defaultMaterial = intersects[0].object.material.clone();
-      if (this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-        this.hoveredObj.material.color.setHex(
-          this.sceneService.shadeColor(this.hoveredObj.defaultMaterial.color.getHex(), 40),
-        );
+      const filteredIntersects = intersects.filter(
+        (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
+      );
+      if (filteredIntersects.length > 0) {
+        if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
+          this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
+        }
+        this.hoveredObj = filteredIntersects[0].object;
+        if (!this.hoveredObj.defaultMaterial)
+          this.hoveredObj.defaultMaterial = filteredIntersects[0].object.material.clone();
+        if (this.hoveredObj.uuid !== this.selectedObj?.uuid) {
+          this.hoveredObj.material.color.setHex(
+            this.sceneService.shadeColor(this.hoveredObj.defaultMaterial.color.getHex(), 40),
+          );
+        }
       }
     } else {
       if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
         this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
       }
     }
+  }
+
+  objectByUuidIsHidden(uuid: any) {
+    return this.hiddenObjects.some((obj: any) => obj.uuid === uuid);
   }
 }

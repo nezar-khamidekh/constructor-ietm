@@ -41,6 +41,14 @@ export class ViewerToolbarComponent implements OnInit {
     return this.activeBtnIndex === VIEWER_BUTTONS.Explode;
   }
 
+  hideObjectBtnIsActive() {
+    return this.activeBtnIndex === VIEWER_BUTTONS.Hide;
+  }
+
+  restoreViewBtnIsActive() {
+    return this.activeBtnIndex === VIEWER_BUTTONS.RestoreView;
+  }
+
   resetCamera() {
     this.viewerBtnClicked.emit(VIEWER_BUTTONS.Home);
   }
@@ -51,5 +59,13 @@ export class ViewerToolbarComponent implements OnInit {
 
   explode() {
     this.viewerBtnClicked.emit(VIEWER_BUTTONS.Explode);
+  }
+
+  hideObject() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.Hide);
+  }
+
+  restoreView() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.RestoreView);
   }
 }

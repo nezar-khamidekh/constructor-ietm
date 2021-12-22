@@ -44,5 +44,21 @@
         ></mat-slider>
       </div>
     </div>
+    <div class="toolbar__btn">
+      <app-viewer-button
+        [isActive]="hideObjectBtnIsActive()"
+        [iconPath]="'assets/svg/visibility_off.svg'"
+        [buttonName]="'Скрыть объект'"
+        (btnClicked)="hideObject()"
+      ></app-viewer-button>
+    </div>
+    <div class="toolbar__btn">
+      <app-viewer-button
+        [isActive]="restoreViewBtnIsActive()"
+        [iconPath]="'assets/svg/reset.svg'"
+        [buttonName]="'Восстановить вид'"
+        (btnClicked)="restoreView()"
+      ></app-viewer-button>
+    </div>
   </div>
 </div>
