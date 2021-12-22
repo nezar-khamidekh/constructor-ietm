@@ -5,6 +5,7 @@ export interface ViewerI {
   renderer: THREE.WebGLRenderer;
   composer: any;
   outlinePass: any;
+  labelRenderer: any;
   camera: THREE.PerspectiveCamera;
   controls: any;
   modelBoundingBox: any;

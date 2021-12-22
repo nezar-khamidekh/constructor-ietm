@@ -5,6 +5,7 @@ import {
   ElementRef,
   HostListener,
   OnDestroy,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { SubSink } from 'subsink';
@@ -14,6 +15,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SceneService } from './services/scene.service';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { ViewerI } from '../shared/interfaces/viewer.interface';
+import { AnnotationI } from '../shared/interfaces/annotation.interface';
 import MainScene from '../shared/classes/MainScene';
 import * as TWEEN from '@tweenjs/tween.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
@@ -21,7 +23,7 @@ import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { Mesh } from 'three';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
@@ -87,11 +89,21 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   hiddenObjects: any = [];
 
+  annotations: AnnotationI[] = [
+    {
+      title: '1',
+      description: '<p>Bathroom Sink is good for washing your hands</p>',
+      position: new THREE.Vector3(0.8807755104286317, 0.009937415637652509, 0.5152293842824673),
+    },
+  ];
+  annotationMarkers: THREE.Sprite[] = [];
+
   viewer: ViewerI = {
     scene: new MainScene(),
     renderer: new THREE.WebGLRenderer(),
     composer: null,
     outlinePass: {},
+    labelRenderer: null,
     camera: new THREE.PerspectiveCamera(),
     controls: {},
     modelBoundingBox: {},
@@ -104,7 +116,11 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     plant: new THREE.Vector3(),
   };
 
-  constructor(private sceneService: SceneService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private sceneService: SceneService,
+    private cdr: ChangeDetectorRef,
+    private renderer: Renderer2,
+  ) {}
 
   ngAfterViewInit(): void {
     this.subs.add(
@@ -151,6 +167,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       this.viewer.scene.setLight(this.modelLongestSide);
       this.setCamera(this.modelLongestSide);
       this.viewerInitialized = true;
+      this.setAnnotations();
       this.cdr.detectChanges();
     });
 
@@ -162,6 +179,8 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       this.viewer.controls.update();
       // this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
       if (this.viewer.composer) this.viewer.composer.render();
+      if (this.viewer.labelRenderer)
+        this.viewer.labelRenderer.render(this.viewer.scene, this.viewer.camera);
     };
     animate();
   }
@@ -191,6 +210,19 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     );
     this.viewer.renderer.setClearColor(new THREE.Color(0xffffff));
     this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
+
+    this.viewer.labelRenderer = new CSS2DRenderer();
+    this.viewer.labelRenderer.setSize(
+      this.viewerWrapper.nativeElement.clientWidth,
+      this.viewerWrapper.nativeElement.clientHeight,
+    );
+    this.viewer.labelRenderer.domElement.style.position = 'absolute';
+    this.viewer.labelRenderer.domElement.style.top = '0px';
+    this.viewer.labelRenderer.domElement.style.pointerEvents = 'none';
+    this.renderer.appendChild(
+      this.viewerWrapper.nativeElement,
+      this.viewer.labelRenderer.domElement,
+    );
   }
 
   setComposer() {
@@ -244,6 +276,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     this.viewer.camera.aspect = box.width / box.height;
     this.viewer.camera.updateProjectionMatrix();
     this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
+    if (this.viewer.labelRenderer) this.viewer.labelRenderer.setSize(box.width, box.height);
   }
 
   setCamera(translateValue: number) {
@@ -499,5 +532,38 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   objectByUuidIsHidden(uuid: any) {
     return this.hiddenObjects.some((obj: any) => obj.uuid === uuid);
+  }
+
+  setAnnotations() {
+    const circleTexture = new THREE.TextureLoader().load('assets/png/circle.png');
+    this.annotations.forEach((annotation) => {
+      const annotationSpriteMaterial = new THREE.SpriteMaterial({
+        map: circleTexture,
+        depthTest: false,
+        depthWrite: false,
+        sizeAttenuation: false,
+      });
+      const annotationSprite = new THREE.Sprite(annotationSpriteMaterial);
+      annotationSprite.scale.set(0.066, 0.066, 0.066);
+      annotationSprite.position.copy(annotation.position);
+      annotationSprite.userData.id = annotation.title;
+      this.viewer.scene.add(annotationSprite);
+      this.annotationMarkers.push(annotationSprite);
+
+      const annotationDiv = this.renderer.createElement('div');
+      this.renderer.addClass(annotationDiv, 'annotationLabel');
+      this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.title);
+      const annotationLabel = new CSS2DObject(annotationDiv);
+      annotationLabel.position.copy(annotation.position);
+      this.viewer.scene.add(annotationLabel);
+
+      if (annotation.description) {
+        const annotationDescriptionDiv = this.renderer.createElement('div');
+        this.renderer.addClass(annotationDescriptionDiv, 'annotationDescription');
+        this.renderer.setProperty(annotationDescriptionDiv, 'innerHTML', annotation.description);
+        this.renderer.appendChild(annotationDiv, annotationDescriptionDiv);
+        annotation.descriptionDomElement = annotationDescriptionDiv;
+      }
+    });
   }
 }

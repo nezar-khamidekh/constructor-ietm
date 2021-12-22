@@ -122,7 +122,8 @@ body {
   align-items: center;
   height: 100%;
 
-  &__form {}
+  &__form {
+  }
 }
 
 .auth-form {
@@ -147,13 +148,17 @@ body {
     left: 0;
   }
 
-  &__field {}
+  &__field {
+  }
 
-  &__label {}
+  &__label {
+  }
 
-  &__input {}
+  &__input {
+  }
 
-  &__pass-hide {}
+  &__pass-hide {
+  }
 
   &__icon {
     display: block;
@@ -212,4 +217,26 @@ body {
   font-size: 22px;
   font-weight: 500;
   text-align: center;
+}
+
+.annotationLabel {
+  color: #ffffff;
+  font-family: monospace;
+  pointer-events: none;
+  font-size: 17px;
+}
+
+.annotationDescription {
+  color: #ffffff;
+  font-family: monospace;
+  pointer-events: none;
+  font-size: 14px;
+  position: absolute;
+  left: 25px;
+  padding: 1em;
+  width: 200px;
+  background: rgba(0, 0, 0, 0.66);
+  border-radius: 0.5em;
+  transition: opacity 0.5s;
+  display: block;
 }
