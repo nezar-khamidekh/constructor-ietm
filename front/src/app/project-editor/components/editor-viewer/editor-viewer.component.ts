@@ -1,4 +1,19 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { AnnotationI } from 'src/app/shared/interfaces/annotation.interface';
+
+export const enum VIEWER_MOUSE_MODE {
+  Default,
+  ApplyAnnotation,
+}
+
+interface CurrentAnnotationI {
+  text: string;
+  position: null | {
+    x: number;
+    y: number;
+    z: number;
+  };
+}
 
 @Component({
   selector: 'app-editor-viewer',
@@ -7,7 +22,61 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorViewerComponent implements OnInit {
+  annotations: AnnotationI[] = [
+    {
+      title: '1',
+      description: '<p>Bathroom Sink is good for washing your hands</p>',
+      position: {
+        x: 0.8807755104286317,
+        y: 0.009937415637652509,
+        z: 0.5152293842824673,
+      },
+    },
+  ];
+
+  currentAnnotation: CurrentAnnotationI = {
+    text: '',
+    position: null,
+  };
+
+  viewerMouseMode = VIEWER_MOUSE_MODE.Default;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  onApplyAnnotation(status: boolean) {
+    this.viewerMouseMode = status ? VIEWER_MOUSE_MODE.ApplyAnnotation : VIEWER_MOUSE_MODE.Default;
+    console.log(this.viewerMouseMode + 'mode');
+  }
+
+  onSaveAnnotation() {
+    console.log(this.currentAnnotation);
+
+    this.annotations = [
+      ...this.annotations,
+      {
+        title: (this.annotations.length + 1).toString(),
+        description: this.currentAnnotation.text,
+        position: {
+          x: this.currentAnnotation.position!.x,
+          y: this.currentAnnotation.position!.y,
+          z: this.currentAnnotation.position!.z,
+        },
+      },
+    ];
+    console.log(this.annotations);
+    this.currentAnnotation = {
+      text: '',
+      position: null,
+    };
+  }
+
+  onCoordsAnnotation(coords: any) {
+    console.log(coords);
+    this.currentAnnotation = {
+      text: this.currentAnnotation.text,
+      position: coords,
+    };
+  }
 }

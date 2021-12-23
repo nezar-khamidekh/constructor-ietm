@@ -3,9 +3,13 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
+  Input,
   OnDestroy,
+  Output,
   Renderer2,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { SubSink } from 'subsink';
@@ -24,6 +28,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
+import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/editor-viewer.component';
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
@@ -60,6 +65,9 @@ export enum VIEWER_BUTTONS {
 })
 export class SceneComponent implements AfterViewInit, OnDestroy {
   private subs = new SubSink();
+  @Input() annotations: AnnotationI[] = [];
+  @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
+  @Output() coordsAnnotation = new EventEmitter();
 
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('viewerWrapper') viewerWrapper: ElementRef;
@@ -89,13 +97,6 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   hiddenObjects: any = [];
 
-  annotations: AnnotationI[] = [
-    {
-      title: '1',
-      description: '<p>Bathroom Sink is good for washing your hands</p>',
-      position: new THREE.Vector3(0.8807755104286317, 0.009937415637652509, 0.5152293842824673),
-    },
-  ];
   annotationMarkers: THREE.Sprite[] = [];
 
   viewer: ViewerI = {
@@ -129,6 +130,12 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       }),
     );
     this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.annotations && !changes.annotations.firstChange) {
+      this.setAnnotations();
+    }
   }
 
   setUpViewer(file: any) {
@@ -459,6 +466,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       this.setMouseCoords(e);
       this.setClickedObjColor();
     }
+    console.log(1);
   }
 
   getMouseCoorsByMouseEvent(e: MouseEvent) {
@@ -480,6 +488,15 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
       );
       if (filteredIntersects.length > 0) {
+        switch (this.viewerMouseMode) {
+          case VIEWER_MOUSE_MODE.ApplyAnnotation:
+            console.log(filteredIntersects[0]);
+            this.coordsAnnotation.emit(filteredIntersects[0].point);
+            break;
+          default:
+            break;
+        }
+        console.log(4);
         this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
         if (this.selectedObj) {
           this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
@@ -536,6 +553,7 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   setAnnotations() {
     const circleTexture = new THREE.TextureLoader().load('assets/png/circle.png');
+    const vector = new THREE.Vector3();
     this.annotations.forEach((annotation) => {
       const annotationSpriteMaterial = new THREE.SpriteMaterial({
         map: circleTexture,
@@ -545,7 +563,9 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       });
       const annotationSprite = new THREE.Sprite(annotationSpriteMaterial);
       annotationSprite.scale.set(0.066, 0.066, 0.066);
-      annotationSprite.position.copy(annotation.position);
+      annotationSprite.position.copy(
+        vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
+      );
       annotationSprite.userData.id = annotation.title;
       this.viewer.scene.add(annotationSprite);
       this.annotationMarkers.push(annotationSprite);
@@ -554,7 +574,9 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
       this.renderer.addClass(annotationDiv, 'annotationLabel');
       this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.title);
       const annotationLabel = new CSS2DObject(annotationDiv);
-      annotationLabel.position.copy(annotation.position);
+      annotationLabel.position.copy(
+        vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
+      );
       this.viewer.scene.add(annotationLabel);
 
       if (annotation.description) {

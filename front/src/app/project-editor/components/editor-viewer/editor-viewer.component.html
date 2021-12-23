@@ -1,6 +1,10 @@
 <div class="editor-viewer">
   <div class="editor-viewer__viewer">
-    <!-- <app-scene></app-scene> -->
+    <app-scene
+      [annotations]="annotations"
+      [viewerMouseMode]="viewerMouseMode"
+      (coordsAnnotation)="onCoordsAnnotation($event)"
+    ></app-scene>
   </div>
   <div class="editor-viewer__toolbar toolbar">
     <div class="toolbar__tabs">
@@ -12,7 +16,12 @@
         </mat-tab>
         <mat-tab class="toolbar__tab" label="Аннотации">
           <div class="toolbar__content">
-            <app-editor-annotations></app-editor-annotations>
+            <app-editor-annotations
+              [annotations]="annotations"
+              [currentAnnotation]="currentAnnotation"
+              (saveAnnotation)="onSaveAnnotation()"
+              (applyAnnotation)="onApplyAnnotation($event)"
+            ></app-editor-annotations>
           </div>
         </mat-tab>
         <mat-tab class="toolbar__tab" label="Спецификация">

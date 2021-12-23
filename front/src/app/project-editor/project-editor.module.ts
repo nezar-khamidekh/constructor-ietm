@@ -15,6 +15,7 @@ import { EditorAnnotationsComponent } from './components/editor-annotations/edit
 import { SpecificationsComponent } from './components/specifications/specifications.component';
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatSliderModule,
     MatRippleModule,
     MatButtonModule,
+    FormsModule,
   ],
 })
 export class ProjectEditorModule {}
