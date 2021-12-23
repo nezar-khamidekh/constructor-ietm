@@ -14,9 +14,18 @@ import { EditorAnimationsComponent } from './components/editor-animations/editor
 import { EditorAnnotationsComponent } from './components/editor-annotations/editor-annotations.component';
 import { SpecificationsComponent } from './components/specifications/specifications.component';
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-  declarations: [ProjectEditorComponent, EditorStepComponent, EditorViewerComponent, EditorAnimationsComponent, EditorAnnotationsComponent, SpecificationsComponent, TreeElementsComponent],
+  declarations: [
+    ProjectEditorComponent,
+    EditorStepComponent,
+    EditorViewerComponent,
+    EditorAnimationsComponent,
+    EditorAnnotationsComponent,
+    SpecificationsComponent,
+    TreeElementsComponent,
+  ],
   imports: [
     CommonModule,
     ProjectEditorRoutingModule,
@@ -25,6 +34,7 @@ import { TreeElementsComponent } from './components/tree-elements/tree-elements.
     MatSelectModule,
     MatSliderModule,
     MatRippleModule,
+    MatButtonModule,
   ],
 })
 export class ProjectEditorModule {}

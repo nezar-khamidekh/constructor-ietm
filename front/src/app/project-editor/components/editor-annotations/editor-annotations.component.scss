@@ -1,0 +1,46 @@
+.annotations-editor {}
+
+.annotation-editor {
+
+  &__new-annotation {}
+
+  &__table {}
+}
+
+.new-annotation-panel {
+
+  padding: 0 16px;
+
+  &__title {
+    margin-top: 20px;
+    font-weight: 700;
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    padding-top: 10px;
+  }
+
+  &__text-annotation {
+    resize: none;
+    height: 6em;
+    width: 80%;
+    border: 1px solid #D8DEE4;
+    border-radius: 8px;
+    padding: 8px 14px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    margin-left: 14px;
+  }
+
+  &__btn {}
+
+  &__btn-icon {
+    height: 24px;
+    width: 24px;
+  }
+}

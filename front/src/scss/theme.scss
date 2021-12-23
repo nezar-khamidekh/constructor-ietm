@@ -61,8 +61,40 @@ $blue: (50 : #e1effb,
     A700 : #000000,
   ));
 
+$grey: (50 : #fafbfb,
+  100 : #f3f5f5,
+  200 : #ebeeee,
+  300 : #e3e7e7,
+  400 : #dde1e2,
+  500 : #d7dcdd,
+  600 : #d3d8d9,
+  700 : #cdd3d4,
+  800 : #c7cecf,
+  900 : #bec5c7,
+  A100 : #ffffff,
+  A200 : #ffffff,
+  A400 : #ffffff,
+  A700 : #ffffff,
+  contrast: (50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #000000,
+    400 : #000000,
+    500 : #000000,
+    600 : #000000,
+    700 : #000000,
+    800 : #000000,
+    900 : #000000,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #000000,
+    A700 : #000000,
+  ));
+
+
+
 $my-primary: mat.define-palette($light-blue, 500);
-$my-accent: mat.define-palette($blue, 500);
+$my-accent: mat.define-palette($grey, 500);
 $my-warn: mat.define-palette(mat.$red-palette);
 
 $my-theme: mat.define-light-theme((color: (primary: $my-primary,
