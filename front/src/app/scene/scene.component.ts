@@ -7,6 +7,7 @@ import {
   HostListener,
   Input,
   OnDestroy,
+  OnInit,
   Output,
   Renderer2,
   SimpleChanges,
@@ -29,6 +30,7 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/editor-viewer.component';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 const CAMERA_FOV = 75;
 const CAMERA_NEAR = 0.1;
@@ -63,7 +65,7 @@ export enum VIEWER_BUTTONS {
   templateUrl: './scene.component.html',
   styleUrls: ['./scene.component.scss'],
 })
-export class SceneComponent implements AfterViewInit, OnDestroy {
+export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs = new SubSink();
   @Input() annotations: AnnotationI[] = [];
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
@@ -71,9 +73,18 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('viewerWrapper') viewerWrapper: ElementRef;
+  @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
+  @ViewChild('viewerContextMenuInner') viewerContextMenuInnerRef: ElementRef;
 
   @HostListener('window:resize', ['$event']) onResize($event: any) {
     this.resizeCanvas();
+  }
+
+  @HostListener('document:click', ['$event'])
+  clickOutside(event: any) {
+    if (!this.viewerContextMenuInnerRef.nativeElement.contains(event.target)) {
+      this.resetContextMenu();
+    }
   }
 
   canvasRect: any;
@@ -99,6 +110,11 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
 
   annotationMarkers: THREE.Sprite[] = [];
 
+  contextMenuPosition = { x: '0', y: '0' };
+  contextMenuIsOpened = false;
+  contextMenuClickedOutside = false;
+  contextMenuFirstOpen = true;
+
   viewer: ViewerI = {
     scene: new MainScene(),
     renderer: new THREE.WebGLRenderer(),
@@ -122,6 +138,22 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
   ) {}
+
+  ngOnInit(): void {
+    this.subs.add(
+      this.matMenuTrigger.menuClosed.subscribe((v) => {
+        if (!this.contextMenuClickedOutside) {
+          this.contextMenuIsOpened = true;
+          this.matMenuTrigger.openMenu();
+        }
+      }),
+    );
+    /*  this.subs.add(
+      this.matMenuTrigger.menuOpened.subscribe((v) => {
+        this.viewerContextMenuInnerRef.nativeElement.focus();
+      }),
+    ); */
+  }
 
   ngAfterViewInit(): void {
     this.subs.add(
@@ -587,5 +619,28 @@ export class SceneComponent implements AfterViewInit, OnDestroy {
         annotation.descriptionDomElement = annotationDescriptionDiv;
       }
     });
+  }
+
+  onRightClick(event: MouseEvent) {
+    this.contextMenuClickedOutside = false;
+    event.preventDefault();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    if (this.contextMenuIsOpened) {
+      this.contextMenuIsOpened = false;
+      this.matMenuTrigger.closeMenu();
+    }
+    if (this.contextMenuFirstOpen) {
+      this.contextMenuIsOpened = true;
+      this.contextMenuFirstOpen = false;
+      this.matMenuTrigger.openMenu();
+    }
+  }
+
+  resetContextMenu() {
+    this.contextMenuIsOpened = false;
+    this.contextMenuClickedOutside = true;
+    this.contextMenuFirstOpen = true;
+    this.matMenuTrigger.closeMenu();
   }
 }

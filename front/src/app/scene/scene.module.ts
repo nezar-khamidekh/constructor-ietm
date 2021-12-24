@@ -6,10 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { ViewerToolbarComponent } from './components/viewer-toolbar/viewer-toolbar.component';
 import { ViewerButtonComponent } from './components/viewer-button/viewer-button.component';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent],
-  imports: [CommonModule, SceneRoutingModule, MatButtonModule, MatSliderModule],
+  imports: [CommonModule, SceneRoutingModule, MatButtonModule, MatSliderModule, MatMenuModule],
   exports: [SceneComponent],
 })
 export class SceneModule {}

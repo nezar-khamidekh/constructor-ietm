@@ -47,12 +47,9 @@ export class EditorViewerComponent implements OnInit {
 
   onApplyAnnotation(status: boolean) {
     this.viewerMouseMode = status ? VIEWER_MOUSE_MODE.ApplyAnnotation : VIEWER_MOUSE_MODE.Default;
-    console.log(this.viewerMouseMode + 'mode');
   }
 
   onSaveAnnotation() {
-    console.log(this.currentAnnotation);
-
     this.annotations = [
       ...this.annotations,
       {
