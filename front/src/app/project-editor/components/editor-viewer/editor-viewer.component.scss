@@ -3,12 +3,14 @@
   width: 100%;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .editor-viewer {
   flex: 1;
   display: flex;
   flex-direction: row;
+  height: 100%;
 
   &__viewer {
     flex: 1 1 auto;
@@ -31,7 +33,9 @@
 
   &__tab {}
 
-  &__content {}
+  &__content {
+    height: 100%;
+  }
 }
 
 :host ::ng-deep .mat-tab-label {
