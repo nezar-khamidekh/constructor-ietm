@@ -1,10 +1,62 @@
-.annotations-editor {}
+:host {
+  height: 100%;
+}
 
-.annotation-editor {
+.annotations-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
   &__new-annotation {}
 
-  &__table {}
+  &__table-block {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  &__table {
+    width: 100%;
+  }
+
+  &__table-wrapper {
+    margin-top: 15px;
+    overflow: auto;
+  }
+
+  &__table {
+    border-collapse: collapse;
+  }
+
+  &__row {
+    border-bottom: 1px solid #D8DEE4;
+  }
+
+  &__column {
+    text-align: left;
+  }
+
+  &__number-column {
+    padding: 6px 12px;
+  }
+
+  &__description-column {
+    padding: 6px 12px;
+  }
+
+  &__actions-column {
+    padding: 6px 12px;
+  }
+
+  &__btn {}
+
+  &__btn-icon {}
+
+}
+
+.item {
+  border-bottom: 1px solid #D8DEE4;
 }
 
 .new-annotation-panel {

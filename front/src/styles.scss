@@ -91,7 +91,10 @@ h6 {
   font-weight: 400;
 }
 
+
 /*--------------------*/
+
+
 
 body {
   font-family: 'Roboto';
@@ -111,6 +114,19 @@ body {
   color: #24292f;
 }
 
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #007ef2;
+}
+
 .mat-list-base {
   padding: 0 !important;
 }
@@ -122,8 +138,7 @@ body {
   align-items: center;
   height: 100%;
 
-  &__form {
-  }
+  &__form {}
 }
 
 .auth-form {
@@ -148,17 +163,13 @@ body {
     left: 0;
   }
 
-  &__field {
-  }
+  &__field {}
 
-  &__label {
-  }
+  &__label {}
 
-  &__input {
-  }
+  &__input {}
 
-  &__pass-hide {
-  }
+  &__pass-hide {}
 
   &__icon {
     display: block;
@@ -251,8 +262,7 @@ body {
     margin-right: 10px;
   }
 
-  &__btn-text {
-  }
+  &__btn-text {}
 }
 
 .mat-menu-content {
