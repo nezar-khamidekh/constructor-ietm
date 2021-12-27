@@ -26,7 +26,11 @@
   <mat-menu class="context-menu" #rightMenu="matMenu" [hasBackdrop]="false">
     <div #viewerContextMenuInner>
       <ng-template matMenuContent>
-        <button mat-menu-item class="context-menu__btn" (click)="restoreView()">
+        <button
+          mat-menu-item
+          class="context-menu__btn"
+          (click)="onContextMenuClick(getViewerContextMenuButtons().RestoreView)"
+        >
           <img class="context-menu__btn-icon" src="assets/svg/reset.svg" alt="восстановить вид" />
           <span class="context-menu__btn-text">Восстановить вид</span>
         </button>
@@ -34,8 +38,8 @@
           mat-menu-item
           class="context-menu__btn"
           [hidden]="selectedObj"
-          [disabled]="selectedObj"
-          (click)="hideObject()"
+          [disabled]="!selectedObj"
+          (click)="onContextMenuClick(getViewerContextMenuButtons().Hide)"
         >
           <img
             class="context-menu__btn-icon"

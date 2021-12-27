@@ -33,7 +33,6 @@ export class EditorAnnotationsComponent implements OnInit {
   clickOutside(event: any) {
     if (!this.buttonApplyAnnotationRef.nativeElement.contains(event.target)) {
       this.applyAnnotation.emit(false);
-      console.log(3);
     }
   }
 

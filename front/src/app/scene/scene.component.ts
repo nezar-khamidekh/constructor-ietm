@@ -56,8 +56,11 @@ export enum VIEWER_BUTTONS {
   Home,
   RotateAnimation,
   Explode,
-  Hide,
+}
+
+enum VIEWER_CONTEXT_MENU_BUTTONS {
   RestoreView,
+  Hide,
 }
 
 @Component({
@@ -361,12 +364,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.btnIsInAction) this.explode();
         else this.stopExplodingModel();
         break;
-      case VIEWER_BUTTONS.Hide:
-        this.hideObject();
-        break;
-      case VIEWER_BUTTONS.RestoreView:
-        this.restoreView();
-        break;
       default:
         break;
     }
@@ -477,9 +474,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.explodePowerValue = EXPLODE_POWER;
         this.resetCamera();
         break;
-      case VIEWER_BUTTONS.Hide:
-        this.restoreView();
-        break;
       default:
         break;
     }
@@ -498,7 +492,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setMouseCoords(e);
       this.setClickedObjColor();
     }
-    console.log(1);
   }
 
   getMouseCoorsByMouseEvent(e: MouseEvent) {
@@ -522,13 +515,11 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       if (filteredIntersects.length > 0) {
         switch (this.viewerMouseMode) {
           case VIEWER_MOUSE_MODE.ApplyAnnotation:
-            console.log(filteredIntersects[0]);
             this.coordsAnnotation.emit(filteredIntersects[0].point);
             break;
           default:
             break;
         }
-        console.log(4);
         this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
         if (this.selectedObj) {
           this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
@@ -624,6 +615,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   onRightClick(event: MouseEvent) {
     this.contextMenuClickedOutside = false;
     event.preventDefault();
+    this.onMouseClick(event);
     this.contextMenuPosition.x = event.clientX + 'px';
     this.contextMenuPosition.y = event.clientY + 'px';
     if (this.contextMenuIsOpened) {
@@ -642,5 +634,23 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.contextMenuClickedOutside = true;
     this.contextMenuFirstOpen = true;
     this.matMenuTrigger.closeMenu();
+  }
+
+  getViewerContextMenuButtons() {
+    return VIEWER_CONTEXT_MENU_BUTTONS;
+  }
+
+  onContextMenuClick(contextBtn: number) {
+    this.resetContextMenu();
+    switch (contextBtn) {
+      case VIEWER_CONTEXT_MENU_BUTTONS.RestoreView:
+        this.restoreView();
+        break;
+      case VIEWER_CONTEXT_MENU_BUTTONS.Hide:
+        this.hideObject();
+        break;
+      default:
+        break;
+    }
   }
 }
