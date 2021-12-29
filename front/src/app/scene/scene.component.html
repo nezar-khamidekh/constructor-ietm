@@ -29,7 +29,7 @@
         <button
           mat-menu-item
           class="context-menu__btn"
-          (click)="onContextMenuClick(getViewerContextMenuButtons().RestoreView)"
+          (click)="onViewerBtnClicked(getViewerButtonsEnum().RestoreView)"
         >
           <img class="context-menu__btn-icon" src="assets/svg/reset.svg" alt="восстановить вид" />
           <span class="context-menu__btn-text">Восстановить вид</span>
@@ -39,7 +39,7 @@
           class="context-menu__btn"
           [hidden]="selectedObj"
           [disabled]="!selectedObj"
-          (click)="onContextMenuClick(getViewerContextMenuButtons().Hide)"
+          (click)="onViewerBtnClicked(getViewerButtonsEnum().Hide)"
         >
           <img
             class="context-menu__btn-icon"
@@ -48,10 +48,16 @@
           />
           <span class="context-menu__btn-text">Скрыть элемент</span>
         </button>
-        <!--  <button mat-menu-item class="context-menu__btn">
-          <img class="context-menu__btn-icon" src="assets/svg/reset.svg" alt="восстановить вид" />
-          <span class="context-menu__btn-text">Восстановить вид</span>
-        </button> -->
+        <button
+          mat-menu-item
+          class="context-menu__btn"
+          [hidden]="selectedObj"
+          [disabled]="!selectedObj"
+          (click)="onViewerBtnClicked(getViewerButtonsEnum().Isolate)"
+        >
+          <img class="context-menu__btn-icon" src="assets/svg/reset.svg" alt="изолировать" />
+          <span class="context-menu__btn-text">Изолировать</span>
+        </button>
       </ng-template>
     </div>
   </mat-menu>
