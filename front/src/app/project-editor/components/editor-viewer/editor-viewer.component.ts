@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
-import { AnnotationI } from 'src/app/shared/interfaces/annotation.interface';
+import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 
 export const enum VIEWER_MOUSE_MODE {
   Default,

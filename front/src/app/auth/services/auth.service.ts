@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserCreateI } from 'src/app/shared/interfaces/userCreate.interface';
-import { UserCredsI } from 'src/app/shared/interfaces/userCreds.interface';
+import { UserCreateI } from 'src/app/shared/models/userCreate.interface';
+import { UserCredsI } from 'src/app/shared/models/userCreds.interface';
 import { environment } from 'src/environments/environment';
 
 @Injectable({

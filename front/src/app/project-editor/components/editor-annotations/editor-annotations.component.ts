@@ -9,7 +9,7 @@ import {
   ElementRef,
   HostListener,
 } from '@angular/core';
-import { AnnotationI } from 'src/app/shared/interfaces/annotation.interface';
+import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 
 @Component({
   selector: 'app-editor-annotations',

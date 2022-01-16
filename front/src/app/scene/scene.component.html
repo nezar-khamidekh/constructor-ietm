@@ -37,8 +37,8 @@
         <button
           mat-menu-item
           class="context-menu__btn"
-          [hidden]="selectedObj"
-          [disabled]="!selectedObj"
+          [hidden]="sceneService.selectedObj"
+          [disabled]="!sceneService.selectedObj"
           (click)="onViewerBtnClicked(getViewerButtonsEnum().Hide)"
         >
           <img
@@ -51,8 +51,8 @@
         <button
           mat-menu-item
           class="context-menu__btn"
-          [hidden]="selectedObj"
-          [disabled]="!selectedObj"
+          [hidden]="sceneService.selectedObj"
+          [disabled]="!sceneService.selectedObj"
           (click)="onViewerBtnClicked(getViewerButtonsEnum().Isolate)"
         >
           <img class="context-menu__btn-icon" src="assets/svg/reset.svg" alt="изолировать" />

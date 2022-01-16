@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserCreateI } from 'src/app/shared/interfaces/userCreate.interface';
+import { UserCreateI } from 'src/app/shared/models/userCreate.interface';
 import { SubSink } from 'subsink';
 import { AuthService } from '../../services/auth.service';
 

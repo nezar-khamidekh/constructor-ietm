@@ -6,7 +6,8 @@ import {
   EventEmitter,
   Input,
 } from '@angular/core';
-import { CAMERA_ROTATE_SPEED, EXPLODE_POWER, VIEWER_BUTTONS } from '../../scene.component';
+import { CAMERA_ROTATE_SPEED, EXPLODE_POWER } from 'src/app/shared/models/viewerConstants';
+import { VIEWER_BUTTONS } from '../../scene.component';
 
 @Component({
   selector: 'app-viewer-toolbar',

@@ -16,48 +16,18 @@ import {
 import { SubSink } from 'subsink';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SceneService } from './services/scene.service';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { ViewerI } from '../shared/interfaces/viewer.interface';
-import { AnnotationI } from '../shared/interfaces/annotation.interface';
+import { ViewerI } from '../shared/models/viewer.interface';
+import { AnnotationI } from '../shared/models/annotation.interface';
 import MainScene from '../shared/classes/MainScene';
 import * as TWEEN from '@tweenjs/tween.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
+import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/editor-viewer.component';
 import { MatMenuTrigger } from '@angular/material/menu';
-
-const CAMERA_FOV = 75;
-const CAMERA_NEAR = 0.1;
-const CAMERA_FAR = 1000;
-const CAMERA_POSITION_RATE = 0.9;
-const RENDERER_PIXEL_RATIO = 2;
-const GRID_HELPER_SIZE_RATE = 3;
-const GRID_HELPER_DIVISIONS = 20;
-const CAMERA_ANIM_DUR = 300;
-export const CAMERA_ROTATE_SPEED = 2;
-export const EXPLODE_POWER = 0;
-const CLICKED_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
-  color: 0x7092d4,
-  roughness: 1.0,
-  metalness: 0.0,
-  side: THREE.DoubleSide,
-  opacity: 0.75,
-  transparent: true,
-});
-const TRANSPARENT_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
-  color: 0x757575,
-  roughness: 1.0,
-  metalness: 0.0,
-  side: THREE.DoubleSide,
-  opacity: 0.3,
-  transparent: true,
-});
+import { CAMERA_ROTATE_SPEED, EXPLODE_POWER } from '../shared/models/viewerConstants';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -86,7 +56,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('viewerContextMenuInner') viewerContextMenuInnerRef: ElementRef;
 
   @HostListener('window:resize', ['$event']) onResize($event: any) {
-    this.resizeCanvas();
+    this.sceneService.resizeCanvas(
+      this.viewerWrapper.nativeElement.getBoundingClientRect(),
+      this.canvas.nativeElement,
+    );
   }
 
   @HostListener('document:click', ['$event'])
@@ -96,10 +69,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  canvasRect: any;
-
   viewerInitialized = false;
-  modelLongestSide = 0;
   rotateAnimationBtnIsActive = false;
   rotateSpeedValue = CAMERA_ROTATE_SPEED;
   explodePowerValue = EXPLODE_POWER;
@@ -110,13 +80,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   mouseDownPos: any;
   mouseUpPos: any;
 
-  selectedObj: any = null;
-  hoveredObj: any = null;
-
-  effectFXAA = new ShaderPass(FXAAShader);
-
-  hiddenObjects: any = [];
-
   annotationMarkers: THREE.Sprite[] = [];
 
   contextMenuPosition = { x: '0', y: '0' };
@@ -124,26 +87,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   contextMenuClickedOutside = false;
   contextMenuFirstOpen = true;
 
-  viewer: ViewerI = {
-    scene: new MainScene(),
-    renderer: new THREE.WebGLRenderer(),
-    composer: null,
-    outlinePass: {},
-    labelRenderer: null,
-    camera: new THREE.PerspectiveCamera(),
-    controls: {},
-    modelBoundingBox: {},
-    raycaster: {},
-    clock: new THREE.Clock(),
-    actions: [],
-    time: 0,
-    isPlaying: false,
-    model: new THREE.Object3D(),
-    plant: new THREE.Vector3(),
-  };
+  viewer!: ViewerI;
 
   constructor(
-    private sceneService: SceneService,
+    public sceneService: SceneService,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
   ) {}
@@ -157,11 +104,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }),
     );
-    /*  this.subs.add(
-      this.matMenuTrigger.menuOpened.subscribe((v) => {
-        this.viewerContextMenuInnerRef.nativeElement.focus();
-      }),
-    ); */
   }
 
   ngAfterViewInit(): void {
@@ -170,7 +112,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setUpViewer(file);
       }),
     );
-    this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
+    this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -184,40 +126,38 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setUpViewer(file: any) {
+    this.sceneService.createViewer();
+    this.viewer = this.sceneService.getViewer();
     const loader = new GLTFLoader();
     loader.setDRACOLoader(new DRACOLoader().setDecoderPath('/draco/'));
 
-    this.viewer.camera = new THREE.PerspectiveCamera(
-      CAMERA_FOV,
+    this.sceneService.setCamera(
       this.viewerWrapper.nativeElement.clientWidth / this.viewerWrapper.nativeElement.clientHeight,
-      CAMERA_NEAR,
-      CAMERA_FAR,
     );
-    this.setRenderer();
-    this.setComposer();
-    this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
-    this.viewer.raycaster = new THREE.Raycaster();
+
+    this.sceneService.setRenderer(
+      this.canvas.nativeElement,
+      this.viewerWrapper.nativeElement,
+      window.devicePixelRatio,
+    );
+
+    this.sceneService.setLabelRenderer(this.viewerWrapper.nativeElement);
+    this.renderer.appendChild(
+      this.viewerWrapper.nativeElement,
+      this.viewer.labelRenderer.domElement,
+    );
+    this.sceneService.setComposer();
+
+    this.sceneService.setControls();
+
     loader.parse(JSON.stringify(file), '', (gltf) => {
-      this.viewer.mixer = new THREE.AnimationMixer(gltf.scene);
-      const clips = gltf.animations;
+      this.sceneService.setMixer(gltf);
+      this.sceneService.setModel(gltf);
+      this.sceneService.setMeshesDefaultMaterial();
+      this.sceneService.setGridHelper(gltf);
+      this.sceneService.setLight();
+      this.sceneService.setCameraPosition();
 
-      console.log(clips);
-
-      /*  clips.forEach((clip) => {
-        const action = this.viewer.mixer!.clipAction(clip);
-        console.log(action);
-        action.loop = THREE.LoopOnce;
-        action.clampWhenFinished = true;
-        action.play();
-      }); */
-
-      this.viewer.model = gltf.scene.children[0];
-      this.viewer.scene.add(gltf.scene);
-      this.setMeshesDefaultMaterial();
-
-      this.setGridHelper(gltf);
-      this.viewer.scene.setLight(this.modelLongestSide);
-      this.setCamera(this.modelLongestSide);
       this.viewerInitialized = true;
       // this.setAnnotations();
       this.cdr.detectChanges();
@@ -227,140 +167,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       TWEEN.update();
       requestAnimationFrame(animate);
       this.setHoveredObj();
-      this.viewer.mixer?.update(this.viewer.clock.getDelta() / 3);
-      this.viewer.controls.update();
-      // this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
-      if (this.viewer.composer) this.viewer.composer.render();
-      if (this.viewer.labelRenderer)
-        this.viewer.labelRenderer.render(this.viewer.scene, this.viewer.camera);
+      this.sceneService.animateScene();
     };
     animate();
-  }
-
-  setRenderer() {
-    this.viewer.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas.nativeElement,
-      powerPreference: 'high-performance',
-      antialias: true,
-      logarithmicDepthBuffer: true,
-      alpha: true,
-    });
-    this.viewer.renderer.shadowMap.enabled = true;
-    this.viewer.renderer.setClearColor(0xffffff, 0);
-    this.viewer.renderer.setSize(
-      this.viewerWrapper.nativeElement.clientWidth,
-      this.viewerWrapper.nativeElement.clientHeight,
-    );
-    this.viewer.renderer.setPixelRatio(
-      window.devicePixelRatio > RENDERER_PIXEL_RATIO
-        ? RENDERER_PIXEL_RATIO
-        : window.devicePixelRatio,
-    );
-    this.viewer.renderer.setClearColor(new THREE.Color(0xffffff));
-    this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
-
-    this.viewer.labelRenderer = new CSS2DRenderer();
-    this.viewer.labelRenderer.setSize(
-      this.viewerWrapper.nativeElement.clientWidth,
-      this.viewerWrapper.nativeElement.clientHeight,
-    );
-    this.viewer.labelRenderer.domElement.style.position = 'absolute';
-    this.viewer.labelRenderer.domElement.style.top = '0px';
-    this.viewer.labelRenderer.domElement.style.pointerEvents = 'none';
-    this.renderer.appendChild(
-      this.viewerWrapper.nativeElement,
-      this.viewer.labelRenderer.domElement,
-    );
-  }
-
-  setComposer() {
-    this.viewer.composer = new EffectComposer(this.viewer.renderer);
-    const renderPass = new RenderPass(this.viewer.scene, this.viewer.camera);
-    this.viewer.composer.addPass(renderPass);
-    /*  this.effectFXAA = new ShaderPass(FXAAShader);
-    this.effectFXAA.uniforms['resolution'].value.set(
-      1 / this.canvasRect.width,
-      1 / this.canvasRect.height,
-    );
-    this.viewer.composer.addPass(this.effectFXAA); */
-    this.viewer.outlinePass = new OutlinePass(
-      new THREE.Vector2(this.canvasRect.width, this.canvasRect.height),
-      this.viewer.scene,
-      this.viewer.camera,
-    );
-    this.viewer.outlinePass.edgeStrength = 2;
-    this.viewer.outlinePass.edgeThickness = 1;
-    this.viewer.outlinePass.visibleEdgeColor.set('#0159d3');
-    this.viewer.outlinePass.hiddenEdgeColor.set('#0159d3');
-    this.viewer.composer.addPass(this.viewer.outlinePass);
-  }
-
-  setGridHelper(gltf: any) {
-    const boundBox = new THREE.Box3().setFromObject(gltf.scene);
-    const size = new THREE.Vector3();
-    boundBox.getSize(size);
-    this.modelLongestSide = Math.max(size.x, size.y, size.z);
-    const gridHelper = new THREE.GridHelper(
-      this.modelLongestSide * GRID_HELPER_SIZE_RATE,
-      GRID_HELPER_DIVISIONS,
-    );
-
-    const center = new THREE.Vector3();
-    boundBox.getCenter(center);
-    gridHelper.position.set(center.x, boundBox.min.y, center.z);
-    gridHelper.name = '__Grid';
-    gltf.scene.add(gridHelper);
-  }
-
-  setCamera(translateValue: number) {
-    this.viewer.camera.position.set(
-      translateValue * CAMERA_POSITION_RATE,
-      0,
-      translateValue * CAMERA_POSITION_RATE,
-    );
-    this.viewer.controls.update();
-  }
-
-  setMeshesDefaultMaterial() {
-    this.viewer.model.traverse((child: any) => {
-      if ((child instanceof THREE.Mesh) as any) {
-        child.defaultMaterial = child.material.clone();
-      }
-    });
-  }
-
-  resizeCanvas() {
-    const box = this.viewerWrapper.nativeElement.getBoundingClientRect();
-    this.viewer.renderer.setSize(box.width, box.height);
-    const pixelRatio = this.viewer.renderer.getPixelRatio();
-    if (this.viewer.composer) this.viewer.composer.setSize(box.width, box.height);
-    this.effectFXAA.uniforms['resolution'].value.set(
-      (1 / box.width) * pixelRatio,
-      (1 / box.height) * pixelRatio,
-    );
-    this.viewer.camera.aspect = box.width / box.height;
-    this.viewer.camera.updateProjectionMatrix();
-    this.canvasRect = this.canvas.nativeElement.getBoundingClientRect();
-    if (this.viewer.labelRenderer) this.viewer.labelRenderer.setSize(box.width, box.height);
-  }
-
-  moveCameraWithAnimation(onCompleteCallback: () => void) {
-    this.viewer.controls.enabled = false;
-    const oldCameraPos = this.viewer.camera.position.clone();
-    const newCameraPos = new THREE.Vector3(
-      this.modelLongestSide * CAMERA_POSITION_RATE,
-      0,
-      this.modelLongestSide * CAMERA_POSITION_RATE,
-    );
-    const tween = new TWEEN.Tween(oldCameraPos)
-      .to(newCameraPos, CAMERA_ANIM_DUR)
-      .easing(TWEEN.Easing.Linear.None)
-      .onUpdate(() => {
-        this.viewer.camera.position.set(oldCameraPos.x, oldCameraPos.y, oldCameraPos.z);
-        this.viewer.camera.lookAt(new THREE.Vector3(0, 0, 0));
-      })
-      .onComplete(onCompleteCallback)
-      .start();
   }
 
   getViewerButtonsEnum() {
@@ -384,15 +193,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case VIEWER_BUTTONS.RestoreView:
         this.resetContextMenu();
-        this.restoreView();
+        this.sceneService.restoreView();
         break;
       case VIEWER_BUTTONS.Hide:
         this.resetContextMenu();
-        this.hideObject();
+        this.sceneService.hideObject();
         break;
       case VIEWER_BUTTONS.Isolate:
         this.resetContextMenu();
-        this.isolateObject();
+        this.sceneService.isolateObject();
         break;
       default:
         break;
@@ -412,7 +221,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resetCamera();
         break;
       case VIEWER_BUTTONS.Isolate:
-        this.resetObjectIsolation();
+        this.sceneService.resetObjectIsolation();
         break;
       default:
         break;
@@ -420,7 +229,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   resetCamera() {
-    this.moveCameraWithAnimation(() => {
+    this.sceneService.moveCameraWithAnimation(() => {
       this.viewer.controls.enabled = true;
     });
   }
@@ -444,89 +253,19 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
   }
 
-  explodeModel(node: any, power = 0, plant = new THREE.Vector3(), level = 0) {
-    if (!node) return;
-
-    if (!node._originalPosition) {
-      node.updateWorldMatrix(true, true);
-      node._originalPosition = node.position.clone();
-    }
-
-    const toVec = new THREE.Vector3();
-    if (level === 0) toVec.copy(node._originalPosition.clone());
-    else if (level === 1) {
-      const plantLocal = node.parent.worldToLocal(plant.clone());
-      toVec.copy(node._originalPosition.clone().sub(plantLocal).multiplyScalar(3));
-    }
-    node._explode = { from: node._originalPosition.clone(), to: toVec };
-    const explodeVec = node._explode.from.clone();
-    explodeVec.lerp(node._explode.to, power);
-    node.position.copy(explodeVec);
-    node.children.forEach((child: any) => {
-      if (
-        node.children.length > 1 &&
-        node.children[0].type !== 'Mesh' &&
-        node.children[0].type !== 'LineSegments'
-      )
-        this.explodeModel(child, power, plant, level + 1);
-    });
-  }
-
   explode() {
     this.btnIsInAction = true;
-    this.explodeModel(this.viewer.model, this.explodePowerValue);
+    this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
   }
 
   stopExplodingModel() {
     this.btnIsInAction = false;
-    this.explodeModel(this.viewer.model, 0);
+    this.sceneService.explodeModel(this.viewer.model, 0);
   }
 
   onExplodePowerChanged(explodeValue: any) {
     this.explodePowerValue = explodeValue;
-    this.explodeModel(this.viewer.model, this.explodePowerValue);
-  }
-
-  hideObject() {
-    if (this.selectedObj) {
-      this.resetSelectedObjView();
-      this.selectedObj.visible = false;
-      this.hiddenObjects.push(this.selectedObj);
-      this.selectedObj = null;
-    }
-  }
-
-  objectByUuidIsHidden(uuid: any) {
-    return this.hiddenObjects.some((obj: any) => obj.uuid === uuid);
-  }
-
-  restoreView() {
-    if (this.hiddenObjects.length) {
-      this.hiddenObjects.forEach((obj: any) => {
-        obj.visible = true;
-      });
-      this.hiddenObjects = [];
-      this.viewer.outlinePass.selectedObjects = [];
-    }
-  }
-
-  isolateObject() {
-    if (this.selectedObj) {
-      this.resetSelectedObjView();
-      this.viewer.model.traverse((child: any) => {
-        if (child instanceof THREE.Mesh && child.uuid !== this.selectedObj.uuid) {
-          child.material = TRANSPARENT_OBJ_MATERIAL.clone();
-        }
-      });
-    }
-  }
-
-  resetObjectIsolation() {
-    this.viewer.model.traverse((child: any) => {
-      if ((child instanceof THREE.Mesh) as any) {
-        child.material = child.defaultMaterial.clone();
-      }
-    });
+    this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
   }
 
   onMouseUp(e: MouseEvent) {
@@ -546,8 +285,13 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getMouseCoorsByMouseEvent(e: MouseEvent) {
     return {
-      x: ((e.clientX - this.canvasRect.left) / this.canvasRect.width) * 2 - 1,
-      y: -((e.clientY - this.canvasRect.top) / this.canvasRect.height) * 2 + 1,
+      x:
+        ((e.clientX - this.sceneService.canvasRect.left) / this.sceneService.canvasRect.width) * 2 -
+        1,
+      y:
+        -((e.clientY - this.sceneService.canvasRect.top) / this.sceneService.canvasRect.height) *
+          2 +
+        1,
     };
   }
 
@@ -556,73 +300,18 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setSelectedObj() {
-    if (this.selectedObj && this.activeBtnIndex === VIEWER_BUTTONS.Isolate) return;
-    this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
-    const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
-    if (intersects.length > 0) {
-      const filteredIntersects = intersects.filter(
-        (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
-      );
-      if (filteredIntersects.length > 0) {
-        switch (this.viewerMouseMode) {
-          case VIEWER_MOUSE_MODE.ApplyAnnotation:
-            this.coordsAnnotation.emit(filteredIntersects[0].point);
-            break;
-          default:
-            break;
-        }
-        this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
-        if (this.selectedObj) {
-          this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
-          if (this.selectedObj?.uuid === filteredIntersects[0].object.uuid) {
-            this.selectedObj = null;
-          } else {
-            this.selectedObj = filteredIntersects[0].object;
-            this.selectedObj.material = CLICKED_OBJ_MATERIAL;
-          }
-        } else {
-          this.selectedObj = filteredIntersects[0].object;
-          this.selectedObj.material = CLICKED_OBJ_MATERIAL;
-        }
-      }
-    } else {
-      if (this.selectedObj) {
-        this.viewer.outlinePass.selectedObjects = [];
-        this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
-        this.selectedObj = null;
-      }
-    }
-  }
-
-  resetSelectedObjView() {
-    this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
-    this.viewer.outlinePass.selectedObjects = [];
+    this.sceneService.setSelectedObj(
+      this.activeBtnIndex === VIEWER_BUTTONS.Isolate,
+      this.mouseCoords,
+      this.viewerMouseMode,
+    );
   }
 
   setHoveredObj() {
-    if (this.activeBtnIndex === VIEWER_BUTTONS.Isolate) return;
-    this.viewer.raycaster.setFromCamera(this.mouseCoords, this.viewer.camera);
-    const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
-    if (intersects.length > 0) {
-      const filteredIntersects = intersects.filter(
-        (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
-      );
-      if (filteredIntersects.length > 0) {
-        if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-          this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
-        }
-        this.hoveredObj = filteredIntersects[0].object;
-        if (this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-          this.hoveredObj.material.color.setHex(
-            this.sceneService.shadeColor(this.hoveredObj.defaultMaterial.color.getHex(), 40),
-          );
-        }
-      }
-    } else {
-      if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
-        this.hoveredObj.material.color.setHex(this.hoveredObj.defaultMaterial.color.getHex());
-      }
-    }
+    this.sceneService.setHoveredObj(
+      this.activeBtnIndex === VIEWER_BUTTONS.Isolate,
+      this.mouseCoords,
+    );
   }
 
   setAnnotations() {
@@ -666,9 +355,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   onRightClick(event: MouseEvent) {
     this.contextMenuClickedOutside = false;
     event.preventDefault();
-    if (this.selectedObj) {
-      this.resetSelectedObjView();
-      this.selectedObj = null;
+    if (this.sceneService.selectedObj) {
+      this.sceneService.resetSelectedObjView();
+      this.sceneService.selectedObj = null;
     }
     this.setMouseCoords(event);
     this.setSelectedObj();
