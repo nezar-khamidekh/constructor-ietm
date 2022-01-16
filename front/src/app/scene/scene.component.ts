@@ -49,6 +49,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() annotations: AnnotationI[] = [];
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
   @Output() coordsAnnotation = new EventEmitter();
+  @Output() viewerIsReady = new EventEmitter();
 
   @ViewChild('canvas') canvas: ElementRef;
   @ViewChild('viewerWrapper') viewerWrapper: ElementRef;
@@ -159,6 +160,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sceneService.setCameraPosition();
 
       this.viewerInitialized = true;
+      this.viewerIsReady.emit();
       // this.setAnnotations();
       this.cdr.detectChanges();
     });

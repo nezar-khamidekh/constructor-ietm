@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, Output } from '@angular/core';
+import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
-
 export const enum VIEWER_MOUSE_MODE {
   Default,
   ApplyAnnotation,
@@ -22,6 +22,8 @@ interface CurrentAnnotationI {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorViewerComponent implements OnInit {
+  @Input() model: any;
+
   annotations: AnnotationI[] = [
     {
       title: '1',
@@ -59,7 +61,7 @@ export class EditorViewerComponent implements OnInit {
 
   viewerMouseMode = VIEWER_MOUSE_MODE.Default;
 
-  constructor() {}
+  constructor(private sceneService: SceneService) {}
 
   ngOnInit(): void {}
 
@@ -93,5 +95,9 @@ export class EditorViewerComponent implements OnInit {
       text: this.currentAnnotation.text,
       position: coords,
     };
+  }
+
+  onViewerIsReady() {
+    this.model = this.sceneService.getModel();
   }
 }

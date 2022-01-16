@@ -398,4 +398,8 @@ export class SceneService {
       this.viewer.outlinePass.selectedObjects = [];
     }
   }
+
+  getModel() {
+    return this.viewer.model;
+  }
 }

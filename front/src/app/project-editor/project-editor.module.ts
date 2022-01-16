@@ -16,6 +16,7 @@ import { SpecificationsComponent } from './components/specifications/specificati
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { MatTreeModule } from '@angular/material/tree';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { FormsModule } from '@angular/forms';
     MatRippleModule,
     MatButtonModule,
     FormsModule,
+    MatTreeModule,
   ],
 })
 export class ProjectEditorModule {}
