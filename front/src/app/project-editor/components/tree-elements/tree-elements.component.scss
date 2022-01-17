@@ -4,6 +4,10 @@
 
 .tree {
   height: 100%;
+
+  &__button {
+    margin-left: 6px;
+  }
 }
 
 .example-tree-invisible {

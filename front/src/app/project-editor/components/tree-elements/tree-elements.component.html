@@ -1,25 +1,51 @@
-<div class="tree">
-  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
-    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-      {{ node.name }}
-    </mat-tree-node>
-    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
-      <div class="mat-tree-node">
-        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
-          <img
-            [src]="
-              treeControl.isExpanded(node)
-                ? 'assets/svg/arrowDown.svg'
-                : 'assets/svg/arrowRight.svg'
-            "
-            [alt]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
-          />
-        </button>
+<ng-container *ngIf="sceneService.getHiddenObjects() | async as hiddenObjects">
+  <div class="tree">
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         {{ node.name }}
-      </div>
-      <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
-        <ng-container matTreeNodeOutlet></ng-container>
-      </div>
-    </mat-nested-tree-node>
-  </mat-tree>
-</div>
+        <ng-container *ngIf="!node.isRoot">
+          <button class="tree__button" mat-icon-button (click)="toggleObjectVisibility(node)">
+            <img
+              [src]="
+                objectIsHidden(node.id, hiddenObjects)
+                  ? 'assets/svg/visibility_off.svg'
+                  : 'assets/svg/visibility.svg'
+              "
+              [alt]="objectIsHidden(node.id, hiddenObjects) ? 'Скрыть' : 'Показать'"
+            />
+          </button>
+        </ng-container>
+      </mat-tree-node>
+      <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+        <div class="mat-tree-node">
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+            <img
+              [src]="
+                treeControl.isExpanded(node)
+                  ? 'assets/svg/arrowDown.svg'
+                  : 'assets/svg/arrowRight.svg'
+              "
+              [alt]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
+            />
+          </button>
+          {{ node.name }}
+          <ng-container *ngIf="!node.isRoot">
+            <button class="tree__button" mat-icon-button (click)="toggleObjectVisibility(node)">
+              <img
+                [src]="
+                  objectIsHidden(node.id, hiddenObjects)
+                    ? 'assets/svg/visibility_off.svg'
+                    : 'assets/svg/visibility.svg'
+                "
+                [alt]="objectIsHidden(node.id, hiddenObjects) ? 'Скрыть' : 'Показать'"
+              />
+            </button>
+          </ng-container>
+        </div>
+        <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
+          <ng-container matTreeNodeOutlet></ng-container>
+        </div>
+      </mat-nested-tree-node>
+    </mat-tree>
+  </div>
+</ng-container>

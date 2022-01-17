@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import MainScene from 'src/app/shared/classes/MainScene';
 import { ViewerI } from 'src/app/shared/models/viewer.interface';
 import {
@@ -46,7 +46,7 @@ export class SceneService {
 
   selectedObj: any = null;
   hoveredObj: any = null;
-  hiddenObjects: any = [];
+  hiddenObjects$ = new BehaviorSubject<any[]>([]);
 
   constructor(private http: HttpClient) {}
 
@@ -98,6 +98,14 @@ export class SceneService {
 
   getViewer() {
     return this.viewer;
+  }
+
+  getHiddenObjects() {
+    return this.hiddenObjects$.asObservable();
+  }
+
+  setHiddenObjects(hiddenObjects: any[]) {
+    this.hiddenObjects$.next(hiddenObjects);
   }
 
   setCamera(aspect: number) {
@@ -176,6 +184,7 @@ export class SceneService {
 
   setModel(model: any) {
     this.viewer.model = model.scene.children[0];
+    (this.viewer.model as any).isRoot = true;
     this.viewer.scene.add(model.scene);
   }
 
@@ -293,7 +302,7 @@ export class SceneService {
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
       const filteredIntersects = intersects.filter(
-        (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
+        (intersection: any) => !this.objectByIdIsHidden(intersection.object.id),
       );
       if (filteredIntersects.length > 0) {
         switch (mouseMode) {
@@ -332,7 +341,7 @@ export class SceneService {
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
       const filteredIntersects = intersects.filter(
-        (intersection: any) => !this.objectByUuidIsHidden(intersection.object.uuid),
+        (intersection: any) => !this.objectByIdIsHidden(intersection.object.id),
       );
       if (filteredIntersects.length > 0) {
         if (this.hoveredObj && this.hoveredObj.uuid !== this.selectedObj?.uuid) {
@@ -380,21 +389,29 @@ export class SceneService {
     if (this.selectedObj) {
       this.resetSelectedObjView();
       this.selectedObj.visible = false;
-      this.hiddenObjects.push(this.selectedObj);
+      this.setHiddenObjects([...this.hiddenObjects$.value, this.selectedObj]);
       this.selectedObj = null;
     }
   }
 
-  objectByUuidIsHidden(uuid: any) {
-    return this.hiddenObjects.some((obj: any) => obj.uuid === uuid);
+  toggleObjectVisibilityById(id: number) {
+    const obj = this.viewer.scene.getObjectById(id)!;
+    obj.visible = !obj.visible;
+    if (obj.visible)
+      this.setHiddenObjects(this.hiddenObjects$.value.filter((obj: any) => obj.id !== id));
+    else this.setHiddenObjects([...this.hiddenObjects$.value, obj]);
+  }
+
+  objectByIdIsHidden(id: number) {
+    return this.hiddenObjects$.value.some((obj: any) => obj.id === id);
   }
 
   restoreView() {
-    if (this.hiddenObjects.length) {
-      this.hiddenObjects.forEach((obj: any) => {
+    if (this.hiddenObjects$.value.length) {
+      this.hiddenObjects$.value.forEach((obj: any) => {
         obj.visible = true;
       });
-      this.hiddenObjects = [];
+      this.setHiddenObjects([]);
       this.viewer.outlinePass.selectedObjects = [];
     }
   }
