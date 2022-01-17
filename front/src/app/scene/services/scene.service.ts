@@ -108,6 +108,10 @@ export class SceneService {
     this.hiddenObjects$.next(hiddenObjects);
   }
 
+  getModel() {
+    return this.viewer.model;
+  }
+
   setCamera(aspect: number) {
     this.viewer.camera = new THREE.PerspectiveCamera(CAMERA_FOV, aspect, CAMERA_NEAR, CAMERA_FAR);
   }
@@ -171,7 +175,6 @@ export class SceneService {
   setMixer(model: any) {
     this.viewer.mixer = new THREE.AnimationMixer(model.scene);
     const clips = model.animations;
-    console.log(clips);
 
     /*  clips.forEach((clip) => {
         const action = this.viewer.mixer!.clipAction(clip);
@@ -236,7 +239,7 @@ export class SceneService {
     );
     this.viewer.camera.aspect = box.width / box.height;
     this.viewer.camera.updateProjectionMatrix();
-    this.canvasRect = canvas.nativeElement.getBoundingClientRect();
+    this.canvasRect = canvas.getBoundingClientRect();
     if (this.viewer.labelRenderer) this.viewer.labelRenderer.setSize(box.width, box.height);
   }
 
@@ -366,8 +369,19 @@ export class SceneService {
     this.viewer.outlinePass.selectedObjects = [];
   }
 
-  isolateObject() {
-    if (this.selectedObj) {
+  isolateObject(obj?: any) {
+    if (obj) {
+      this.viewer.model.traverse((child: any) => {
+        if (child instanceof THREE.Mesh && child.uuid !== obj.uuid) {
+          child.material = TRANSPARENT_OBJ_MATERIAL.clone();
+        }
+      });
+      obj.traverse((child: any) => {
+        if ((child instanceof THREE.Mesh) as any) {
+          child.material = child.defaultMaterial.clone();
+        }
+      });
+    } else if (this.selectedObj) {
       this.resetSelectedObjView();
       this.viewer.model.traverse((child: any) => {
         if (child instanceof THREE.Mesh && child.uuid !== this.selectedObj.uuid) {
@@ -416,7 +430,33 @@ export class SceneService {
     }
   }
 
-  getModel() {
-    return this.viewer.model;
+  fitToView(id: number) {
+    const obj = this.viewer.model.getObjectById(id)!;
+    this.resetObjectIsolation();
+    this.isolateObject(obj);
+    const boundingBox = new THREE.Box3();
+    boundingBox.setFromObject(obj);
+    const size = new THREE.Vector3();
+    boundingBox.getSize(size);
+    const offset = 1;
+
+    const fov = this.viewer.camera.fov * (Math.PI / 180);
+    const fovh = 2 * Math.atan(Math.tan(fov / 2) * this.viewer.camera.aspect);
+    let dx = size.z / 2 + Math.abs(size.x / 2 / Math.tan(fovh / 2));
+    let dy = size.z / 2 + Math.abs(size.y / 2 / Math.tan(fov / 2));
+    let cameraZ = Math.max(dx, dy);
+    cameraZ *= offset;
+
+    this.viewer.camera.position.set(0, 0, cameraZ);
+    const minZ = boundingBox.min.z;
+    const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
+
+    this.viewer.camera.far = cameraToFarEdge * 3;
+    this.viewer.camera.updateProjectionMatrix();
+
+    if (this.viewer.controls !== undefined) {
+      this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+      this.viewer.controls.maxDistance = cameraToFarEdge * 2;
+    }
   }
 }

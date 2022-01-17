@@ -15,6 +15,9 @@
             />
           </button>
         </ng-container>
+        <button class="tree__button" mat-icon-button (click)="fitToObject(node)">
+          <img src="assets/svg/zoom.svg" alt="Приблизить" />
+        </button>
       </mat-tree-node>
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="mat-tree-node">
@@ -41,6 +44,9 @@
               />
             </button>
           </ng-container>
+          <button class="tree__button" mat-icon-button (click)="fitToObject(node)">
+            <img src="assets/svg/zoom.svg" alt="Приблизить" />
+          </button>
         </div>
         <div [class.example-tree-invisible]="!treeControl.isExpanded(node)" role="group">
           <ng-container matTreeNodeOutlet></ng-container>

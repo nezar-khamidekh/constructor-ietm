@@ -24,15 +24,18 @@ export class TreeElementsComponent implements OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.model && !changes.model.firstChange) {
       this.dataSource.data = [this.model];
-      console.log(this.model);
     }
+  }
+
+  objectIsHidden(id: number, hiddenObjects: any[]) {
+    return hiddenObjects.some((obj) => obj.id === id);
   }
 
   toggleObjectVisibility(node: any) {
     this.sceneService.toggleObjectVisibilityById(node.id);
   }
 
-  objectIsHidden(id: number, hiddenObjects: any[]) {
-    return hiddenObjects.some((obj) => obj.id === id);
+  fitToObject(node: any) {
+    this.sceneService.fitToView(node.id);
   }
 }
