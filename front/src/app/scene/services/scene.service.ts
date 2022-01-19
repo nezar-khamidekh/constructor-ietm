@@ -47,6 +47,7 @@ export class SceneService {
   selectedObj: any = null;
   hoveredObj: any = null;
   hiddenObjects$ = new BehaviorSubject<any[]>([]);
+  annotations$ = new BehaviorSubject<any[]>([]);
 
   constructor(private http: HttpClient) {}
 
@@ -111,6 +112,14 @@ export class SceneService {
 
   getModel() {
     return this.viewer.model;
+  }
+
+  getAnnotations() {
+    return this.annotations$.asObservable();
+  }
+
+  setAnnotations(annotations: any[]) {
+    this.annotations$.next([...annotations]);
   }
 
   setCamera(aspect: number) {
@@ -302,41 +311,36 @@ export class SceneService {
 
   setSelectedObj(isolateIsActive: boolean, mouseCoords: any, mouseMode: number) {
     if ((this.selectedObj && isolateIsActive) || this.viewer.state === VIEWER_STATE.Isolated)
-      return;
+      return null;
     this.viewer.raycaster.setFromCamera(mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
       const filteredIntersects = intersects.filter(
         (intersection: any) => !this.objectByIdIsHidden(intersection.object.id),
       );
-      if (filteredIntersects.length > 0) {
-        switch (mouseMode) {
-          case VIEWER_MOUSE_MODE.ApplyAnnotation:
-            // this.coordsAnnotation.emit(filteredIntersects[0].point);
-            break;
-          default:
-            break;
-        }
-        this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
-        if (this.selectedObj) {
-          this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
-          if (this.selectedObj?.uuid === filteredIntersects[0].object.uuid) {
-            this.selectedObj = null;
-          } else {
-            this.selectedObj = filteredIntersects[0].object;
-            this.selectedObj.material = CLICKED_OBJ_MATERIAL;
-          }
-        } else {
-          this.selectedObj = filteredIntersects[0].object;
-          this.selectedObj.material = CLICKED_OBJ_MATERIAL;
-        }
-      }
+      return filteredIntersects;
     } else {
       if (this.selectedObj) {
         this.viewer.outlinePass.selectedObjects = [];
         this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
         this.selectedObj = null;
       }
+    }
+    return null;
+  }
+
+  selectObject(filteredIntersects: THREE.Intersection[]) {
+    if (this.selectedObj) {
+      this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
+      if (this.selectedObj?.uuid === filteredIntersects[0].object.uuid) {
+        this.selectedObj = null;
+      } else {
+        this.selectedObj = filteredIntersects[0].object;
+        this.selectedObj.material = CLICKED_OBJ_MATERIAL;
+      }
+    } else {
+      this.selectedObj = filteredIntersects[0].object;
+      this.selectedObj.material = CLICKED_OBJ_MATERIAL;
     }
   }
 

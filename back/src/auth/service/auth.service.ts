@@ -29,8 +29,8 @@ export class AuthService {
     );
   }
 
-  deleteRefreshToken(token: string, userId: number): Observable<boolean> {
-    return from(this.refreshRepository.delete({ token, userId })).pipe(
+  deleteRefreshToken(token: string, user: number): Observable<boolean> {
+    return from(this.refreshRepository.delete({ token, user })).pipe(
       map((result: DeleteResult) => {
         if (result.affected !== null) return true;
         else return false;
@@ -64,7 +64,7 @@ export class AuthService {
       token: uuidv4(),
       expireDate: date,
     };
-    refreshTokenDto.userId = userId;
+    refreshTokenDto.user = userId;
     return refreshTokenDto;
   }
 

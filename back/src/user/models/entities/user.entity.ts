@@ -39,6 +39,6 @@ export class UserEntity {
   @UpdateDateColumn({ select: false })
   updateTime: string;
 
-  @OneToMany((type) => RefreshTokenEntity, (refresh) => refresh.userId)
+  @OneToMany((type) => RefreshTokenEntity, (refresh) => refresh.user)
   refresh_tokens: RefreshTokenEntity[];
 }

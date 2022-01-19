@@ -46,7 +46,6 @@ export enum VIEWER_BUTTONS {
 })
 export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs = new SubSink();
-  @Input() annotations: AnnotationI[] = [];
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
   @Output() coordsAnnotation = new EventEmitter();
   @Output() viewerIsReady = new EventEmitter();
@@ -82,6 +81,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   mouseUpPos: any;
 
   annotationMarkers: THREE.Sprite[] = [];
+  annotations: AnnotationI[] = [];
 
   contextMenuPosition = { x: '0', y: '0' };
   contextMenuIsOpened = false;
@@ -105,6 +105,19 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }),
     );
+
+    this.subs.add(
+      this.sceneService.getAnnotations().subscribe((annotations) => {
+        if (annotations.length) {
+          this.annotations = annotations;
+          if (this.viewerInitialized) {
+            this.setAnnotations(this.annotations);
+            this.cdr.detectChanges();
+          }
+        }
+        console.log(annotations);
+      }),
+    );
   }
 
   ngAfterViewInit(): void {
@@ -114,12 +127,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
     );
     this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.annotations && !changes.annotations.firstChange) {
-      this.setAnnotations();
-    }
   }
 
   ngOnDestroy(): void {
@@ -158,10 +165,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sceneService.setGridHelper(gltf);
       this.sceneService.setLight();
       this.sceneService.setCameraPosition();
-
+      if (this.annotations.length) this.setAnnotations(this.annotations);
       this.viewerInitialized = true;
       this.viewerIsReady.emit();
-      // this.setAnnotations();
       this.cdr.detectChanges();
     });
 
@@ -302,11 +308,23 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setSelectedObj() {
-    this.sceneService.setSelectedObj(
+    const filteredIntersects = this.sceneService.setSelectedObj(
       this.activeBtnIndex === VIEWER_BUTTONS.Isolate,
       this.mouseCoords,
       this.viewerMouseMode,
     );
+    if (filteredIntersects)
+      if (filteredIntersects.length > 0) {
+        switch (this.viewerMouseMode) {
+          case VIEWER_MOUSE_MODE.ApplyAnnotation:
+            this.coordsAnnotation.emit(filteredIntersects[0].point);
+            break;
+          default:
+            break;
+        }
+        this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
+        this.sceneService.selectObject(filteredIntersects);
+      }
   }
 
   setHoveredObj() {
@@ -316,10 +334,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  setAnnotations() {
+  setAnnotations(annotations: AnnotationI[]) {
     const circleTexture = new THREE.TextureLoader().load('assets/png/circle.png');
     const vector = new THREE.Vector3();
-    this.annotations.forEach((annotation) => {
+    annotations.forEach((annotation) => {
       const annotationSpriteMaterial = new THREE.SpriteMaterial({
         map: circleTexture,
         depthTest: false,

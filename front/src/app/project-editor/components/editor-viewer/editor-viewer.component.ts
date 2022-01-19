@@ -1,6 +1,14 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
+import { SubSink } from 'subsink';
 export const enum VIEWER_MOUSE_MODE {
   Default,
   ApplyAnnotation,
@@ -22,6 +30,7 @@ interface CurrentAnnotationI {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorViewerComponent implements OnInit {
+  private subs = new SubSink();
   @Input() model: any;
 
   annotations: AnnotationI[] = [
@@ -61,16 +70,24 @@ export class EditorViewerComponent implements OnInit {
 
   viewerMouseMode = VIEWER_MOUSE_MODE.Default;
 
-  constructor(private sceneService: SceneService) {}
+  constructor(private sceneService: SceneService, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.sceneService.setAnnotations(this.annotations);
+    this.subs.add(
+      this.sceneService.getAnnotations().subscribe((annotations) => {
+        this.annotations = annotations;
+        this.cdr.detectChanges();
+      }),
+    );
+  }
 
   onApplyAnnotation(status: boolean) {
     this.viewerMouseMode = status ? VIEWER_MOUSE_MODE.ApplyAnnotation : VIEWER_MOUSE_MODE.Default;
   }
 
   onSaveAnnotation() {
-    this.annotations = [
+    this.sceneService.setAnnotations([
       ...this.annotations,
       {
         title: (this.annotations.length + 1).toString(),
@@ -81,8 +98,7 @@ export class EditorViewerComponent implements OnInit {
           z: this.currentAnnotation.position!.z,
         },
       },
-    ];
-    console.log(this.annotations);
+    ]);
     this.currentAnnotation = {
       text: '',
       position: null,
