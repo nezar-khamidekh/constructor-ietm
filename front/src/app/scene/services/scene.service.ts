@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import MainScene from 'src/app/shared/classes/MainScene';
-import { ViewerI } from 'src/app/shared/models/viewer.interface';
+import { ViewerI, VIEWER_STATE } from 'src/app/shared/models/viewer.interface';
 import {
   CAMERA_ANIM_DUR,
   CAMERA_FAR,
@@ -93,6 +93,7 @@ export class SceneService {
       isPlaying: false,
       model: new THREE.Object3D(),
       plant: new THREE.Vector3(),
+      state: VIEWER_STATE.Default,
     };
   }
 
@@ -300,7 +301,8 @@ export class SceneService {
   }
 
   setSelectedObj(isolateIsActive: boolean, mouseCoords: any, mouseMode: number) {
-    if (this.selectedObj && isolateIsActive) return;
+    if ((this.selectedObj && isolateIsActive) || this.viewer.state === VIEWER_STATE.Isolated)
+      return;
     this.viewer.raycaster.setFromCamera(mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
@@ -339,7 +341,7 @@ export class SceneService {
   }
 
   setHoveredObj(isolateIsActive: boolean, mouseCoords: any) {
-    if (isolateIsActive) return;
+    if (isolateIsActive || this.viewer.state === VIEWER_STATE.Isolated) return;
     this.viewer.raycaster.setFromCamera(mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
     if (intersects.length > 0) {
@@ -370,6 +372,7 @@ export class SceneService {
   }
 
   isolateObject(obj?: any) {
+    this.viewer.state = VIEWER_STATE.Isolated;
     if (obj) {
       this.viewer.model.traverse((child: any) => {
         if (child instanceof THREE.Mesh && child.uuid !== obj.uuid) {
@@ -392,6 +395,7 @@ export class SceneService {
   }
 
   resetObjectIsolation() {
+    this.viewer.state = VIEWER_STATE.Default;
     this.viewer.model.traverse((child: any) => {
       if ((child instanceof THREE.Mesh) as any) {
         child.material = child.defaultMaterial.clone();
@@ -428,17 +432,19 @@ export class SceneService {
       this.setHiddenObjects([]);
       this.viewer.outlinePass.selectedObjects = [];
     }
+    if (this.viewer.state === VIEWER_STATE.Isolated) this.resetObjectIsolation();
   }
 
   fitToView(id: number) {
     const obj = this.viewer.model.getObjectById(id)!;
     this.resetObjectIsolation();
     this.isolateObject(obj);
-    const boundingBox = new THREE.Box3();
+
+    /*  const boundingBox = new THREE.Box3();
     boundingBox.setFromObject(obj);
     const size = new THREE.Vector3();
     boundingBox.getSize(size);
-    const offset = 1;
+    const offset = 1.5;
 
     const fov = this.viewer.camera.fov * (Math.PI / 180);
     const fovh = 2 * Math.atan(Math.tan(fov / 2) * this.viewer.camera.aspect);
@@ -457,6 +463,6 @@ export class SceneService {
     if (this.viewer.controls !== undefined) {
       this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
       this.viewer.controls.maxDistance = cameraToFarEdge * 2;
-    }
+    } */
   }
 }

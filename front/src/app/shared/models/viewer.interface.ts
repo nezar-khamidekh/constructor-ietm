@@ -17,4 +17,10 @@ export interface ViewerI {
   isPlaying: boolean;
   model: THREE.Object3D;
   plant: THREE.Vector3;
+  state: VIEWER_STATE;
+}
+
+export enum VIEWER_STATE {
+  Default,
+  Isolated,
 }
