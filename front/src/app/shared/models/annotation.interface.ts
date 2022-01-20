@@ -7,4 +7,5 @@ export interface AnnotationI {
     z: number;
   };
   descriptionDomElement?: HTMLElement;
+  rendered?: boolean;
 }

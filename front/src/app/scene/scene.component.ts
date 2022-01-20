@@ -79,7 +79,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   mouseDownPos: any;
   mouseUpPos: any;
 
-  annotationMarkers: THREE.Sprite[] = [];
   annotations: AnnotationI[] = [];
 
   contextMenuPosition = { x: '0', y: '0' };
@@ -126,7 +125,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         console.log(3);
       }),
     );
-    this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
   }
 
   ngOnDestroy(): void {
@@ -137,6 +135,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sceneService.createViewer();
     this.viewer = this.sceneService.getViewer();
     const loader = new GLTFLoader();
+
+    this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
+
     loader.setDRACOLoader(new DRACOLoader().setDecoderPath('/draco/'));
 
     this.sceneService.setCamera(
@@ -178,6 +179,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.setHoveredObj();
       this.sceneService.animateScene();
     };
+
     animate();
   }
 
@@ -353,38 +355,44 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   setAnnotations(annotations: AnnotationI[]) {
     const circleTexture = new THREE.TextureLoader().load('assets/png/circle.png');
     const vector = new THREE.Vector3();
+    const annotationMarkers: THREE.Sprite[] = [];
     annotations.forEach((annotation) => {
-      const annotationSpriteMaterial = new THREE.SpriteMaterial({
-        map: circleTexture,
-        depthTest: false,
-        depthWrite: false,
-        sizeAttenuation: false,
-      });
-      const annotationSprite = new THREE.Sprite(annotationSpriteMaterial);
-      annotationSprite.scale.set(0.066, 0.066, 0.066);
-      annotationSprite.position.copy(
-        vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
-      );
-      annotationSprite.userData.id = annotation.title;
-      this.viewer.scene.add(annotationSprite);
-      this.annotationMarkers.push(annotationSprite);
+      if (!annotation.rendered) {
+        const annotationSpriteMaterial = new THREE.SpriteMaterial({
+          map: circleTexture,
+          depthTest: false,
+          depthWrite: false,
+          sizeAttenuation: false,
+        });
+        const annotationSprite = new THREE.Sprite(annotationSpriteMaterial);
+        annotationSprite.scale.set(0.066, 0.066, 0.066);
+        annotationSprite.position.copy(
+          vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
+        );
+        annotationSprite.userData.id = annotation.title;
+        this.viewer.scene.add(annotationSprite);
+        annotationMarkers.push(annotationSprite);
 
-      const annotationDiv = this.renderer.createElement('div');
-      this.renderer.addClass(annotationDiv, 'annotationLabel');
-      this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.title);
-      const annotationLabel = new CSS2DObject(annotationDiv);
-      annotationLabel.position.copy(
-        vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
-      );
-      this.viewer.scene.add(annotationLabel);
+        const annotationDiv = this.renderer.createElement('div');
+        this.renderer.addClass(annotationDiv, 'annotationLabel');
+        this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.title);
+        const annotationLabel = new CSS2DObject(annotationDiv);
+        annotationLabel.position.copy(
+          vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
+        );
+        this.viewer.scene.add(annotationLabel);
 
-      if (annotation.description) {
-        const annotationDescriptionDiv = this.renderer.createElement('div');
-        this.renderer.addClass(annotationDescriptionDiv, 'annotationDescription');
-        this.renderer.setProperty(annotationDescriptionDiv, 'innerHTML', annotation.description);
-        this.renderer.appendChild(annotationDiv, annotationDescriptionDiv);
-        annotation.descriptionDomElement = annotationDescriptionDiv;
+        annotation.rendered = true;
+
+        if (annotation.description) {
+          const annotationDescriptionDiv = this.renderer.createElement('div');
+          this.renderer.addClass(annotationDescriptionDiv, 'annotationDescription');
+          this.renderer.setProperty(annotationDescriptionDiv, 'innerHTML', annotation.description);
+          this.renderer.appendChild(annotationDiv, annotationDescriptionDiv);
+          annotation.descriptionDomElement = annotationDescriptionDiv;
+        }
       }
+      this.sceneService.setAnnotationMarkers(annotationMarkers);
     });
   }
 

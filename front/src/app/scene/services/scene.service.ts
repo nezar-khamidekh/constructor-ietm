@@ -30,7 +30,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
-import { VIEWER_MOUSE_MODE } from 'src/app/project-editor/components/editor-viewer/editor-viewer.component';
+import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -48,7 +48,7 @@ export class SceneService {
   hoveredObj: any = null;
   hiddenObjects$ = new BehaviorSubject<any[]>([]);
   annotations$ = new BehaviorSubject<any[]>([]);
-
+  annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
 
   constructor(private http: HttpClient) {}
@@ -304,11 +304,24 @@ export class SceneService {
   }
 
   setSelectedObj(isolateIsActive: boolean, mouseCoords: any, mouseMode: number) {
+    this.annotations$.value.forEach((annotation) => {
+      if (annotation.description) annotation.descriptionDomElement!.style.display = 'none';
+    });
     if ((this.selectedObj && isolateIsActive) || this.viewer.state === VIEWER_STATE.Isolated)
       return null;
     this.viewer.raycaster.setFromCamera(mouseCoords, this.viewer.camera);
     const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
-    if (intersects.length > 0) {
+    const intersectedAnnotations = this.viewer.raycaster.intersectObjects(
+      this.annotationMarkers,
+      true,
+    );
+    if (intersectedAnnotations.length) {
+      const annotation: AnnotationI = this.annotations$.value.find(
+        (annotation: any) => annotation.title == intersectedAnnotations[0].object.userData.id,
+      );
+      if (annotation && annotation.description)
+        annotation.descriptionDomElement!.style.display = 'block';
+    } else if (intersects.length > 0) {
       const filteredIntersects = intersects.filter(
         (intersection: any) => !this.objectByIdIsHidden(intersection.object.id),
       );
@@ -532,5 +545,9 @@ export class SceneService {
 
   stopAnimation() {
     this.viewer.mixer?.stopAllAction();
+  }
+
+  setAnnotationMarkers(annotationMarkers: THREE.Sprite[]) {
+    this.annotationMarkers = annotationMarkers;
   }
 }
