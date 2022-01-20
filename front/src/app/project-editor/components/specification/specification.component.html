@@ -1,0 +1,80 @@
+<ng-container *ngIf="sceneService.getHiddenObjects() | async as hiddenObjects">
+  <div class="specification" *ngIf="specification.length">
+    <div class="specification__table-block">
+      <div class="specification__table-wrapper">
+        <table class="specification__table">
+          <thead>
+            <tr class="specification__row">
+              <th class="specification__column specification__number-column">№</th>
+              <th class="specification__column specification__name-column">Наименование</th>
+              <th class="specification__column specification__count-column">Количество</th>
+              <th class="specification__column specification__actions-column">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let item of specification; let i = index">
+              <tr class="item" *ngIf="item.isVisibleInSpec">
+                <td class="specification__column specification__number-column">
+                  <div
+                    class="specification__flex-td"
+                    [ngStyle]="{ 'padding-left': item._specLevel * getLevelPaddingLeft() + 'px' }"
+                  >
+                    <ng-container *ngIf="itemHasChild(item.id)">
+                      <button
+                        class="specification__arrow-btn"
+                        (click)="toggleItemIsExpanded(item.id)"
+                      >
+                        <img
+                          class="specification__arrow"
+                          [src]="
+                            item.isExpanded
+                              ? 'assets/svg/specificationArrowDown.svg'
+                              : 'assets/svg/specificationArrowRight.svg'
+                          "
+                          [alt]="item.isExpanded ? 'Скрыть' : 'Раскрыть'"
+                        />
+                      </button>
+                    </ng-container>
+                    {{ i }}
+                  </div>
+                </td>
+                <td class="specification__column specification__name-column">
+                  {{ item.userData.name }}
+                </td>
+                <td class="specification__column specification__count-column">
+                  {{ 0 }}
+                </td>
+                <td class="specification__column specification__actions-column">
+                  <ng-container *ngIf="!item.isRoot">
+                    <button
+                      class="specification__button"
+                      mat-icon-button
+                      (click)="toggleObjectVisibility(item)"
+                    >
+                      <img
+                        class="specification__btn-icon"
+                        [src]="
+                          objectIsHidden(item.id, hiddenObjects)
+                            ? 'assets/svg/visibility_off.svg'
+                            : 'assets/svg/visibility.svg'
+                        "
+                        [alt]="objectIsHidden(item.id, hiddenObjects) ? 'Скрыть' : 'Показать'"
+                      />
+                    </button>
+                  </ng-container>
+                  <button class="specification__button" mat-icon-button (click)="fitToObject(item)">
+                    <img
+                      class="specification__btn-icon"
+                      src="assets/svg/zoom.svg"
+                      alt="Приблизить"
+                    />
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-container>

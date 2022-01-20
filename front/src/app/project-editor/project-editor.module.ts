@@ -12,7 +12,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatRippleModule } from '@angular/material/core';
 import { EditorAnimationsComponent } from './components/editor-animations/editor-animations.component';
 import { EditorAnnotationsComponent } from './components/editor-annotations/editor-annotations.component';
-import { SpecificationsComponent } from './components/specifications/specifications.component';
+import { SpecificationComponent } from './components/specification/specification.component';
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +25,7 @@ import { MatTreeModule } from '@angular/material/tree';
     EditorViewerComponent,
     EditorAnimationsComponent,
     EditorAnnotationsComponent,
-    SpecificationsComponent,
+    SpecificationComponent,
     TreeElementsComponent,
   ],
   imports: [

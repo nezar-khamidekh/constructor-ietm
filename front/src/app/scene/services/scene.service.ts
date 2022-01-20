@@ -469,4 +469,39 @@ export class SceneService {
       this.viewer.controls.maxDistance = cameraToFarEdge * 2;
     } */
   }
+
+  setItemStructureLevels(nodes: any[], level = 0) {
+    nodes.forEach((node: any) => {
+      node._specLevel = level;
+      if (node.children?.length) this.setItemStructureLevels(node.children, level + 1);
+    });
+  }
+
+  getItemStructureTabular(nodes: any) {
+    const structure: any = [];
+    structure.push(nodes[0]);
+    this.getStructureByNodes(nodes[0].children, structure);
+    this.showRootStructureNode(structure);
+    return structure;
+  }
+
+  getStructureByNodes(nodes: any, structure: any) {
+    nodes.forEach((node: any) => {
+      structure.push(node);
+      if (node.children?.length) {
+        this.getStructureByNodes(node.children, structure);
+      }
+    });
+  }
+
+  showRootStructureNode(structure: any[]) {
+    structure[0].isVisibleInSpec = true;
+    structure[0].isExpanded = true;
+    structure
+      .filter((node: any) => node.parent.id === structure[0].id)
+      .forEach((node: any) => {
+        node.isVisibleInSpec = true;
+        node.isExpanded = false;
+      });
+  }
 }

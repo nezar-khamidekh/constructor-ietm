@@ -1,0 +1,72 @@
+:host {
+  height: 100%;
+}
+
+.specification {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__table-block {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  &__table {
+    width: 100%;
+  }
+
+  &__table-wrapper {
+    margin-top: 15px;
+    overflow: auto;
+  }
+
+  &__table {
+    border-collapse: collapse;
+  }
+
+  &__row {
+    border-bottom: 1px solid #d8dee4;
+  }
+
+  &__column {
+    text-align: left;
+    min-height: 40px;
+  }
+
+  &__number-column,
+  &__name-column,
+  &__count-column,
+  &__actions-column {
+    padding: 6px 12px;
+  }
+
+  &__flex-td {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  &__arrow-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  &__arrow {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+  }
+
+  &__btn {
+  }
+
+  &__btn-icon {
+  }
+}
+
+.item {
+  border-bottom: 1px solid #d8dee4;
+}
