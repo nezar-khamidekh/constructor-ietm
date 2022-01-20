@@ -44,5 +44,28 @@
         ></mat-slider>
       </div>
     </div>
+    <div class="toolbar__btn">
+      <app-viewer-button
+        [iconPath]="'assets/svg/stop.svg'"
+        [buttonName]="'Остановить анимацию'"
+        (btnClicked)="stopAnimation()"
+      ></app-viewer-button>
+    </div>
+    <div class="toolbar__btn">
+      <ng-container *ngIf="isPlayingAnimation(); else playAnimationButton">
+        <app-viewer-button
+          [iconPath]="'assets/svg/pause.svg'"
+          [buttonName]="'Пауза'"
+          (btnClicked)="pauseAnimation()"
+        ></app-viewer-button>
+      </ng-container>
+      <ng-template #playAnimationButton>
+        <app-viewer-button
+          [iconPath]="'assets/svg/play.svg'"
+          [buttonName]="'Запустить анимацию'"
+          (btnClicked)="playAnimation()"
+        ></app-viewer-button>
+      </ng-template>
+    </div>
   </div>
 </div>

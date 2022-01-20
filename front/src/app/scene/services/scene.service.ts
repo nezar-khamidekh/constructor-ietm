@@ -49,6 +49,8 @@ export class SceneService {
   hiddenObjects$ = new BehaviorSubject<any[]>([]);
   annotations$ = new BehaviorSubject<any[]>([]);
 
+  animations: any[] = [];
+
   constructor(private http: HttpClient) {}
 
   loadDefaultModel(): Observable<any> {
@@ -184,16 +186,7 @@ export class SceneService {
 
   setMixer(model: any) {
     this.viewer.mixer = new THREE.AnimationMixer(model.scene);
-    const clips = model.animations;
-
-    clips.forEach((clip: any) => {
-      const action = this.viewer.mixer!.clipAction(clip);
-      action.timeScale = 3;
-      console.log(action);
-      action.loop = THREE.LoopOnce;
-      action.clampWhenFinished = true;
-      action.play();
-    });
+    this.animations = model.animations;
   }
 
   setModel(model: any) {
@@ -234,7 +227,7 @@ export class SceneService {
   setCameraPosition() {
     this.viewer.camera.position.set(
       this.modelLongestSide * CAMERA_POSITION_RATE,
-      0,
+      (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
       this.modelLongestSide * CAMERA_POSITION_RATE,
     );
     this.viewer.controls.update();
@@ -268,7 +261,7 @@ export class SceneService {
     const oldCameraPos = this.viewer.camera.position.clone();
     const newCameraPos = new THREE.Vector3(
       this.modelLongestSide * CAMERA_POSITION_RATE,
-      0,
+      (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
       this.modelLongestSide * CAMERA_POSITION_RATE,
     );
     const tween = new TWEEN.Tween(oldCameraPos)
@@ -515,5 +508,29 @@ export class SceneService {
         node.isVisibleInSpec = true;
         node.isExpanded = false;
       });
+  }
+
+  playAnimation() {
+    this.animations.forEach((clip: any) => {
+      const action = this.viewer.mixer!.clipAction(clip);
+      if (action.paused) action.paused = false;
+      else {
+        action.timeScale = 3;
+        action.loop = THREE.LoopOnce;
+        action.clampWhenFinished = true;
+        action.play();
+      }
+    });
+  }
+
+  pauseAnimation() {
+    this.animations.forEach((clip: any) => {
+      const action = this.viewer.mixer!.clipAction(clip);
+      if (action.isRunning()) action.paused = true;
+    });
+  }
+
+  stopAnimation() {
+    this.viewer.mixer?.stopAllAction();
   }
 }

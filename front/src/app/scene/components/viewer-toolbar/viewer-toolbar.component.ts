@@ -53,4 +53,20 @@ export class ViewerToolbarComponent implements OnInit {
   explode() {
     this.viewerBtnClicked.emit(VIEWER_BUTTONS.Explode);
   }
+
+  stopAnimation() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.StopAnimation);
+  }
+
+  playAnimation() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.PlayAnimation);
+  }
+
+  pauseAnimation() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.PauseAnimation);
+  }
+
+  isPlayingAnimation() {
+    return this.activeBtnIndex === VIEWER_BUTTONS.PlayAnimation;
+  }
 }

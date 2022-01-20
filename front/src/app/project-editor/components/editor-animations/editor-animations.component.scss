@@ -1,0 +1,23 @@
+.animations {
+  padding: 10px;
+
+  &__title {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  &__actions {
+    margin-top: 10px;
+  }
+
+  &__btn {
+    &:not(:first-child) {
+      margin-left: 2px;
+    }
+  }
+
+  &__btn-icon {
+    width: 32px;
+    height: 32px;
+  }
+}

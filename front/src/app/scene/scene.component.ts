@@ -10,7 +10,6 @@ import {
   OnInit,
   Output,
   Renderer2,
-  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { SubSink } from 'subsink';
@@ -20,10 +19,7 @@ import { SceneService } from './services/scene.service';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { ViewerI } from '../shared/models/viewer.interface';
 import { AnnotationI } from '../shared/models/annotation.interface';
-import MainScene from '../shared/classes/MainScene';
 import * as TWEEN from '@tweenjs/tween.js';
-import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/editor-viewer.component';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -37,6 +33,9 @@ export enum VIEWER_BUTTONS {
   RestoreView,
   Hide,
   Isolate,
+  StopAnimation,
+  PlayAnimation,
+  PauseAnimation,
 }
 
 @Component({
@@ -211,6 +210,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.resetContextMenu();
         this.sceneService.isolateObject();
         break;
+      case VIEWER_BUTTONS.StopAnimation:
+        this.sceneService.stopAnimation();
+        break;
+      case VIEWER_BUTTONS.PlayAnimation:
+        this.sceneService.playAnimation();
+        break;
+      case VIEWER_BUTTONS.PauseAnimation:
+        this.sceneService.pauseAnimation();
+        break;
       default:
         break;
     }
@@ -230,6 +238,12 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case VIEWER_BUTTONS.Isolate:
         this.sceneService.resetObjectIsolation();
+        break;
+      case VIEWER_BUTTONS.PlayAnimation:
+        this.sceneService.stopAnimation();
+        break;
+      case VIEWER_BUTTONS.PauseAnimation:
+        this.sceneService.stopAnimation();
         break;
       default:
         break;
