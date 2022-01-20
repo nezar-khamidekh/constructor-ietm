@@ -4,7 +4,12 @@
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         {{ node.name }}
         <ng-container *ngIf="!node.isRoot">
-          <button class="tree__button" mat-icon-button (click)="toggleObjectVisibility(node)">
+          <button
+            class="tree__button"
+            mat-icon-button
+            (click)="toggleObjectVisibility(node)"
+            [matTooltip]="objectIsHidden(node.id, hiddenObjects) ? 'Показать' : 'Скрыть'"
+          >
             <img
               [src]="
                 objectIsHidden(node.id, hiddenObjects)
@@ -15,13 +20,23 @@
             />
           </button>
         </ng-container>
-        <button class="tree__button" mat-icon-button (click)="fitToObject(node)">
+        <button
+          class="tree__button"
+          mat-icon-button
+          (click)="fitToObject(node)"
+          matTooltip="Приблизить"
+        >
           <img src="assets/svg/zoom.svg" alt="Приблизить" />
         </button>
       </mat-tree-node>
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="mat-tree-node">
-          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+          <button
+            mat-icon-button
+            matTreeNodeToggle
+            [attr.aria-label]="'Toggle ' + node.name"
+            [matTooltip]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
+          >
             <img
               [src]="
                 treeControl.isExpanded(node)
@@ -33,7 +48,12 @@
           </button>
           {{ node.name }}
           <ng-container *ngIf="!node.isRoot">
-            <button class="tree__button" mat-icon-button (click)="toggleObjectVisibility(node)">
+            <button
+              class="tree__button"
+              mat-icon-button
+              (click)="toggleObjectVisibility(node)"
+              [matTooltip]="objectIsHidden(node.id, hiddenObjects) ? 'Показать' : 'Скрыть'"
+            >
               <img
                 [src]="
                   objectIsHidden(node.id, hiddenObjects)
@@ -44,7 +64,12 @@
               />
             </button>
           </ng-container>
-          <button class="tree__button" mat-icon-button (click)="fitToObject(node)">
+          <button
+            class="tree__button"
+            mat-icon-button
+            (click)="fitToObject(node)"
+            matTooltip="Приблизить"
+          >
             <img src="assets/svg/zoom.svg" alt="Приблизить" />
           </button>
         </div>

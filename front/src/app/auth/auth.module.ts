@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthComponent } from './auth.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [SigninComponent, SignupComponent, AuthComponent],
@@ -19,6 +20,7 @@ import { AuthComponent } from './auth.component';
     MatInputModule,
     MatButtonModule,
     ReactiveFormsModule,
+    MatTooltipModule,
   ],
 })
 export class AuthModule {}

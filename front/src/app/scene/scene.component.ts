@@ -123,6 +123,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.add(
       this.sceneService.loadDefaultModel().subscribe((file) => {
         this.setUpViewer(file);
+        console.log(3);
       }),
     );
     this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
@@ -167,6 +168,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.annotations.length) this.setAnnotations(this.annotations);
       this.viewerInitialized = true;
       this.viewerIsReady.emit();
+      console.log(2);
       this.cdr.detectChanges();
     });
 

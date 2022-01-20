@@ -29,6 +29,7 @@
         type="button"
         (click)="hidePass = !hidePass"
         [attr.aria-label]="'Hide password'"
+        [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
       >
         <img
           class="auth-form__icon"

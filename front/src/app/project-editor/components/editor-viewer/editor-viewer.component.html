@@ -1,4 +1,7 @@
 <div class="editor-viewer">
+  <div class="loading" *ngIf="!model">
+    <mat-spinner></mat-spinner>
+  </div>
   <div class="editor-viewer__viewer">
     <app-scene
       [viewerMouseMode]="viewerMouseMode"

@@ -1,13 +1,13 @@
 <div class="toolbar">
   <div class="toolbar__container">
-    <div class="toolbar__btn">
+    <div class="toolbar__btn" matTooltip="Сброс камеры">
       <app-viewer-button
         [iconPath]="'assets/svg/home.svg'"
         [buttonName]="'Сброс камеры'"
         (btnClicked)="resetCamera()"
       ></app-viewer-button>
     </div>
-    <div class="toolbar__btn">
+    <div class="toolbar__btn" matTooltip="Облет модели">
       <app-viewer-button
         [isActive]="rotateAnimationBtnIsActive()"
         [iconPath]="'assets/svg/rotationCamera.svg'"
@@ -26,7 +26,7 @@
         ></mat-slider>
       </div>
     </div>
-    <div class="toolbar__btn">
+    <div class="toolbar__btn" matTooltip="Разнос модели">
       <app-viewer-button
         [isActive]="explodeBtnIsActive()"
         [iconPath]="'assets/svg/explode.svg'"
@@ -44,14 +44,14 @@
         ></mat-slider>
       </div>
     </div>
-    <div class="toolbar__btn">
+    <div class="toolbar__btn" matTooltip="Остановить анимацию">
       <app-viewer-button
         [iconPath]="'assets/svg/stop.svg'"
         [buttonName]="'Остановить анимацию'"
         (btnClicked)="stopAnimation()"
       ></app-viewer-button>
     </div>
-    <div class="toolbar__btn">
+    <div class="toolbar__btn" [matTooltip]="isPlayingAnimation() ? 'Пауза' : 'Запустить анимацию'">
       <ng-container *ngIf="isPlayingAnimation(); else playAnimationButton">
         <app-viewer-button
           [iconPath]="'assets/svg/pause.svg'"

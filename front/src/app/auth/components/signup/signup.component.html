@@ -54,6 +54,7 @@
         (click)="hidePass = !hidePass"
         [attr.aria-label]="'hidePass password'"
         [attr.aria-pressed]="hidePass"
+        [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
       >
         <img
           class="auth-form__icon"

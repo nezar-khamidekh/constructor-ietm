@@ -17,6 +17,8 @@ import { TreeElementsComponent } from './components/tree-elements/tree-elements.
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { MatTreeModule } from '@angular/material/tree';
     MatButtonModule,
     FormsModule,
     MatTreeModule,
+    MatTooltipModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class ProjectEditorModule {}

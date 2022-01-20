@@ -31,7 +31,7 @@ interface CurrentAnnotationI {
 })
 export class EditorViewerComponent implements OnInit {
   private subs = new SubSink();
-  @Input() model: any;
+  model: any = null;
 
   annotations: AnnotationI[] = [];
 
@@ -52,6 +52,7 @@ export class EditorViewerComponent implements OnInit {
         this.cdr.detectChanges();
       }),
     );
+    console.log(this.model);
   }
 
   onApplyAnnotation(status: boolean) {
@@ -86,6 +87,9 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onViewerIsReady() {
-    this.model = this.sceneService.getModel();
+    setTimeout(() => {
+      this.model = this.sceneService.getModel();
+      this.cdr.detectChanges();
+    }, 1000);
   }
 }
