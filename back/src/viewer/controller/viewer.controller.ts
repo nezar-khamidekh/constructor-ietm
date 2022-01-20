@@ -9,7 +9,7 @@ export class ViewerController {
   @Get('default')
   defaultModel(@Response({ passthrough: true }) res): StreamableFile {
     const file = createReadStream(
-      join(process.cwd(), '/testmodels/valve.gltf'),
+      join(process.cwd(), '/testmodels/valve_anim.gltf'),
     );
     return new StreamableFile(file);
   }

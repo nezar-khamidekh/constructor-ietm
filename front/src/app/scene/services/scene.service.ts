@@ -186,13 +186,14 @@ export class SceneService {
     this.viewer.mixer = new THREE.AnimationMixer(model.scene);
     const clips = model.animations;
 
-    /*  clips.forEach((clip) => {
-        const action = this.viewer.mixer!.clipAction(clip);
-        console.log(action);
-        action.loop = THREE.LoopOnce;
-        action.clampWhenFinished = true;
-        action.play();
-      }); */
+    clips.forEach((clip: any) => {
+      const action = this.viewer.mixer!.clipAction(clip);
+      action.timeScale = 3;
+      console.log(action);
+      action.loop = THREE.LoopOnce;
+      action.clampWhenFinished = true;
+      action.play();
+    });
   }
 
   setModel(model: any) {
@@ -479,7 +480,7 @@ export class SceneService {
 
   getItemStructureTabular(nodes: any) {
     const structure: any = [];
-    structure.push(nodes[0]);
+    structure.push({ ...nodes[0], specificationCount: 1 });
     this.getStructureByNodes(nodes[0].children, structure);
     this.showRootStructureNode(structure);
     return structure;
@@ -487,8 +488,19 @@ export class SceneService {
 
   getStructureByNodes(nodes: any, structure: any) {
     nodes.forEach((node: any) => {
-      structure.push(node);
-      if (node.children?.length) {
+      if (node instanceof THREE.Mesh) {
+        const obj = structure.find(
+          (el: any) => el.userData.name === node.userData.name.split('.')[0],
+        );
+        if (obj) {
+          ++obj.specificationCount;
+        } else
+          structure.push({
+            ...node,
+            userData: { name: node.userData.name.split('.')[0] },
+            specificationCount: 1,
+          });
+      } else if (node.children?.length) {
         this.getStructureByNodes(node.children, structure);
       }
     });

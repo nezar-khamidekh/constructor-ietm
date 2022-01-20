@@ -27,9 +27,8 @@ export class SpecificationComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.model && !changes.model.firstChange) {
-      this.sceneService.setItemStructureLevels([this.model]);
+      // this.sceneService.setItemStructureLevels([this.model]);
       this.specification = this.sceneService.getItemStructureTabular([this.model]);
-      console.log(this.specification);
       this.cdr.detectChanges();
     }
   }
@@ -44,7 +43,7 @@ export class SpecificationComponent implements OnInit {
     });
   }
 
-  toggleItemIsExpanded(itemId: number) {
+  /* toggleItemIsExpanded(itemId: number) {
     const node = this.specification.find((node: any) => node.id === itemId);
     node.isExpanded = !node.isExpanded;
     this.toggleExpandChildren(node.children, node.isExpanded);
@@ -57,9 +56,9 @@ export class SpecificationComponent implements OnInit {
       node.isVisibleInSpec = isVisible;
       if (!isVisible && node.children?.length) this.toggleExpandChildren(node.children, isVisible);
     });
-  }
+  } */
 
-  objectIsHidden(id: number, hiddenObjects: any[]) {
+  /* objectIsHidden(id: number, hiddenObjects: any[]) {
     return hiddenObjects.some((obj) => obj.id === id);
   }
 
@@ -69,5 +68,5 @@ export class SpecificationComponent implements OnInit {
 
   fitToObject(node: any) {
     this.sceneService.fitToView(node.id);
-  }
+  } */
 }

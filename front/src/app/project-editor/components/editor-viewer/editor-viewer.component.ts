@@ -33,35 +33,7 @@ export class EditorViewerComponent implements OnInit {
   private subs = new SubSink();
   @Input() model: any;
 
-  annotations: AnnotationI[] = [
-    {
-      title: '1',
-      description: 'Bathroom Sink is good for washing your hands',
-      position: {
-        x: 0.8807755104286317,
-        y: 0.009937415637652509,
-        z: 0.5152293842824673,
-      },
-    },
-    {
-      title: '2',
-      description: 'Bathroom Sink is good for washing your hands',
-      position: {
-        x: 0.9807755104286317,
-        y: 0.009937415637652509,
-        z: 0.5152293842824673,
-      },
-    },
-    {
-      title: '3',
-      description: 'Bathroom Sink is good for washing your hands',
-      position: {
-        x: 0.6807755104286317,
-        y: 0.009937415637652509,
-        z: 0.5152293842824673,
-      },
-    },
-  ];
+  annotations: AnnotationI[] = [];
 
   currentAnnotation: CurrentAnnotationI = {
     text: '',

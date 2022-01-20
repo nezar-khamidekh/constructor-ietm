@@ -5,36 +5,17 @@
         <table class="specification__table">
           <thead>
             <tr class="specification__row">
-              <th class="specification__column specification__number-column">№</th>
+              <th class="specification__column specification__number-column">№ п/п</th>
               <th class="specification__column specification__name-column">Наименование</th>
               <th class="specification__column specification__count-column">Количество</th>
-              <th class="specification__column specification__actions-column">Действия</th>
+              <!-- <th class="specification__column specification__actions-column">Действия</th> -->
             </tr>
           </thead>
           <tbody>
             <ng-container *ngFor="let item of specification; let i = index">
-              <tr class="item" *ngIf="item.isVisibleInSpec">
+              <tr class="item">
                 <td class="specification__column specification__number-column">
-                  <div
-                    class="specification__flex-td"
-                    [ngStyle]="{ 'padding-left': item._specLevel * getLevelPaddingLeft() + 'px' }"
-                  >
-                    <ng-container *ngIf="itemHasChild(item.id)">
-                      <button
-                        class="specification__arrow-btn"
-                        (click)="toggleItemIsExpanded(item.id)"
-                      >
-                        <img
-                          class="specification__arrow"
-                          [src]="
-                            item.isExpanded
-                              ? 'assets/svg/specificationArrowDown.svg'
-                              : 'assets/svg/specificationArrowRight.svg'
-                          "
-                          [alt]="item.isExpanded ? 'Скрыть' : 'Раскрыть'"
-                        />
-                      </button>
-                    </ng-container>
+                  <div class="specification__flex-td">
                     {{ i }}
                   </div>
                 </td>
@@ -42,9 +23,9 @@
                   {{ item.userData.name }}
                 </td>
                 <td class="specification__column specification__count-column">
-                  {{ 0 }}
+                  {{ item.specificationCount }}
                 </td>
-                <td class="specification__column specification__actions-column">
+                <!-- <td class="specification__column specification__actions-column">
                   <ng-container *ngIf="!item.isRoot">
                     <button
                       class="specification__button"
@@ -69,7 +50,7 @@
                       alt="Приблизить"
                     />
                   </button>
-                </td>
+                </td> -->
               </tr>
             </ng-container>
           </tbody>

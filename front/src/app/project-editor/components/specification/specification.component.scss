@@ -33,14 +33,13 @@
 
   &__column {
     text-align: left;
-    min-height: 40px;
   }
 
   &__number-column,
   &__name-column,
   &__count-column,
   &__actions-column {
-    padding: 6px 12px;
+    padding: 12px;
   }
 
   &__flex-td {
