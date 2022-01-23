@@ -188,7 +188,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onViewerBtnClicked(activeBtnIndex: number) {
-    if (this.activeBtnIndex !== activeBtnIndex) this.resetPrevBtnAction();
+    if (this.activeBtnIndex !== activeBtnIndex) this.resetPrevBtnAction(activeBtnIndex);
     this.activeBtnIndex = this.btnIsInAction ? VIEWER_BUTTONS.Default : activeBtnIndex;
     switch (activeBtnIndex) {
       case VIEWER_BUTTONS.Home:
@@ -228,7 +228,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  resetPrevBtnAction() {
+  resetPrevBtnAction(newButtonIndex: number) {
     switch (this.activeBtnIndex) {
       case VIEWER_BUTTONS.RotateAnimation:
         this.stopRotatingCamera();
@@ -244,10 +244,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sceneService.resetObjectIsolation();
         break;
       case VIEWER_BUTTONS.PlayAnimation:
-        this.sceneService.stopAnimation();
+        if (newButtonIndex !== VIEWER_BUTTONS.PauseAnimation) this.sceneService.stopAnimation();
         break;
       case VIEWER_BUTTONS.PauseAnimation:
-        this.sceneService.stopAnimation();
+        if (newButtonIndex !== VIEWER_BUTTONS.PlayAnimation) this.sceneService.stopAnimation();
         break;
       default:
         break;
