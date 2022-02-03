@@ -17,11 +17,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
       },
+      {
+        path: '**',
+        redirectTo: 'editor',
+      },
     ],
-  },
-  {
-    path: '**',
-    redirectTo: '',
   },
 ];
 
