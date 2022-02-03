@@ -52,7 +52,6 @@ export class EditorViewerComponent implements OnInit {
         this.cdr.detectChanges();
       }),
     );
-    console.log(this.model);
   }
 
   onApplyAnnotation(status: boolean) {
@@ -79,7 +78,6 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onCoordsAnnotation(coords: any) {
-    console.log(coords);
     this.currentAnnotation = {
       text: this.currentAnnotation.text,
       position: coords,

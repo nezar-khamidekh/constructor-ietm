@@ -2,7 +2,7 @@
   <div class="tree">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-        {{ node.name }}
+        {{ node.userData.name || node.name }}
         <ng-container *ngIf="!node.isRoot">
           <button
             class="tree__button"
@@ -34,7 +34,7 @@
           <button
             mat-icon-button
             matTreeNodeToggle
-            [attr.aria-label]="'Toggle ' + node.name"
+            [attr.aria-label]="'Toggle ' + node.userData.name || node.name"
             [matTooltip]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
           >
             <img
@@ -46,7 +46,7 @@
               [alt]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
             />
           </button>
-          {{ node.name }}
+          {{ node.userData.name || node.name }}
           <ng-container *ngIf="!node.isRoot">
             <button
               class="tree__button"

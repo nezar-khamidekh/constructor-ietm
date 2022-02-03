@@ -8,15 +8,20 @@ const routes: Routes = [
     component: PageComponent,
     children: [
       {
-        path: '',
-        redirectTo: 'editor',
-      },
-      {
         path: 'editor',
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
       },
+      {
+        path: 'editor/:model',
+        loadChildren: () =>
+          import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
+      },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: '',
   },
 ];
 

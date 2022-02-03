@@ -57,6 +57,10 @@ export class SceneService {
     return this.http.get(`${this.apiUrl}/viewer/default`, { withCredentials: true });
   }
 
+  loadModel(modelName: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/viewer/${modelName}`, { withCredentials: true });
+  }
+
   shadeColor(hexadecimalColor: number, percent: number) {
     let color = hexadecimalColor.toString(16);
 
@@ -494,7 +498,7 @@ export class SceneService {
 
   getStructureByNodes(nodes: any, structure: any) {
     nodes.forEach((node: any) => {
-      if (node instanceof THREE.Mesh) {
+      if (node instanceof THREE.Mesh || node instanceof THREE.Group) {
         const obj = structure.find(
           (el: any) => el.userData.name === node.userData.name.split('.')[0],
         );
@@ -503,7 +507,7 @@ export class SceneService {
         } else
           structure.push({
             ...node,
-            userData: { name: node.userData.name.split('.')[0] },
+            userData: { name: node.userData.name.split('.')[0].replace('_', ' ') },
             specificationCount: 1,
           });
       } else if (node.children?.length) {

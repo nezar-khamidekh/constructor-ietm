@@ -24,6 +24,7 @@ import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/editor-viewer.component';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { CAMERA_ROTATE_SPEED, EXPLODE_POWER } from '../shared/models/viewerConstants';
+import { ActivatedRoute } from '@angular/router';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -92,6 +93,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     public sceneService: SceneService,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -113,18 +115,24 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
             this.cdr.detectChanges();
           }
         }
-        console.log(annotations);
       }),
     );
   }
 
   ngAfterViewInit(): void {
-    this.subs.add(
-      this.sceneService.loadDefaultModel().subscribe((file) => {
-        this.setUpViewer(file);
-        console.log(3);
-      }),
-    );
+    const modelName = this.route.snapshot.params.model;
+    if (modelName)
+      this.subs.add(
+        this.sceneService.loadModel(this.route.snapshot.params.model).subscribe((file) => {
+          this.setUpViewer(file);
+        }),
+      );
+    else
+      this.subs.add(
+        this.sceneService.loadDefaultModel().subscribe((file) => {
+          this.setUpViewer(file);
+        }),
+      );
   }
 
   ngOnDestroy(): void {
@@ -169,7 +177,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.annotations.length) this.setAnnotations(this.annotations);
       this.viewerInitialized = true;
       this.viewerIsReady.emit();
-      console.log(2);
       this.cdr.detectChanges();
     });
 
