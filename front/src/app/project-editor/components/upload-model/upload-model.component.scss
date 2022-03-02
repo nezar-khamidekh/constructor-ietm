@@ -1,0 +1,46 @@
+:host {
+  width: 45%;
+  height: 75%;
+}
+
+.upload-model {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid #d3d3d3;
+  border-radius: 12px;
+  padding: 15px 20px 20px 20px;
+
+  &__drop-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px dashed #d3d3d3;
+    border-radius: 12px;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  &__drop-img {
+    width: 114px;
+    height: 114px;
+  }
+
+  &__selection-text {
+    margin-top: 15px;
+  }
+
+  &__change-step {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__btn {
+    &_back {
+      border: none;
+      color: #007ef2;
+    }
+  }
+}

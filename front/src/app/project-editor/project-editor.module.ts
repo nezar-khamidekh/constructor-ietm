@@ -19,6 +19,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UploadModelComponent } from './components/upload-model/upload-model.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     EditorAnnotationsComponent,
     SpecificationComponent,
     TreeElementsComponent,
+    UploadModelComponent,
   ],
   imports: [
     CommonModule,
