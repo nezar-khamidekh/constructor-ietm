@@ -20,6 +20,8 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UploadModelComponent } from './components/upload-model/upload-model.component';
+import { StepButtonsComponent } from './components/step-buttons/step-buttons.component';
+import { InitRepositoryComponent } from './components/init-repository/init-repository.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { UploadModelComponent } from './components/upload-model/upload-model.com
     SpecificationComponent,
     TreeElementsComponent,
     UploadModelComponent,
+    StepButtonsComponent,
+    InitRepositoryComponent,
   ],
   imports: [
     CommonModule,

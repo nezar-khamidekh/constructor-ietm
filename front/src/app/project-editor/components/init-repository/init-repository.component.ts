@@ -8,15 +8,14 @@ import {
 } from '@angular/core';
 
 @Component({
-  selector: 'app-upload-model',
-  templateUrl: './upload-model.component.html',
-  styleUrls: ['./upload-model.component.scss'],
+  selector: 'app-init-repository',
+  templateUrl: './init-repository.component.html',
+  styleUrls: ['./init-repository.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UploadModelComponent implements OnInit {
+export class InitRepositoryComponent implements OnInit {
   @Input() step: number;
   @Output() changedStep = new EventEmitter();
-
   constructor() {}
 
   ngOnInit(): void {}

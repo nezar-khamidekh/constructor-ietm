@@ -22,8 +22,10 @@
             <app-editor-annotations
               [annotations]="annotations"
               [currentAnnotation]="currentAnnotation"
+              [step]="step"
               (saveAnnotation)="onSaveAnnotation()"
               (applyAnnotation)="onApplyAnnotation($event)"
+              (changedStep)="changedStep.emit($event)"
             ></app-editor-annotations>
           </div>
         </mat-tab>

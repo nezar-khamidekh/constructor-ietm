@@ -1,0 +1,24 @@
+<div class="init-repository">
+  <div class="init-repository__name-repository">
+    <div class="init-repository__name-group">
+      <p class="init-repository__text">Название</p>
+      <input class="init-repository__input" type="text" placeholder="Название проекта" />
+    </div>
+    <div class="init-repository__name-group">
+      <p class="init-repository__text">Заголовок</p>
+      <input class="init-repository__input" type="text" placeholder="Заголовок проекта" />
+    </div>
+  </div>
+  <div class="init-repository__author">
+    <p class="init-repository__text">Автор (пользователь/команда)</p>
+    <select class="init-repository__select" name="" id="">
+      <option value="">1</option>
+    </select>
+  </div>
+  <div class="init-repository__description">
+    <p class="init-repository__text">Описание</p>
+    <textarea class="init-repository__textarea" placeholder="Описание проекта"></textarea>
+  </div>
+  <div class="init-repository__access-repository"></div>
+  <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
+</div>

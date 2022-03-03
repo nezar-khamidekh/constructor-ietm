@@ -5,6 +5,7 @@ import {
   Input,
   Output,
   ChangeDetectorRef,
+  EventEmitter,
 } from '@angular/core';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
@@ -31,6 +32,8 @@ interface CurrentAnnotationI {
 })
 export class EditorViewerComponent implements OnInit {
   private subs = new SubSink();
+  @Input() step: number;
+  @Output() changedStep = new EventEmitter();
   model: any = null;
 
   annotations: AnnotationI[] = [];

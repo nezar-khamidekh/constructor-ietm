@@ -3,10 +3,5 @@
     <img class="upload-model__drop-img" src="assets/svg/uploadModel.svg" alt="" />
     <p class="upload-model__selection-text">Выберете файл или перетащите</p>
   </ul>
-  <div class="upload-model__change-step">
-    <button class="upload-model__btn upload-model__btn_back" mat-stroked-button primary>
-      Назад
-    </button>
-    <button class="upload-model__btn" mat-raised-button disabled>Далее</button>
-  </div>
+  <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
 </div>

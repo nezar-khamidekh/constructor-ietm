@@ -1,0 +1,35 @@
+<div class="change-step">
+  <ng-container *ngIf="step !== 1; else elseTemplate">
+    <button
+      class="change-step__btn change-step__btn_back"
+      mat-stroked-button
+      color="primary"
+      (click)="changedStep.emit(step - 1)"
+    >
+      Назад
+    </button>
+  </ng-container>
+  <ng-template #elseTemplate>
+    <button
+      class="change-step__btn change-step__btn"
+      mat-raised-button
+      color="warn"
+      (click)="navigateToMain()"
+    >
+      Отмена
+    </button>
+  </ng-template>
+  <ng-container *ngIf="true; else disabledBtn">
+    <button
+      class="change-step__btn"
+      mat-raised-button
+      color="primary"
+      (click)="changedStep.emit(step + 1)"
+    >
+      Далее
+    </button>
+  </ng-container>
+  <ng-template #disabledBtn>
+    <button class="change-step__btn" mat-raised-button disabled>Далее</button>
+  </ng-template>
+</div>
