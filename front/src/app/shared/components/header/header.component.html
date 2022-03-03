@@ -29,12 +29,47 @@
     </button>
   </div>
   <div class="user-actions">
+    <a class="user-actions__btn" mat-icon-button color="primary" routerLink="#">
+      <img class="user-actions__btn-icon" src="assets/svg/favorite.svg" alt="избранное" />
+    </a>
+    <a class="user-actions__btn" mat-icon-button color="primary">
+      <img
+        class="user-actions__btn-icon"
+        src="assets/svg/subscriptions.svg"
+        routerLink="#"
+        alt="подписки"
+      />
+    </a>
     <button class="user-actions__btn" mat-icon-button color="primary">
       <img class="user-actions__btn-icon" src="assets/svg/plus.svg" alt="меню действий" />
     </button>
     <div class="vertical-line"></div>
     <div class="user-actions__avatar">
-      <img class="user-actions__avatar-icon" src="assets/png/avatar.png" alt="меню пользователя" />
+      <button class="user-actions__btn" [matMenuTriggerFor]="userMenu">
+        <img
+          class="user-actions__avatar-icon"
+          src="assets/png/avatar.png"
+          alt="меню пользователя"
+        />
+      </button>
+      <mat-menu #userMenu="matMenu" class="user-menu">
+        <div class="user-menu__item" mat-menu-item>
+          <img class="user-menu__item-image" src="assets/svg/profile.svg" alt="профиль" />
+          <a class="user-menu__item-action" routerLink="#">Профиль</a>
+        </div>
+        <div class="user-menu__item" mat-menu-item>
+          <img class="user-menu__item-image" src="assets/svg/team.svg" alt="команды" />
+          <a class="user-menu__item-action" routerLink="#">Команды</a>
+        </div>
+        <div class="user-menu__item" mat-menu-item>
+          <img class="user-menu__item-image" src="assets/svg/settings.svg" alt="настройки" />
+          <button class="user-menu__item-action" routerLink="#">Настройки</button>
+        </div>
+        <div class="user-menu__item" mat-menu-item>
+          <img class="user-menu__item-image" src="assets/svg/logout.svg" alt="выйти из аккаунта" />
+          <button class="user-menu__item-action" routerLink="#">Выйти</button>
+        </div>
+      </mat-menu>
     </div>
   </div>
 </header>
