@@ -1,0 +1,92 @@
+@import '_variables';
+
+.sidebar {
+  width: 350px;
+  height: 100%;
+  border-right: 1px solid $primaryGreyBorderColor;
+  background-color: $primaryGreyBgColor;
+  padding: 35px 30px;
+  display: flex;
+  flex-direction: column;
+
+  &__horizontal-line {
+    margin-top: 15px;
+  }
+}
+
+.account {
+  display: flex;
+  align-items: center;
+
+  &__image {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid $primaryGreyBorderColor;
+  }
+
+  &__nickname {
+    margin-left: 8px;
+    font-weight: 700;
+  }
+
+  &__switch-btn {
+    margin-left: auto;
+  }
+}
+
+.projects {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  overflow: auto;
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__input {
+    width: 100%;
+    margin-top: 15px;
+    padding: 4px 10px;
+    border: 1px solid $primaryBlueGreyColor;
+    border-radius: 8px;
+    line-height: 20px;
+  }
+
+  &__list {
+    flex: 1;
+    overflow: auto;
+    margin-top: 20px;
+    padding-right: 4px;
+  }
+
+  &__list-item {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    &:not(:first-child) {
+      margin-top: 8px;
+    }
+  }
+
+  &__list-item-image {
+    width: 20px;
+    height: 20px;
+  }
+
+  &__list-item-title {
+    display: block;
+    margin-left: 8px;
+    color: $primaryBlueTextColor;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

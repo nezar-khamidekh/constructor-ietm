@@ -8,6 +8,10 @@ const routes: Routes = [
     component: PageComponent,
     children: [
       {
+        path: 'main',
+        loadChildren: () => import('../main/main.module').then((m) => m.MainModule),
+      },
+      {
         path: 'editor',
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
@@ -19,7 +23,7 @@ const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'editor',
+        redirectTo: 'main',
       },
     ],
   },
