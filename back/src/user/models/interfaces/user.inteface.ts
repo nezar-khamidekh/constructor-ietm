@@ -6,4 +6,6 @@ export interface UserI {
   email: string;
   creationTime?: string;
   updateTime?: string;
+  firstName?: string;
+  lastName?: string;
 }

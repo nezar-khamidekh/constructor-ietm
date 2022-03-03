@@ -33,6 +33,12 @@ export class UserEntity {
   @Column({ select: false })
   password: string;
 
+  @Column({ length: 125 })
+  firstName: string;
+
+  @Column({ length: 125 })
+  lastName: string;
+
   @CreateDateColumn({ select: false })
   creationTime: string;
 
