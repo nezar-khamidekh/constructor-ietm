@@ -35,13 +35,15 @@ export class SignupComponent implements OnInit {
       const user: UserCreateI = {
         email: String(this.registrationFormGroup.get('email')?.value).toLowerCase(),
         login: String(this.registrationFormGroup.get('login')?.value).toLowerCase(),
-        username: String(this.registrationFormGroup.get('login')?.value).toLowerCase(),
+        username: String(this.registrationFormGroup.get('login')?.value),
         password: String(this.registrationFormGroup.get('password')?.value),
+        firstName: String(this.registrationFormGroup.get('firstName')?.value),
+        lastName: String(this.registrationFormGroup.get('lastName')?.value),
       };
       this.authService.register(user).subscribe(
         (user: any) => {
           console.log(user);
-          this.router.navigate(['/messenger']);
+          this.router.navigate(['/main']);
         },
         (err: any) => {
           console.log(err);
@@ -56,14 +58,32 @@ export class SignupComponent implements OnInit {
   initializeRegistrationForm() {
     this.registrationFormGroup = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      login: ['', [Validators.required, Validators.pattern('[a-zA-Z\\d]+[_a-zA-Z\\d]*')]],
+      login: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('[a-zA-Z]+[a-zA-Z\\d]*'),
+          Validators.minLength(6),
+          Validators.maxLength(20),
+        ],
+      ],
+      username: [
+        '',
+        [Validators.required, Validators.pattern('[a-zA-Z]+[a-zA-Z\\d]*'), Validators.minLength(6)],
+      ],
       password: [
         '',
         [
           Validators.required,
-          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$'),
+          Validators.pattern(
+            '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&])[a-zA-Z0-9@$!%*#?&]+',
+          ),
+          Validators.minLength(8),
+          Validators.maxLength(30),
         ],
       ],
+      firstName: ['', []],
+      lastName: ['', []],
     });
   }
 
