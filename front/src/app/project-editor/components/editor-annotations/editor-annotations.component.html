@@ -85,4 +85,7 @@
       </table>
     </div>
   </div>
+  <div class="annotations-editor__wrapper-step-buttons">
+    <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
+  </div>
 </div>

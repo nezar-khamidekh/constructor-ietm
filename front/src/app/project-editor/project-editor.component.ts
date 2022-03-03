@@ -6,7 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./project-editor.component.scss'],
 })
 export class ProjectEditorComponent implements OnInit {
+  step: number = 1;
+
   constructor() {}
 
   ngOnInit(): void {}
+
+  onChangeStep(step: number) {
+    this.step = step;
+  }
 }

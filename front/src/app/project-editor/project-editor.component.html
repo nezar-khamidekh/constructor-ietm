@@ -2,6 +2,21 @@
   [title]="'Viewer'"
   [subtitle]="'Отображает модели, анимации, позволяет создавать интерактивные инструкции.'"
 >
-  <!-- <app-editor-viewer></app-editor-viewer> -->
-  <app-upload-model></app-upload-model>
+  <ng-container [ngSwitch]="step">
+    <app-init-repository
+      [step]="1"
+      (changedStep)="onChangeStep($event)"
+      *ngSwitchCase="1"
+    ></app-init-repository>
+    <app-upload-model
+      [step]="2"
+      (changedStep)="onChangeStep($event)"
+      *ngSwitchCase="2"
+    ></app-upload-model>
+    <app-editor-viewer
+      [step]="3"
+      (changedStep)="onChangeStep($event)"
+      *ngSwitchCase="3"
+    ></app-editor-viewer>
+  </ng-container>
 </app-editor-step>

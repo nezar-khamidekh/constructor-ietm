@@ -20,8 +20,10 @@ import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 export class EditorAnnotationsComponent implements OnInit {
   @Input() annotations: AnnotationI[] = [];
   @Input() currentAnnotation: any;
+  @Input() step: number;
   @Output() applyAnnotation = new EventEmitter();
   @Output() saveAnnotation = new EventEmitter();
+  @Output() changedStep = new EventEmitter();
 
   @ViewChild('buttonApplyAnnotation', { static: false }) buttonApplyAnnotationRef: ElementRef;
 

@@ -7,13 +7,16 @@
   flex-direction: column;
   height: 100%;
 
-  &__new-annotation {}
+  &__new-annotation {
+  }
 
   &__table-block {
     padding: 0 16px;
     display: flex;
     flex-direction: column;
     overflow: auto;
+    min-height: 240px;
+    max-height: 240px;
   }
 
   &__table {
@@ -30,7 +33,7 @@
   }
 
   &__row {
-    border-bottom: 1px solid #D8DEE4;
+    border-bottom: 1px solid #d8dee4;
   }
 
   &__column {
@@ -49,18 +52,22 @@
     padding: 6px 12px;
   }
 
-  &__btn {}
+  &__btn {
+  }
 
-  &__btn-icon {}
+  &__btn-icon {
+  }
 
+  &__wrapper-step-buttons {
+    padding: 0 16px;
+  }
 }
 
 .item {
-  border-bottom: 1px solid #D8DEE4;
+  border-bottom: 1px solid #d8dee4;
 }
 
 .new-annotation-panel {
-
   padding: 0 16px;
 
   &__title {
@@ -78,7 +85,7 @@
     resize: none;
     height: 6em;
     width: 80%;
-    border: 1px solid #D8DEE4;
+    border: 1px solid #d8dee4;
     border-radius: 8px;
     padding: 8px 14px;
   }
@@ -89,7 +96,8 @@
     margin-left: 14px;
   }
 
-  &__btn {}
+  &__btn {
+  }
 
   &__btn-icon {
     height: 24px;

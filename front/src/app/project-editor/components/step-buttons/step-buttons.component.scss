@@ -1,0 +1,12 @@
+.change-step {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+
+  &__btn {
+    &_back {
+      border: none;
+      color: #007ef2;
+    }
+  }
+}
