@@ -19,6 +19,33 @@
     <p class="init-repository__text">Описание</p>
     <textarea class="init-repository__textarea" placeholder="Описание проекта"></textarea>
   </div>
-  <div class="init-repository__access-repository"></div>
+  <div class="init-repository__access-repository">
+    <form>
+      <div class="init-repository__type-repository">
+        <div class="init-repository__chosen-type">
+          <input type="radio" id="public" name="fav_language" value="public" />
+          <label for="public">
+            <img class="init-repository__img" src="assets/svg/privateRepository.svg" alt="" />
+          </label>
+        </div>
+        <div class="init-repository__text-type">
+          <p class="init-repository__text">Публичный</p>
+          <p>Репозиторий будет доступен всем пользователям для просмотра.</p>
+        </div>
+      </div>
+      <div class="init-repository__type-repository">
+        <div class="init-repository__chosen-type">
+          <input type="radio" id="private" name="fav_language" value="private" />
+          <label for="private">
+            <img class="init-repository__img" src="assets/svg/publicRepository.svg" alt="" />
+          </label>
+        </div>
+        <div class="init-repository__text-type">
+          <p class="init-repository__text">Приватный</p>
+          <p>Репозиторий будет доступен только автору и участникам проекта.</p>
+        </div>
+      </div>
+    </form>
+  </div>
   <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
 </div>

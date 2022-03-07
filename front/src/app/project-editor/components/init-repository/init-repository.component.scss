@@ -43,7 +43,7 @@
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("..//..//..//../assets/svg/arrowDownSelect.svg");
+    background-image: url("..//..//..//../assets/svg/switchAccount.svg");
     background-repeat: no-repeat;
     background-position-x: calc(100% - 10px);
     background-position-y: 50%;
@@ -64,5 +64,19 @@
   }
 
   &__access-repository {
+  }
+
+  &__type-repository {
+  }
+
+  &__img {
+    width: 50px;
+    height: 50px;
+  }
+
+  &__chosen-type {
+  }
+
+  &__text-type {
   }
 }
