@@ -2,16 +2,17 @@
   <div class="init-repository__name-repository">
     <div class="init-repository__name-group">
       <p class="init-repository__text">Название</p>
-      <input class="init-repository__input" type="text" placeholder="Название проекта" />
+      <input class="init-repository__input" type="text" placeholder="Название репозитория" />
     </div>
     <div class="init-repository__name-group">
       <p class="init-repository__text">Заголовок</p>
-      <input class="init-repository__input" type="text" placeholder="Заголовок проекта" />
+      <input class="init-repository__input" type="text" placeholder="Заголовок репозитория" />
     </div>
   </div>
   <div class="init-repository__author">
     <p class="init-repository__text">Автор (пользователь/команда)</p>
     <select class="init-repository__select" name="" id="">
+      <img class="init-repository__avatar" src="../../../../assets/png/avatar.png" alt="" />
       <option value="">1</option>
     </select>
   </div>
@@ -24,8 +25,8 @@
       <div class="init-repository__type-repository">
         <div class="init-repository__chosen-type">
           <input type="radio" id="public" name="fav_language" value="public" />
-          <label for="public">
-            <img class="init-repository__img" src="assets/svg/privateRepository.svg" alt="" />
+          <label class="init-repository__label" for="public">
+            <img class="init-repository__img" src="assets/svg/publicRepository.svg" alt="" />
           </label>
         </div>
         <div class="init-repository__text-type">
@@ -36,8 +37,8 @@
       <div class="init-repository__type-repository">
         <div class="init-repository__chosen-type">
           <input type="radio" id="private" name="fav_language" value="private" />
-          <label for="private">
-            <img class="init-repository__img" src="assets/svg/publicRepository.svg" alt="" />
+          <label class="init-repository__label" for="private">
+            <img class="init-repository__img" src="assets/svg/privateRepository.svg" alt="" />
           </label>
         </div>
         <div class="init-repository__text-type">

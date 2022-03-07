@@ -40,14 +40,19 @@
     border-radius: 8px;
     margin-top: 15px;
     padding: 12px 10px;
+    text-align: center;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url("..//..//..//../assets/svg/switchAccount.svg");
-    background-repeat: no-repeat;
-    background-position-x: calc(100% - 10px);
-    background-position-y: 50%;
+    background-image: url("..//..//..//../assets/svg/switchAccount.svg"), url("../../../../assets/png/avatar.png");
+    background-repeat: no-repeat, no-repeat;
+    background-position-x: calc(100% - 10px), 10px;
+    background-position-y: 50%, 50%;
+    background-size: 14px, 25px;
     width: 30%;
+  }
+
+  &__avatar {
   }
 
   &__description {
@@ -67,6 +72,13 @@
   }
 
   &__type-repository {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+  }
+
+  &__label {
+    margin: 0 10px;
   }
 
   &__img {
@@ -75,8 +87,15 @@
   }
 
   &__chosen-type {
+    display: flex;
+    align-items: center;
   }
 
   &__text-type {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 40px;
+    max-height: 40px;
   }
 }
