@@ -33,10 +33,10 @@ export class UserEntity {
   @Column({ select: false })
   password: string;
 
-  @Column({ length: 125 })
+  @Column({ length: 125, nullable: true })
   firstName: string;
 
-  @Column({ length: 125 })
+  @Column({ length: 125, nullable: true })
   lastName: string;
 
   @CreateDateColumn({ select: false })
