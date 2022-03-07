@@ -62,7 +62,7 @@
           </div>
           <div class="user-menu__item" mat-menu-item>
             <img class="user-menu__item-image" src="assets/svg/settings.svg" alt="настройки" />
-            <button class="user-menu__item-action" routerLink="#">Настройки</button>
+            <button class="user-menu__item-action" (click)="openSettings()">Настройки</button>
           </div>
           <div class="user-menu__item" mat-menu-item (click)="logout()">
             <img

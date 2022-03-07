@@ -1,15 +1,15 @@
-<div class="auth">
-  <form class="auth__form auth-form" (ngSubmit)="onSubmit()" [formGroup]="registrationFormGroup">
-    <div class="auth-form__header">
-      <a class="auth-form__back back" mat-icon-button [routerLink]="'../login'">
+<div class="user-form-container">
+  <form class="user-form" (ngSubmit)="onSubmit()" [formGroup]="registrationFormGroup">
+    <div class="user-form__header">
+      <a class="user-form__back back" mat-icon-button [routerLink]="'../login'">
         <img class="back__icon" src="assets/svg/west.svg" alt="Назад" />
       </a>
-      <h1 class="auth-title">Регистрация</h1>
+      <h1 class="user-form-title">Регистрация</h1>
     </div>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите эл. почту</mat-label>
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите эл. почту</mat-label>
       <input
-        class="auth-form__input"
+        class="user-form__input"
         matInput
         placeholder="pat@example.com"
         formControlName="email"
@@ -19,9 +19,9 @@
         {{ getErrorMessage(registrationFormGroup.get('email'), 'Некорректный email') }}</mat-error
       >
     </mat-form-field>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите логин</mat-label>
-      <input class="auth-form__input" matInput formControlName="login" autocomplete="off" />
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите логин</mat-label>
+      <input class="user-form__input" matInput formControlName="login" autocomplete="off" />
       <mat-error *ngIf="registrationFormGroup.get('login')?.invalid">
         {{
           getErrorMessage(
@@ -31,9 +31,9 @@
         }}</mat-error
       >
     </mat-form-field>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите никнейм</mat-label>
-      <input class="auth-form__input" matInput formControlName="username" autocomplete="off" />
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите никнейм</mat-label>
+      <input class="user-form__input" matInput formControlName="username" autocomplete="off" />
       <mat-error *ngIf="registrationFormGroup.get('username')?.invalid">
         {{
           getErrorMessage(
@@ -43,10 +43,10 @@
         }}</mat-error
       >
     </mat-form-field>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите пароль</mat-label>
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите пароль</mat-label>
       <input
-        class="auth-form__input"
+        class="user-form__input"
         matInput
         [type]="hidePass ? 'password' : 'text'"
         placeholder="paSsword!"
@@ -62,7 +62,7 @@
         }}
       </mat-error>
       <button
-        class="auth-form__pass-hidePass"
+        class="user-form__pass-hidePass"
         mat-icon-button
         matSuffix
         type="button"
@@ -72,22 +72,22 @@
         [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
       >
         <img
-          class="auth-form__icon"
+          class="user-form__icon"
           [src]="hidePass ? 'assets/svg/visibility_off.svg' : 'assets/svg/visibility.svg'"
           alt="Показать пароль"
         />
       </button>
     </mat-form-field>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите имя</mat-label>
-      <input class="auth-form__input" matInput formControlName="firstName" autocomplete="off" />
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите имя</mat-label>
+      <input class="user-form__input" matInput formControlName="firstName" autocomplete="off" />
     </mat-form-field>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите фамилию</mat-label>
-      <input class="auth-form__input" matInput formControlName="lastName" autocomplete="off" />
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите фамилию</mat-label>
+      <input class="user-form__input" matInput formControlName="lastName" autocomplete="off" />
     </mat-form-field>
-    <div class="auth-form__action auth-form__action_flex">
-      <button class="auth-form__action-btn" mat-flat-button color="primary">
+    <div class="user-form__action user-form__action_flex">
+      <button class="user-form__action-btn" mat-flat-button color="primary">
         Зарегистрироваться
       </button>
     </div>

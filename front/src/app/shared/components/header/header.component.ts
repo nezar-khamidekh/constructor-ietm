@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { UserI } from '../../models/user.interface';
+import { SettingsComponent } from '../settings/settings.component';
 
 @Component({
   selector: 'app-header',
@@ -11,9 +13,17 @@ import { UserI } from '../../models/user.interface';
 export class HeaderComponent implements OnInit {
   @Input() user: UserI | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, public dialog: MatDialog) {}
 
   ngOnInit(): void {}
+
+  openSettings() {
+    this.dialog.open(SettingsComponent, {
+      data: {
+        user: this.user,
+      },
+    });
+  }
 
   logout() {
     this.authService.logout().subscribe((res) => {

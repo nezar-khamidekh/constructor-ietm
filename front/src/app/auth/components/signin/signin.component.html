@@ -1,29 +1,29 @@
-<div class="auth">
-  <form class="auth__form auth-form" (ngSubmit)="onSubmit()" [formGroup]="loginFormGroup">
-    <div class="auth-form__header">
-      <h1 class="auth-title">Авторизация</h1>
+<div class="user-form-container">
+  <form class="user-form" (ngSubmit)="onSubmit()" [formGroup]="loginFormGroup">
+    <div class="user-form__header">
+      <h1 class="user-form-title">Авторизация</h1>
     </div>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите эл. почту или логин</mat-label>
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите эл. почту или логин</mat-label>
       <input
-        class="auth-form__input"
+        class="user-form__input"
         matInput
         placeholder="pat@example.com"
         formControlName="login"
         autocomplete="off"
       />
     </mat-form-field>
-    <mat-form-field class="auth-form__field" appearance="standard">
-      <mat-label class="auth-form__label">Введите пароль</mat-label>
+    <mat-form-field class="user-form__field" appearance="standard">
+      <mat-label class="user-form__label">Введите пароль</mat-label>
       <input
-        class="auth-form__input"
+        class="user-form__input"
         matInput
         [type]="hidePass ? 'password' : 'text'"
         formControlName="password"
         autocomplete="off"
       />
       <button
-        class="auth-form__pass-hide"
+        class="user-form__pass-hide"
         mat-icon-button
         matSuffix
         type="button"
@@ -32,21 +32,21 @@
         [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
       >
         <img
-          class="auth-form__icon"
+          class="user-form__icon"
           [src]="hidePass ? 'assets/svg/visibility_off.svg' : 'assets/svg/visibility.svg'"
           alt="Показать пароль"
         />
       </button>
     </mat-form-field>
-    <!-- <a class="auth-form__forgot-pass">Забыли пароль?</a> -->
-    <div class="auth-form__action auth-form__action_flex">
-      <button class="auth-form__action-btn" mat-flat-button type="submit" color="primary">
+    <!-- <a class="user-form__forgot-pass">Забыли пароль?</a> -->
+    <div class="user-form__action user-form__action_flex">
+      <button class="user-form__action-btn" mat-flat-button type="submit" color="primary">
         Войти
       </button>
     </div>
-    <div class="auth-form__action auth-form__action_flex">
+    <div class="user-form__action user-form__action_flex">
       <a
-        class="auth-form__action-btn"
+        class="user-form__action-btn"
         mat-stroked-button
         [routerLink]="'../registration'"
         color="warn"

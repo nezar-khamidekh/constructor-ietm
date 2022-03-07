@@ -1,6 +1,6 @@
 @import '_variables';
 
-.auth {
+.user-form-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -11,7 +11,7 @@
   }
 }
 
-.auth-form {
+.user-form {
   min-width: 370px;
   padding: 18px 20px;
   border: 1px solid $borderColor;
@@ -98,7 +98,7 @@
   }
 }
 
-.auth-title {
+.user-form-title {
   font-size: 22px;
   font-weight: 500;
   text-align: center;
