@@ -381,7 +381,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         annotationMarkers.push(annotationSprite);
 
         const annotationDiv = this.renderer.createElement('div');
-        this.renderer.addClass(annotationDiv, 'annotationLabel');
+        this.renderer.addClass(annotationDiv, 'annotation-label');
         this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.title);
         const annotationLabel = new CSS2DObject(annotationDiv);
         annotationLabel.position.copy(
@@ -393,7 +393,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (annotation.description) {
           const annotationDescriptionDiv = this.renderer.createElement('div');
-          this.renderer.addClass(annotationDescriptionDiv, 'annotationDescription');
+          this.renderer.addClass(annotationDescriptionDiv, 'annotation-description');
           this.renderer.setProperty(annotationDescriptionDiv, 'innerHTML', annotation.description);
           this.renderer.appendChild(annotationDiv, annotationDescriptionDiv);
           annotation.descriptionDomElement = annotationDescriptionDiv;

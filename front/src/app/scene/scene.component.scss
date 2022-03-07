@@ -13,3 +13,39 @@
 canvas {
   border-radius: 12px;
 }
+
+.annotation-label {
+  color: #ffffff;
+  font-family: monospace;
+  pointer-events: none;
+  font-size: 17px;
+}
+
+.annotation-description {
+  color: #ffffff;
+  font-family: monospace;
+  pointer-events: none;
+  font-size: 14px;
+  position: absolute;
+  left: 25px;
+  padding: 1em;
+  width: 200px;
+  background: rgba(0, 0, 0, 0.66);
+  border-radius: 0.5em;
+  transition: opacity 0.5s;
+  display: none;
+}
+
+.context-menu {
+  &__btn {
+    display: flex !important;
+    align-items: center;
+  }
+
+  &__btn-icon {
+    margin-right: 10px;
+  }
+
+  &__btn-text {
+  }
+}
