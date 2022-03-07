@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
+import { DataStoreService } from 'src/app/shared/services/data-store.service';
 import { SubSink } from 'subsink';
 import { AuthService } from '../../services/auth.service';
 
@@ -17,7 +18,12 @@ export class SigninComponent implements OnInit, OnDestroy {
   hidePass = true;
   loginFormGroup: FormGroup;
 
-  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private dataStore: DataStoreService,
+  ) {}
 
   ngOnInit(): void {
     this.initializeLoginForm();
@@ -32,8 +38,8 @@ export class SigninComponent implements OnInit, OnDestroy {
       this.subs.add(
         this.authService.login(this.loginFormGroup.value).subscribe(
           (user: any) => {
-            console.log(user);
-            this.router.navigate(['']);
+            // this.dataStore.setUser(user);
+            this.router.navigate(['main']);
           },
           (err: any) => {
             console.log(err);

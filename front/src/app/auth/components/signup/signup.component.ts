@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserCreateI } from 'src/app/shared/models/userCreate.interface';
+import { DataStoreService } from 'src/app/shared/services/data-store.service';
 import { SubSink } from 'subsink';
 import { AuthService } from '../../services/auth.service';
 
@@ -17,7 +18,12 @@ export class SignupComponent implements OnInit {
   hidePass = true;
   registrationFormGroup: FormGroup;
 
-  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private dataStore: DataStoreService,
+  ) {}
 
   ngOnInit(): void {
     this.initializeRegistrationForm();
@@ -42,8 +48,8 @@ export class SignupComponent implements OnInit {
       };
       this.authService.register(user).subscribe(
         (user: any) => {
-          console.log(user);
-          this.router.navigate(['/main']);
+          // this.dataStore.setUser(user);
+          this.router.navigate(['main']);
         },
         (err: any) => {
           console.log(err);

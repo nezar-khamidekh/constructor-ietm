@@ -1,4 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { filter } from 'rxjs/operators';
+import { UserI } from '../shared/models/user.interface';
+import { DataStoreService } from '../shared/services/data-store.service';
 
 @Component({
   selector: 'app-main',
@@ -7,7 +10,16 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent implements OnInit {
-  constructor() {}
+  user: UserI;
 
-  ngOnInit(): void {}
+  constructor(private dataStore: DataStoreService) {}
+
+  ngOnInit(): void {
+    this.dataStore
+      .getUser()
+      .pipe(filter((value) => value !== null))
+      .subscribe((user) => {
+        this.user = user;
+      });
+  }
 }

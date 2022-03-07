@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../shared/guards/auth.guard';
 import { PageComponent } from './page.component';
 
 const routes: Routes = [
@@ -10,11 +11,26 @@ const routes: Routes = [
       {
         path: 'main',
         loadChildren: () => import('../main/main.module').then((m) => m.MainModule),
+        data: {
+          checkUser: true,
+        },
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'repositories',
+        loadChildren: () =>
+          import('../repositories-page/repositories-page.module').then(
+            (m) => m.RepositoriesPageModule,
+          ),
       },
       {
         path: 'editor',
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
+        canActivate: [AuthGuard],
+        data: {
+          checkUser: true,
+        },
       },
       {
         path: 'editor/:model',
@@ -23,7 +39,7 @@ const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'main',
+        redirectTo: 'repositories',
       },
     ],
   },

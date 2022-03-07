@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UserI } from 'src/app/shared/models/user.interface';
 import { UserCreateI } from 'src/app/shared/models/userCreate.interface';
 import { UserCredsI } from 'src/app/shared/models/userCreds.interface';
 import { environment } from 'src/environments/environment';
@@ -13,7 +14,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(user: UserCredsI) {
+  login(user: UserCredsI): Observable<any> {
     return this.http.post(`${this.apiUrl}/user/login`, user, {
       observe: 'response',
       withCredentials: true,
@@ -24,7 +25,7 @@ export class AuthService {
     return this.http.get<boolean>(`${this.apiUrl}/user/is_auth`, { withCredentials: true });
   }
 
-  register(user: UserCreateI) {
+  register(user: UserCreateI): Observable<any> {
     return this.http.post(`${this.apiUrl}/user/register`, user, {
       observe: 'response',
       withCredentials: true,

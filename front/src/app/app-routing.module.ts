@@ -1,23 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './shared/guards/auth.guard';
+import { UserResolverService } from './shared/resolvers/user-resolver';
 
 const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
-    data: {
-      fromAuth: true,
-    },
     canActivate: [AuthGuard],
   },
   {
     path: '',
     loadChildren: () => import('./page/page.module').then((m) => m.PageModule),
-    data: {
-      fromAuth: false,
+    resolve: {
+      user: UserResolverService,
     },
-    canActivate: [AuthGuard],
   },
   {
     path: '**',

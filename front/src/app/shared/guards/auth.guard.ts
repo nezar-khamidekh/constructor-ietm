@@ -9,23 +9,21 @@ import { AuthService } from 'src/app/auth/services/auth.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private location: Location,
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
     return this.authService.isAuthenticated().pipe(
       map((isAuthenticated: boolean) => {
-        if (route.data.fromAuth) {
+        if (state.url.startsWith('/auth')) {
           this.router.navigate(['/main']);
           return false;
-        } else return true;
+        }
+        return true;
       }),
       catchError((err) => {
         console.log(err);
-        return of(true);
+        if (route.data.checkUser) this.router.navigate(['/repositories']);
+        return of(!route.data.checkUser);
       }),
     );
   }
