@@ -1,16 +1,20 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
+  Post,
   Response,
   StreamableFile,
 } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import { CreateCatDto } from '../models/dto/createCat.dto';
+import { ViewerService } from '../service/viewer.service';
 
 @Controller('viewer')
 export class ViewerController {
-  constructor() {}
+  constructor(private viewerService: ViewerService) {}
 
   @Get('default')
   defaultModel(@Response({ passthrough: true }) res): StreamableFile {

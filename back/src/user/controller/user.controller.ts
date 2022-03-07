@@ -16,6 +16,7 @@ import { LoginUserDto } from '../models/dto/LoginUser.dto';
 import { UserI } from '../models/interfaces/user.inteface';
 import { UserService } from '../service/user.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserDocument } from '../models/schemas/user.schema';
 
 @Controller('user')
 export class UserController {
@@ -24,7 +25,7 @@ export class UserController {
   @Post('register')
   create(@Body() createUserDto: CreateUserDto, @Res() response: Response) {
     return this.userService.create(createUserDto).pipe(
-      switchMap((user: UserI) => {
+      switchMap(() => {
         return this.login(
           {
             ...LoginUserDto,
@@ -51,7 +52,7 @@ export class UserController {
           httpOnly: true,
           secure: false,
         });
-        return response.status(HttpStatus.ACCEPTED).send();
+        return response.status(HttpStatus.ACCEPTED).send(session.user);
       }),
     );
   }
@@ -65,9 +66,15 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post('update')
+  updateUser(@Body() updateUserDto: UserDocument) {
+    return this.userService.updateOne(updateUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
-  getCurUser(@Req() request): Observable<UserI> {
-    return request.user;
+  getCurUser(@Req() req): Observable<UserI> {
+    return this.userService.findOne(req.user._id);
   }
 
   @UseGuards(JwtAuthGuard)

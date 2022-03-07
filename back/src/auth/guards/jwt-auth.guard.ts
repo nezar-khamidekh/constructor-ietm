@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { UserI } from 'src/user/models/interfaces/user.inteface';
+import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { UserService } from 'src/user/service/user.service';
 import { SessionI } from '../models/interfaces/session.interface';
 import { AuthService } from '../service/auth.service';
@@ -28,10 +29,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (access_token) return super.canActivate(context);
     else if (refresh_token)
       return this.authService.getUserByToken(refresh_token).pipe(
-        switchMap((user: UserI) => {
+        switchMap((user: UserDocument) => {
           return forkJoin([
-            this.authService.deleteRefreshToken(refresh_token, user.id),
-            this.userService.generateSession(user),
+            this.authService.deleteRefreshToken(refresh_token, user._id),
+            this.userService.generateSession({
+              _id: user._id,
+              login: user.login,
+            }),
           ]).pipe(
             switchMap(([deleted, session]: [boolean, SessionI]) => {
               response.cookie('access_token', session.access_token, {

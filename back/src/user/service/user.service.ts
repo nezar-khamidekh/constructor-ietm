@@ -1,21 +1,21 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/mongoose';
 import { from, map, Observable, switchMap } from 'rxjs';
-import { RefreshTokenI } from 'src/auth/models/interfaces/refresh-token.interface';
 import { SessionI } from 'src/auth/models/interfaces/session.interface';
 import { AuthService } from 'src/auth/service/auth.service';
-import { Repository } from 'typeorm';
 import { CreateUserDto } from '../models/dto/CreateUser.dto';
 import { LoginUserDto } from '../models/dto/LoginUser.dto';
-import { UserEntity } from '../models/entities/user.entity';
 import { UserI } from '../models/interfaces/user.inteface';
+import { User, UserDocument } from '../models/schemas/user.schema';
+import { Model } from 'mongoose';
+import { RefreshTokenDocument } from 'src/auth/models/schema/refresh-token.schema';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserI>,
     private authService: AuthService,
+
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
   create(createUserDto: CreateUserDto): Observable<UserI> {
@@ -29,22 +29,13 @@ export class UserService {
                   .hashPassword(createUserDto.password)
                   .pipe(
                     switchMap((passHash: string) => {
-                      return from(
-                        this.userRepository.save(
-                          this.userRepository.create({
-                            ...createUserDto,
-                            password: passHash,
-                          }),
-                        ),
-                      ).pipe(
-                        map((savedUser: UserI) => {
-                          const {
-                            id,
-                            password,
-                            creationTime,
-                            updateTime,
-                            ...user
-                          } = savedUser;
+                      const newUser = new this.userModel({
+                        ...createUserDto,
+                        password: passHash,
+                      });
+                      return from(newUser.save()).pipe(
+                        map((savedUser: UserDocument) => {
+                          const { _id, password, ...user } = savedUser;
                           return user;
                         }),
                       );
@@ -70,7 +61,7 @@ export class UserService {
 
   login(loginUserDto: LoginUserDto): Observable<SessionI> {
     return this.findUserByEmailOrLogin(loginUserDto.login).pipe(
-      switchMap((user: UserI) => {
+      switchMap((user: UserDocument) => {
         if (user) {
           return this.validatePassword(
             loginUserDto.password,
@@ -97,34 +88,33 @@ export class UserService {
     );
   }
 
-  generateSession(user: UserI): Observable<SessionI> {
-    return this.findOne(user.id).pipe(
-      switchMap((user: UserI) => {
-        if (user)
-          return this.authService.generateJwt(user, '300s').pipe(
-            switchMap((jwt: string) => {
-              return this.authService.makeRefreshToken(user.id).pipe(
-                map((refresh: RefreshTokenI) => {
-                  return <SessionI>{
-                    access_token: jwt,
-                    refresh_token: refresh,
-                  };
-                }),
-              );
-            }),
-          );
-        else
-          throw new HttpException(
-            'Такого пользователя не существует',
-            HttpStatus.NOT_FOUND,
-          );
+  generateSession(user: any): Observable<SessionI> {
+    return this.authService.generateJwt(user, '300s').pipe(
+      switchMap((jwt: string) => {
+        return this.authService.makeRefreshToken(user._id).pipe(
+          map((refresh: RefreshTokenDocument) => {
+            return <SessionI>{
+              access_token: jwt,
+              refresh_token: refresh,
+              user: {
+                _id: user._id,
+                lastName: user.lastName,
+                firstName: user.firstName,
+                email: user.email,
+                username: user.username,
+                login: user.login,
+                avatar: user.avatar,
+              },
+            };
+          }),
+        );
       }),
     );
   }
 
-  checkLogin(login: string): Observable<UserI> {
-    return from(this.userRepository.findOne({ login })).pipe(
-      map((user: UserI) => {
+  checkLogin(login: string): Observable<UserDocument> {
+    return from(this.userModel.findOne({ login })).pipe(
+      map((user) => {
         if (user) {
           return user;
         } else
@@ -136,23 +126,61 @@ export class UserService {
     );
   }
 
-  private findUserByEmailOrLogin(str: string): Observable<UserI> {
+  private findUserByEmailOrLogin(str: string): Observable<UserDocument> {
     return from(
-      this.userRepository
-        .createQueryBuilder('user')
-        .select(['user.login', 'user.email', 'user.password', 'user.id'])
-        .where('user.email = :email', { email: str.toLowerCase() })
-        .orWhere('user.login = :login', { login: str.toLowerCase() })
-        .getOne(),
+      this.userModel.findOne({ $or: [{ login: str }, { email: str }] }, [
+        'email',
+        'login',
+        'lastName',
+        'firstName',
+        'email',
+        'username',
+        'password',
+        'avatar',
+      ]),
     ).pipe(
-      map((user: UserI) => {
+      map((user: UserDocument) => {
         return user;
       }),
     );
   }
 
-  findOne(id: number): Observable<UserI> {
-    return from(this.userRepository.findOne({ id }));
+  findOne(id: string): Observable<UserDocument> {
+    return from(
+      this.userModel.findById(id, [
+        'email',
+        'login',
+        'lastName',
+        'firstName',
+        'email',
+        'username',
+        'avatar',
+      ]),
+    );
+  }
+
+  updateOne(updateData: UserDocument): Observable<boolean> {
+    if (updateData.password)
+      return this.authService.hashPassword(updateData.password).pipe(
+        switchMap((hashedPass) => {
+          updateData.password = hashedPass;
+          return from(
+            this.userModel.updateOne({ _id: updateData._id }, updateData),
+          ).pipe(
+            map((result) => {
+              return true;
+            }),
+          );
+        }),
+      );
+    else
+      return from(
+        this.userModel.updateOne({ _id: updateData._id }, updateData),
+      ).pipe(
+        map((result) => {
+          return true;
+        }),
+      );
   }
 
   private validatePassword(
@@ -163,16 +191,16 @@ export class UserService {
   }
 
   private mailExists(email: string): Observable<boolean> {
-    return from(this.userRepository.findOne({ email })).pipe(
-      map((user: UserI) => {
+    return from(this.userModel.findOne({ email })).pipe(
+      map((user) => {
         return user ? true : false;
       }),
     );
   }
 
   private loginExists(login: string): Observable<boolean> {
-    return from(this.userRepository.findOne({ login })).pipe(
-      map((user: UserI) => {
+    return from(this.userModel.findOne({ login })).pipe(
+      map((user) => {
         return user ? true : false;
       }),
     );

@@ -1,58 +1,59 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { from, map, Observable } from 'rxjs';
-import { UserEntity } from 'src/user/models/entities/user.entity';
-import { UserI } from 'src/user/models/interfaces/user.inteface';
-import { DeleteResult, Repository } from 'typeorm';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { RefreshTokenDto } from '../models/dto/refresh-token.dto';
-import { RefreshTokenEntity } from '../models/entities/refresh-token.entity';
-import { RefreshTokenI } from '../models/interfaces/refresh-token.interface';
 import { v4 as uuidv4 } from 'uuid';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import {
+  RefreshToken,
+  RefreshTokenDocument,
+} from '../models/schema/refresh-token.schema';
+import { User, UserDocument } from 'src/user/models/schemas/user.schema';
 const bcrypt = require('bcrypt');
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    @InjectRepository(RefreshTokenEntity)
-    private refreshRepository: Repository<RefreshTokenI>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserI>,
+    @InjectModel(RefreshToken.name)
+    private refreshTokenModel: Model<RefreshTokenDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  makeRefreshToken(userId: number): Observable<RefreshTokenI> {
-    return from(
-      this.refreshRepository.save(
-        this.refreshRepository.create(this.generateRefreshTokenDto(userId)),
-      ),
+  makeRefreshToken(userId: number): Observable<RefreshTokenDocument> {
+    const refreshTokenData = new this.refreshTokenModel(
+      this.generateRefreshTokenDto(userId),
     );
+    return from(refreshTokenData.save());
   }
 
-  deleteRefreshToken(token: string, user: number): Observable<boolean> {
-    return from(this.refreshRepository.delete({ token, user })).pipe(
-      map((result: DeleteResult) => {
-        if (result.affected !== null) return true;
+  deleteRefreshToken(token: string, userId: number): Observable<boolean> {
+    return from(
+      this.refreshTokenModel.deleteOne({
+        $and: [{ token: token }, { userId: userId }],
+      }),
+    ).pipe(
+      map((result: any) => {
+        if (result.deletedCount) return true;
         else return false;
       }),
     );
   }
 
-  getUserByToken(refresh: string): Observable<UserI> {
-    return from(
-      this.userRepository
-        .createQueryBuilder('user')
-        .innerJoin('user.refresh_tokens', 'refresh')
-        .where('refresh.token = :token', { token: refresh })
-        .getOne(),
-    ).pipe(
-      map((user: UserI) => {
-        if (user) return user;
-        else
-          throw new HttpException(
-            'Пользователь не найден',
-            HttpStatus.NOT_FOUND,
-          );
+  getUserByToken(refresh: string): Observable<UserDocument> {
+    return from(this.refreshTokenModel.findOne({ token: refresh })).pipe(
+      switchMap((rToken) => {
+        return from(this.userModel.findById(rToken.userId)).pipe(
+          map((user) => {
+            if (user) return user;
+            else
+              throw new HttpException(
+                'Пользователь не найден',
+                HttpStatus.NOT_FOUND,
+              );
+          }),
+        );
       }),
     );
   }
@@ -64,7 +65,7 @@ export class AuthService {
       token: uuidv4(),
       expireDate: date,
     };
-    refreshTokenDto.user = userId;
+    refreshTokenDto.userId = userId;
     return refreshTokenDto;
   }
 

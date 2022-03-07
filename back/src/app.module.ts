@@ -8,18 +8,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ViewerModule } from './viewer/viewer.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 const modules = [
   ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', './.env'] }),
-  TypeOrmModule.forRoot({
-    type: 'postgres',
-    autoLoadEntities: true,
-    synchronize: true,
-    url: process.env.DATABASE_URL,
-  }),
+  MongooseModule.forRoot(process.env.DATABASE_URL),
   UserModule,
   AuthModule,
-  ViewerModule
+  ViewerModule,
 ];
 
 if (process.env.NODE_ENV !== 'development') {
