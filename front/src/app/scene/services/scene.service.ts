@@ -554,4 +554,6 @@ export class SceneService {
   setAnnotationMarkers(annotationMarkers: THREE.Sprite[]) {
     this.annotationMarkers = annotationMarkers;
   }
+
+  cutModel() {}
 }

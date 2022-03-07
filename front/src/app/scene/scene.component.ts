@@ -37,6 +37,7 @@ export enum VIEWER_BUTTONS {
   StopAnimation,
   PlayAnimation,
   PauseAnimation,
+  Cut,
 }
 
 @Component({
@@ -230,6 +231,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       case VIEWER_BUTTONS.PauseAnimation:
         this.sceneService.pauseAnimation();
         break;
+      case VIEWER_BUTTONS.Cut:
+        if (!this.btnIsInAction) this.cutModel();
+        else this.stopCuttingModel();
+        break;
       default:
         break;
     }
@@ -255,6 +260,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case VIEWER_BUTTONS.PauseAnimation:
         if (newButtonIndex !== VIEWER_BUTTONS.PlayAnimation) this.sceneService.stopAnimation();
+        break;
+      case VIEWER_BUTTONS.Cut:
+        this.stopCuttingModel();
+        this.resetCamera();
         break;
       default:
         break;
@@ -430,5 +439,13 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.contextMenuClickedOutside = true;
     this.contextMenuFirstOpen = true;
     this.matMenuTrigger.closeMenu();
+  }
+
+  cutModel() {
+    this.btnIsInAction = true;
+  }
+
+  stopCuttingModel() {
+    this.btnIsInAction = false;
   }
 }

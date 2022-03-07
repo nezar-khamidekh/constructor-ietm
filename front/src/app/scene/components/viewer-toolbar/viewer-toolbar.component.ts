@@ -69,4 +69,12 @@ export class ViewerToolbarComponent implements OnInit {
   isPlayingAnimation() {
     return this.activeBtnIndex === VIEWER_BUTTONS.PlayAnimation;
   }
+
+  cutModel() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.Cut);
+  }
+
+  cutModelBtnIsActive() {
+    return this.activeBtnIndex === VIEWER_BUTTONS.Cut;
+  }
 }

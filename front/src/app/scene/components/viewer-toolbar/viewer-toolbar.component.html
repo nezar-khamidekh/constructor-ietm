@@ -67,5 +67,53 @@
         ></app-viewer-button>
       </ng-template>
     </div>
+    <div class="toolbar__btn" matTooltip="Разрез модели">
+      <app-viewer-button
+        [isActive]="cutModelBtnIsActive()"
+        [iconPath]="'assets/svg/cutModel.svg'"
+        [buttonName]="'Разрезать модель'"
+        (btnClicked)="cutModel()"
+      ></app-viewer-button>
+      <div class="toolbar__panel" [hidden]="!cutModelBtnIsActive()">
+        <mat-radio-group>
+          <div class="toolbar__row-plane">
+            <mat-radio-button value="1">x</mat-radio-button>
+            <div class="toolbar__wrapper-slider">
+              <mat-slider
+                [min]="rotateAnimationSliderMinValue"
+                [max]="rotateAnimationSliderMaxValue"
+                [step]="rotateAnimationSliderStep"
+                [value]="rotateAnimationSliderValue"
+                (input)="rotateCameraSpeedChanged.emit($event.value!)"
+              ></mat-slider>
+            </div>
+          </div>
+          <div class="toolbar__row-plane">
+            <mat-radio-button value="2">y</mat-radio-button>
+            <div class="toolbar__wrapper-slider">
+              <mat-slider
+                [min]="rotateAnimationSliderMinValue"
+                [max]="rotateAnimationSliderMaxValue"
+                [step]="rotateAnimationSliderStep"
+                [value]="rotateAnimationSliderValue"
+                (input)="rotateCameraSpeedChanged.emit($event.value!)"
+              ></mat-slider>
+            </div>
+          </div>
+          <div class="toolbar__row-plane">
+            <mat-radio-button value="3">z</mat-radio-button>
+            <div class="toolbar__wrapper-slider">
+              <mat-slider
+                [min]="rotateAnimationSliderMinValue"
+                [max]="rotateAnimationSliderMaxValue"
+                [step]="rotateAnimationSliderStep"
+                [value]="rotateAnimationSliderValue"
+                (input)="rotateCameraSpeedChanged.emit($event.value!)"
+              ></mat-slider>
+            </div>
+          </div>
+        </mat-radio-group>
+      </div>
+    </div>
   </div>
 </div>

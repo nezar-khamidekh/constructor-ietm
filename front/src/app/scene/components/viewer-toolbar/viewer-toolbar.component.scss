@@ -45,4 +45,18 @@
     box-shadow: 1px 3px 10px 0 rgb(0 0 0 / 50%);
     transform: translateX(calc(-50% + 23px));
   }
+
+  &__row-plane {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+  }
+
+  &__wrapper-slider {
+    padding: 0 10px;
+  }
+}
+
+mat-radio-button {
+  color: black !important;
 }

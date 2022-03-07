@@ -8,6 +8,7 @@ import { ViewerButtonComponent } from './components/viewer-button/viewer-button.
 import { MatSliderModule } from '@angular/material/slider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent],
@@ -18,6 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSliderModule,
     MatMenuModule,
     MatTooltipModule,
+    MatRadioModule,
   ],
   exports: [SceneComponent],
 })
