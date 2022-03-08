@@ -23,7 +23,11 @@ import * as TWEEN from '@tweenjs/tween.js';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/editor-viewer.component';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { CAMERA_ROTATE_SPEED, EXPLODE_POWER } from '../shared/models/viewerConstants';
+import {
+  CAMERA_ROTATE_SPEED,
+  CUTTING_LENGTH,
+  EXPLODE_POWER,
+} from '../shared/models/viewerConstants';
 import { ActivatedRoute } from '@angular/router';
 
 export enum VIEWER_BUTTONS {
@@ -74,6 +78,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   rotateAnimationBtnIsActive = false;
   rotateSpeedValue = CAMERA_ROTATE_SPEED;
   explodePowerValue = EXPLODE_POWER;
+  cuttingLengthValue = CUTTING_LENGTH;
   activeBtnIndex = VIEWER_BUTTONS.Default;
   btnIsInAction = false;
 
@@ -232,8 +237,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sceneService.pauseAnimation();
         break;
       case VIEWER_BUTTONS.Cut:
-        if (!this.btnIsInAction) this.cutModel();
-        else this.stopCuttingModel();
+        if (!this.btnIsInAction) {
+          this.btnIsInAction = true;
+          this.sceneService.createPlanes();
+        } else this.stopCuttingModel();
         break;
       default:
         break;
@@ -443,9 +450,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   cutModel() {
     this.btnIsInAction = true;
+    // this.sceneService.cutModel();
   }
 
   stopCuttingModel() {
     this.btnIsInAction = false;
+  }
+
+  onCuttingLengthChanged(cuttingLengthValue: any) {
+    this.cuttingLengthValue = cuttingLengthValue;
+    this.sceneService.cutModel(0, cuttingLengthValue);
   }
 }

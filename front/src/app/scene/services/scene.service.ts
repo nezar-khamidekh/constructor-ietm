@@ -31,6 +31,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,7 @@ export class SceneService {
   annotations$ = new BehaviorSubject<any[]>([]);
   annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
+  planes: THREE.Plane[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -101,6 +103,7 @@ export class SceneService {
       model: new THREE.Object3D(),
       plant: new THREE.Vector3(),
       state: VIEWER_STATE.Default,
+      object: new THREE.Group(),
     };
   }
 
@@ -555,5 +558,24 @@ export class SceneService {
     this.annotationMarkers = annotationMarkers;
   }
 
-  cutModel() {}
+  createPlanes() {
+    console.log(this.viewer.model);
+    this.planes = [
+      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
+      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
+    ];
+
+    let planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
+    planeHelpers.forEach((planeHelper) => {
+      planeHelper.visible = false;
+      this.viewer.scene.add(planeHelper);
+    });
+  }
+
+  cutModel(planeIndex: number, cuttingModelValue: number) {
+    this.planes[planeIndex].constant = cuttingModelValue;
+  }
+
+  createPlaneStencilGroup() {}
 }
