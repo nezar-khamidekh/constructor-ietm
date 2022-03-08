@@ -1,5 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { UserI } from '../../models/user.interface';
 import { SettingsComponent } from '../settings/settings.component';
@@ -10,12 +18,29 @@ import { SettingsComponent } from '../settings/settings.component';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnChanges {
   @Input() user: UserI | null = null;
+  userAvatarPath!: SafeResourceUrl;
 
-  constructor(private authService: AuthService, public dialog: MatDialog) {}
+  constructor(
+    private authService: AuthService,
+    public dialog: MatDialog,
+    private sanitizer: DomSanitizer,
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (this.user)
+      this.userAvatarPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+        'data:image/jpg;base64,' + this.user.avatar,
+      );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.user && !changes.user.firstChange && this.user)
+      this.userAvatarPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+        'data:image/jpg;base64,' + this.user.avatar,
+      );
+  }
 
   openSettings() {
     this.dialog.open(SettingsComponent, {

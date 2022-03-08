@@ -1,11 +1,22 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Inject,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
+  Renderer2,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SubSink } from 'subsink';
 import { UserI } from '../../models/user.interface';
-import { UserCreateI } from '../../models/userCreate.interface';
+import { UserUpdateI } from '../../models/userUpdate.interface';
 import { DataStoreService } from '../../services/data-store.service';
 import { UserService } from '../../services/user.service';
+import * as Croppie from 'croppie';
 
 interface DIALOG_DATA {
   user: UserI;
@@ -22,15 +33,30 @@ export class SettingsComponent implements OnInit {
 
   hidePass = true;
   userFormGroup: FormGroup;
+  imageLoadFailed = false;
+  userImgPath!: SafeResourceUrl;
+  croppieObj: any;
+  fileReader = new FileReader();
+  previewImage: any;
+  previewImageUrl!: string;
+
+  @ViewChild('croppie') croppie!: ElementRef;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: DIALOG_DATA,
     private fb: FormBuilder,
     private userService: UserService,
     private dataStore: DataStoreService,
-    @Inject(MAT_DIALOG_DATA) private data: DIALOG_DATA,
+    private dialogRef: MatDialogRef<SettingsComponent>,
+    private sanitizer: DomSanitizer,
+    private cdr: ChangeDetectorRef,
+    private renderer: Renderer2,
   ) {}
 
   ngOnInit(): void {
+    this.userImgPath = this.sanitizer.bypassSecurityTrustResourceUrl(
+      'data:image/jpg;base64,' + this.data.user.avatar,
+    );
     this.initializeUserForm();
   }
 
@@ -40,22 +66,27 @@ export class SettingsComponent implements OnInit {
 
   onSubmit() {
     if (this.userFormGroup.valid) {
-      const user: UserCreateI = {
+      const user: UserUpdateI = {
+        _id: this.data.user._id!,
         email: String(this.userFormGroup.get('email')?.value).toLowerCase(),
-        login: String(this.userFormGroup.get('login')?.value).toLowerCase(),
         username: String(this.userFormGroup.get('login')?.value),
         password: String(this.userFormGroup.get('password')?.value),
         firstName: String(this.userFormGroup.get('firstName')?.value),
         lastName: String(this.userFormGroup.get('lastName')?.value),
+        avatar:
+          this.previewImageUrl.replace('data:image/png;base64,', '') || this.data.user.avatar || '',
       };
-      /*  this.userService.updateUser(user).subscribe(
-        (res: any) => {
-          this.dataStore.setUser(user);
-        },
-        (err: any) => {
-          console.log(err);
-        },
-      ); */
+      this.subs.add(
+        this.userService.updateUser(user).subscribe(
+          (res: any) => {
+            this.dataStore.setUser({ ...user, login: this.data.user.login });
+            this.dialogRef.close();
+          },
+          (err: any) => {
+            console.log(err);
+          },
+        ),
+      );
     }
   }
 
@@ -66,7 +97,7 @@ export class SettingsComponent implements OnInit {
     this.userFormGroup = this.fb.group({
       email: [this.data.user.email, [Validators.required, Validators.email]],
       login: [
-        this.data.user.email,
+        { value: this.data.user.login, disabled: true },
         [
           Validators.required,
           Validators.pattern('[a-zA-Z]+[a-zA-Z\\d]*'),
@@ -81,7 +112,6 @@ export class SettingsComponent implements OnInit {
       password: [
         '',
         [
-          Validators.required,
           Validators.pattern(
             '(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&])[a-zA-Z0-9@$!%*#?&]+',
           ),
@@ -108,5 +138,59 @@ export class SettingsComponent implements OnInit {
       return 'Некорректный email';
     }
     return control.hasError('pattern') ? error : '';
+  }
+
+  onFileChange(event: any) {
+    if (event.target.files[0].size > 5242880) {
+      this.imageLoadFailed = true;
+      event.target.value = '';
+      return;
+    }
+
+    this.imageLoadFailed = false;
+
+    if (this.croppie && this.croppie.nativeElement.className === 'croppie-container') {
+      this.croppieObj.destroy();
+    }
+
+    this.croppieObj = new Croppie(this.croppie.nativeElement, {
+      enableExif: true,
+      viewport: {
+        width: 100,
+        height: 100,
+        type: 'circle',
+      },
+      boundary: {
+        width: 150,
+        height: 200,
+      },
+      mouseWheelZoom: false,
+      enableOrientation: true,
+    });
+
+    this.fileReader.onload = (e1: any) => {
+      this.cdr.detectChanges();
+      this.croppieObj
+        .bind({
+          url: e1.target.result,
+        })
+        .then(() => {
+          event.target.value = '';
+          this.updateImageResult();
+          this.renderer.listen(this.croppie.nativeElement, 'update', () => {
+            this.updateImageResult();
+          });
+        });
+    };
+
+    this.fileReader.readAsDataURL(event.target.files[0]);
+  }
+
+  updateImageResult() {
+    this.croppieObj.result({ type: 'base64', size: 'viewport' }).then((crop: any) => {
+      this.previewImage = this.sanitizer.bypassSecurityTrustResourceUrl(crop);
+      this.previewImageUrl = crop;
+      this.cdr.detectChanges();
+    });
   }
 }

@@ -1,93 +1,153 @@
-<mat-dialog-content class="user-form-dialog">
-  <div class="user-form-container">
-    <form class="user-form" (ngSubmit)="onSubmit()" [formGroup]="userFormGroup">
-      <div class="user-form__header">
-        <h1 class="user-form-title">Учетные данные</h1>
-      </div>
-      <mat-form-field class="user-form__field" appearance="standard">
-        <mat-label class="user-form__label">Эл. почта</mat-label>
-        <input
-          class="user-form__input"
-          matInput
-          placeholder="pat@example.com"
-          formControlName="email"
-          autocomplete="off"
-        />
-        <mat-error *ngIf="userFormGroup.get('email')?.invalid">
-          {{ getErrorMessage(userFormGroup.get('email'), 'Некорректный email') }}</mat-error
-        >
-      </mat-form-field>
-      <mat-form-field class="user-form__field" appearance="standard">
-        <mat-label class="user-form__label">Логин</mat-label>
-        <input class="user-form__input" matInput formControlName="login" autocomplete="off" />
-        <mat-error *ngIf="userFormGroup.get('login')?.invalid">
-          {{
-            getErrorMessage(
-              userFormGroup.get('login'),
-              'Только латинские символы длиной от 6 символов'
-            )
-          }}</mat-error
-        >
-      </mat-form-field>
-      <mat-form-field class="user-form__field" appearance="standard">
-        <mat-label class="user-form__label">Никнейм</mat-label>
-        <input class="user-form__input" matInput formControlName="username" autocomplete="off" />
-        <mat-error *ngIf="userFormGroup.get('username')?.invalid">
-          {{
-            getErrorMessage(
-              userFormGroup.get('username'),
-              'Только латинские символы длиной от 6 символов'
-            )
-          }}</mat-error
-        >
-      </mat-form-field>
-      <mat-form-field class="user-form__field" appearance="standard">
-        <mat-label class="user-form__label">Новый пароль</mat-label>
-        <input
-          class="user-form__input"
-          matInput
-          [type]="hidePass ? 'password' : 'text'"
-          placeholder="paSsword!"
-          formControlName="password"
-          autocomplete="off"
-        />
-        <mat-error *ngIf="userFormGroup.get('password')?.invalid">
-          {{
-            getErrorMessage(
-              userFormGroup.get('password'),
-              'Пароль должен содержать не менее 8 знаков, включать минимум 1 заглавную букву и спецсимвол'
-            )
-          }}
-        </mat-error>
-        <button
-          class="user-form__pass-hidePass"
-          mat-icon-button
-          matSuffix
-          type="button"
-          (click)="hidePass = !hidePass"
-          [attr.aria-label]="'hidePass password'"
-          [attr.aria-pressed]="hidePass"
-          [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
-        >
-          <img
-            class="user-form__icon"
-            [src]="hidePass ? 'assets/svg/visibility_off.svg' : 'assets/svg/visibility.svg'"
-            alt="Показать пароль"
+<mat-dialog-content class="settings">
+  <div class="settings__content">
+    <div class="user-form-container">
+      <form class="user-form" [formGroup]="userFormGroup">
+        <div class="user-form__header">
+          <h1 class="user-form-title">Учетные данные</h1>
+        </div>
+        <mat-form-field class="user-form__field" appearance="standard">
+          <mat-label class="user-form__label">Эл. почта</mat-label>
+          <input
+            class="user-form__input"
+            matInput
+            placeholder="pat@example.com"
+            formControlName="email"
+            autocomplete="off"
           />
-        </button>
-      </mat-form-field>
-      <mat-form-field class="user-form__field" appearance="standard">
-        <mat-label class="user-form__label">Имя</mat-label>
-        <input class="user-form__input" matInput formControlName="firstName" autocomplete="off" />
-      </mat-form-field>
-      <mat-form-field class="user-form__field" appearance="standard">
-        <mat-label class="user-form__label">Фамилия</mat-label>
-        <input class="user-form__input" matInput formControlName="lastName" autocomplete="off" />
-      </mat-form-field>
-    </form>
+          <mat-error *ngIf="userFormGroup.get('email')?.invalid">
+            {{ getErrorMessage(userFormGroup.get('email'), 'Некорректный email') }}</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field class="user-form__field" appearance="standard">
+          <mat-label class="user-form__label">Логин</mat-label>
+          <input class="user-form__input" matInput formControlName="login" autocomplete="off" />
+          <mat-error *ngIf="userFormGroup.get('login')?.invalid">
+            {{
+              getErrorMessage(
+                userFormGroup.get('login'),
+                'Только латинские символы длиной от 6 символов'
+              )
+            }}</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field class="user-form__field" appearance="standard">
+          <mat-label class="user-form__label">Никнейм</mat-label>
+          <input class="user-form__input" matInput formControlName="username" autocomplete="off" />
+          <mat-error *ngIf="userFormGroup.get('username')?.invalid">
+            {{
+              getErrorMessage(
+                userFormGroup.get('username'),
+                'Только латинские символы длиной от 6 символов'
+              )
+            }}</mat-error
+          >
+        </mat-form-field>
+        <mat-form-field class="user-form__field" appearance="standard">
+          <mat-label class="user-form__label">Новый пароль</mat-label>
+          <input
+            class="user-form__input"
+            matInput
+            [type]="hidePass ? 'password' : 'text'"
+            placeholder="paSsword!"
+            formControlName="password"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="userFormGroup.get('password')?.invalid">
+            {{
+              getErrorMessage(
+                userFormGroup.get('password'),
+                'Пароль должен содержать не менее 8 знаков, включать минимум 1 заглавную букву и спецсимвол'
+              )
+            }}
+          </mat-error>
+          <button
+            class="user-form__pass-hidePass"
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePass = !hidePass"
+            [attr.aria-label]="'hidePass password'"
+            [attr.aria-pressed]="hidePass"
+            [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
+          >
+            <img
+              class="user-form__icon"
+              [src]="hidePass ? 'assets/svg/visibility_off.svg' : 'assets/svg/visibility.svg'"
+              alt="Показать пароль"
+            />
+          </button>
+        </mat-form-field>
+        <mat-form-field class="user-form__field" appearance="standard">
+          <mat-label class="user-form__label">Имя</mat-label>
+          <input class="user-form__input" matInput formControlName="firstName" autocomplete="off" />
+        </mat-form-field>
+        <mat-form-field class="user-form__field" appearance="standard">
+          <mat-label class="user-form__label">Фамилия</mat-label>
+          <input class="user-form__input" matInput formControlName="lastName" autocomplete="off" />
+        </mat-form-field>
+      </form>
+    </div>
+    <div class="settings__pfp-wrapper user-avatar">
+      <p class="user-avatar__title">Аватар</p>
+      <div class="user-avatar__container">
+        <ng-container *ngIf="!imageLoadFailed; else errorLoadImage">
+          <img
+            class="user-avatar__img"
+            [src]="data.user.avatar ? userImgPath : 'assets/svg/avatar.svg'"
+            alt="аватар"
+          />
+          <button class="user-avatar__pfp-button" (click)="fileInput.click()">
+            <img
+              class="user-avatar__select-avatar"
+              src="assets/svg/edit_white.svg"
+              alt="изменить аватар"
+            />
+            <p class="user-avatar__select-text">Загрузить</p>
+          </button>
+        </ng-container>
+        <ng-template #errorLoadImage>
+          <button
+            class="user-avatar__error-block"
+            [ngClass]="{ 'user-avatar__error-block_active': imageLoadFailed }"
+            (click)="fileInput.click()"
+          >
+            <img
+              class="user-avatar__select-avatar"
+              src="assets/svg/profileImageError.svg"
+              alt="ошибка"
+            />
+            <p class="user-avatar__select-text user-avatar__select-text_erro">
+              Произошла ошибка загрузки файла
+            </p>
+          </button>
+        </ng-template>
+      </div>
+      <input
+        #fileInput
+        type="file"
+        accept=".png, .jpg, .jpeg"
+        style="display: none"
+        (change)="onFileChange($event)"
+      />
+      <div class="image-select__crop-wrapper">
+        <div id="croppie" class="image-select__cropper" #croppie></div>
+        <div class="image-select__crop-result" *ngIf="previewImage">
+          <img
+            [src]="previewImage"
+            alt="аватар"
+            class="image-select__result-image image-select__result-image_big"
+          />
+          <img
+            [src]="previewImage"
+            alt="аватар"
+            class="image-select__result-image image-select__result-image_small"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-flat-button mat-dialog-close color="warn">Отмена</button>
-  <button mat-flat-button color="primary">Сохранить</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()">Сохранить</button>
 </mat-dialog-actions>

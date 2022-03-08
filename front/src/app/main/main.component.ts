@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { filter } from 'rxjs/operators';
+import { SubSink } from 'subsink';
 import { UserI } from '../shared/models/user.interface';
 import { DataStoreService } from '../shared/services/data-store.service';
 
@@ -10,16 +11,21 @@ import { DataStoreService } from '../shared/services/data-store.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent implements OnInit {
+  private subs = new SubSink();
+
   user: UserI;
 
-  constructor(private dataStore: DataStoreService) {}
+  constructor(private dataStore: DataStoreService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.dataStore
-      .getUser()
-      .pipe(filter((value) => value !== null))
-      .subscribe((user) => {
-        this.user = user;
-      });
+    this.subs.add(
+      this.dataStore
+        .getUser()
+        .pipe(filter((value) => value !== null))
+        .subscribe((user) => {
+          this.user = user;
+          this.cdr.detectChanges();
+        }),
+    );
   }
 }
