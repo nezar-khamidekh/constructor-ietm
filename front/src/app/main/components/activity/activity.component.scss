@@ -1,0 +1,73 @@
+@import '_variables';
+
+:host {
+  flex: 0 1 45%;
+}
+
+.activity {
+  &__title {
+    font-size: 18px;
+  }
+
+  &__item {
+    margin-top: 20px;
+  }
+}
+
+.item-activity {
+  display: flex;
+
+  &__img-wrapper {
+  }
+
+  &__img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 14px;
+    margin-top: 9px;
+    line-height: 16px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__username {
+    font-weight: 700;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__repository {
+    color: $primaryBlueTextColor;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__date {
+    opacity: 0.7;
+    margin-left: 8px;
+  }
+
+  &__description {
+    margin-top: 18px;
+    padding: 20px 15px;
+    line-height: 16px;
+    border: 1px solid $primaryGreyBorderColor;
+    border-radius: 6px;
+    background-color: $primaryGreyBgColor;
+  }
+}
