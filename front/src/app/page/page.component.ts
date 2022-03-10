@@ -1,5 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { SubSink } from 'subsink';
 import { UserI } from '../shared/models/user.interface';
 import { DataStoreService } from '../shared/services/data-store.service';
 
@@ -10,12 +11,24 @@ import { DataStoreService } from '../shared/services/data-store.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageComponent implements OnInit {
+  private subs = new SubSink();
+
   user: UserI | null = null;
 
-  constructor(private route: ActivatedRoute, private dataStore: DataStoreService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private dataStore: DataStoreService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
-    this.user = this.route.snapshot.data.user;
-    this.dataStore.setUser(this.user);
+    this.dataStore.setUser(this.route.snapshot.data.user);
+
+    this.subs.add(
+      this.dataStore.getUser().subscribe((user) => {
+        this.user = user;
+        this.cdr.detectChanges();
+      }),
+    );
   }
 }

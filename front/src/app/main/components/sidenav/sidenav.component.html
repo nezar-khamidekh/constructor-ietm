@@ -1,6 +1,10 @@
 <div class="sidebar">
   <div class="account">
-    <img class="account__image" src="assets/png/avatar.png" alt="аккаунт" />
+    <img
+      class="account__image"
+      [src]="user.avatar ? userAvatarPath : 'assets/svg/avatar.svg'"
+      alt="аккаунт"
+    />
     <span class="account__nickname">{{ user.username }}</span>
     <button class="account__switch-btn" mat-icon-button>
       <img src="assets/svg/switchAccount.svg" alt="переключить аккаунт" />

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { UserI } from '../models/user.interface';
-import { UserCreateI } from '../models/userCreate.interface';
+import { UserUpdateI } from '../models/userUpdate.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class UserService {
     return this.http.get<UserI>(`${this.apiUrl}/user`, { withCredentials: true });
   }
 
-  updateUser(user: UserCreateI) {
+  updateUser(user: UserUpdateI) {
     return this.http.post(`${this.apiUrl}/user/update`, user, { withCredentials: true });
   }
 }
