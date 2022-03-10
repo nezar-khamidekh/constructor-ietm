@@ -144,13 +144,13 @@ export class SceneService {
       alpha: true,
     });
     this.viewer.renderer.shadowMap.enabled = true;
-    this.viewer.renderer.setClearColor(0xffffff, 0);
     this.viewer.renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
     this.viewer.renderer.setPixelRatio(
       pixelRatio > RENDERER_PIXEL_RATIO ? RENDERER_PIXEL_RATIO : pixelRatio,
     );
     this.viewer.renderer.setClearColor(RENDERER_CLEAR_COLOR);
     this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
+    this.viewer.renderer.localClippingEnabled = true;
   }
 
   setLabelRenderer(wrapper: any) {
@@ -257,7 +257,7 @@ export class SceneService {
   animateScene() {
     this.viewer.mixer?.update(this.viewer.clock.getDelta() / 3);
     this.viewer.controls.update();
-    // this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
+    this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
     if (this.viewer.composer) this.viewer.composer.render();
     if (this.viewer.labelRenderer)
       this.viewer.labelRenderer.render(this.viewer.scene, this.viewer.camera);
@@ -561,20 +561,22 @@ export class SceneService {
   createPlanes() {
     // console.log(this.viewer.model);
     this.planes = [
-      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0),
-      new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
-      new THREE.Plane(new THREE.Vector3(0, 0, -1), 0),
+      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
+      // new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
+      // new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
     ];
 
     let planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
     planeHelpers.forEach((planeHelper) => {
+      // (planeHelper.material as any).side = THREE.DoubleSide;
       planeHelper.visible = true;
       this.viewer.scene.add(planeHelper);
     });
 
-    // this.viewer.renderer.clippingPlanes = [this.planes[0]];
-    // console.log(this.viewer.renderer);
-    this.viewer.renderer.localClippingEnabled = true;
+    // this.quad.frustumCulled = false;
+
+    //из за него шакалит плоскости, но необходим для обрезки
+    this.viewer.renderer.clippingPlanes = this.planes;
   }
 
   cutModel(planeIndex: number, cuttingModelValue: number) {

@@ -448,10 +448,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.matMenuTrigger.closeMenu();
   }
 
-  cutModel() {
-    this.btnIsInAction = true;
-    // this.sceneService.cutModel();
-  }
+  // cutModel() {
+  //   this.btnIsInAction = true;
+  //   this.sceneService.cutModel();
+  // }
 
   stopCuttingModel() {
     this.btnIsInAction = false;

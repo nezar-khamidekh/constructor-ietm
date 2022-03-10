@@ -80,8 +80,8 @@
             <mat-radio-button value="1">x</mat-radio-button>
             <div class="toolbar__wrapper-slider">
               <mat-slider
-                [min]="0"
-                [max]="1"
+                [min]="-2"
+                [max]="2"
                 [step]="0.001"
                 [value]="cuttingLengthValue[0]"
                 (input)="cuttingLengthChanged.emit({ index: 0, value: $event.value! })"
@@ -92,8 +92,8 @@
             <mat-radio-button value="2">y</mat-radio-button>
             <div class="toolbar__wrapper-slider">
               <mat-slider
-                [min]="0"
-                [max]="1"
+                [min]="-2"
+                [max]="2"
                 [step]="0.001"
                 [value]="cuttingLengthValue[1]"
                 (input)="cuttingLengthChanged.emit({ index: 1, value: $event.value! })"
@@ -104,8 +104,8 @@
             <mat-radio-button value="3">z</mat-radio-button>
             <div class="toolbar__wrapper-slider">
               <mat-slider
-                [min]="0"
-                [max]="1"
+                [min]="-2"
+                [max]="2"
                 [step]="0.001"
                 [value]="cuttingLengthValue[2]"
                 (input)="cuttingLengthChanged.emit({ index: 2, value: $event.value! })"
