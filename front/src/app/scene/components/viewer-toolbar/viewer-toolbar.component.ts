@@ -27,7 +27,7 @@ export class ViewerToolbarComponent implements OnInit {
   @Output() viewerBtnClicked = new EventEmitter<number>();
   @Output() rotateCameraSpeedChanged = new EventEmitter<number>();
   @Output() explodePowerChanged = new EventEmitter<number>();
-  @Output() cuttingLengthChanged = new EventEmitter<number>();
+  @Output() cuttingLengthChanged = new EventEmitter();
 
   rotateAnimationSliderMinValue = CAMERA_ROTATE_SPEED;
   rotateAnimationSliderMaxValue = 20;

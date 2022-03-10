@@ -457,8 +457,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.btnIsInAction = false;
   }
 
-  onCuttingLengthChanged(cuttingLengthValue: any) {
-    this.cuttingLengthValue = cuttingLengthValue;
-    this.sceneService.cutModel(0, cuttingLengthValue);
+  onCuttingLengthChanged(dataCut: any) {
+    this.cuttingLengthValue[dataCut.index] = dataCut.value;
+    this.sceneService.cutModel(dataCut.index, dataCut.value);
   }
 }

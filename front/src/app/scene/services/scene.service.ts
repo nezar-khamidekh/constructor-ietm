@@ -559,18 +559,22 @@ export class SceneService {
   }
 
   createPlanes() {
-    console.log(this.viewer.model);
+    // console.log(this.viewer.model);
     this.planes = [
-      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
-      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
-      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
+      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0),
+      new THREE.Plane(new THREE.Vector3(0, -1, 0), 0),
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), 0),
     ];
 
     let planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
     planeHelpers.forEach((planeHelper) => {
-      planeHelper.visible = false;
+      planeHelper.visible = true;
       this.viewer.scene.add(planeHelper);
     });
+
+    // this.viewer.renderer.clippingPlanes = [this.planes[0]];
+    // console.log(this.viewer.renderer);
+    this.viewer.renderer.localClippingEnabled = true;
   }
 
   cutModel(planeIndex: number, cuttingModelValue: number) {
