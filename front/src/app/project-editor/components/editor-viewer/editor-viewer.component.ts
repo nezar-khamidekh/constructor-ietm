@@ -56,7 +56,6 @@ export class EditorViewerComponent implements OnInit {
     this.subs.add(
       this.sceneService.getAnnotations().subscribe((annotations) => {
         this.annotations = annotations;
-        console.log(this.annotations);
         this.cdr.detectChanges();
       }),
     );

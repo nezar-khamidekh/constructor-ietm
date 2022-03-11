@@ -569,9 +569,10 @@ export class SceneService {
       );
       this.viewer.scene.remove(annotationMarker!);
       this.viewer.scene.remove(annotationLabel!);
+      this.annotationMarkers = this.annotationMarkers.filter(
+        (marker) => marker.userData.id !== lastModifiedAnnotationId,
+      );
     }
-    console.log(annotationMarker);
-    console.log(this.annotationMarkers);
   }
 
   createPlanes() {
