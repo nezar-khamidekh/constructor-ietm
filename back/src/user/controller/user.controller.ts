@@ -82,4 +82,9 @@ export class UserController {
   check(@Req() request) {
     if (request.user !== null) return true;
   }
+
+  @Get('all')
+  getAllUsers() {
+    return this.userService.findAll();
+  }
 }

@@ -158,6 +158,10 @@ export class UserService {
     );
   }
 
+  findAll() {
+    return from(this.userModel.find());
+  }
+
   updateOne(updateData: UserDocument): Observable<boolean> {
     if (updateData.password)
       return this.authService.hashPassword(updateData.password).pipe(

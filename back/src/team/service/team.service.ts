@@ -58,11 +58,11 @@ export class TeamService {
     );
   }
 
-  findUserTeams(userId: string) {
+  findUserTeams(login: string) {
     return from(
       this.teamModel.aggregate([
         { $unwind: '$participants' },
-        { $match: { 'participants.userId': userId } },
+        { $match: { 'participants.login': login } },
       ]),
     );
   }
