@@ -48,10 +48,15 @@ export class EditorViewerComponent implements OnInit {
   constructor(private sceneService: SceneService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    this.initAnnotations();
+  }
+
+  initAnnotations() {
     this.sceneService.setAnnotations(this.annotations);
     this.subs.add(
       this.sceneService.getAnnotations().subscribe((annotations) => {
         this.annotations = annotations;
+        console.log(this.annotations);
         this.cdr.detectChanges();
       }),
     );
@@ -65,7 +70,7 @@ export class EditorViewerComponent implements OnInit {
     this.sceneService.setAnnotations([
       ...this.annotations,
       {
-        title: (this.annotations.length + 1).toString(),
+        id: this.annotations.length + 1,
         description: this.currentAnnotation.text,
         position: {
           x: this.currentAnnotation.position!.x,
@@ -78,6 +83,13 @@ export class EditorViewerComponent implements OnInit {
       text: '',
       position: null,
     };
+  }
+
+  onDeleteAnnotation(deletedAnnotation: AnnotationI) {
+    this.sceneService.setAnnotations(
+      this.annotations.filter((annotation) => annotation.id !== deletedAnnotation.id),
+    );
+    this.sceneService.refreshAnnotationsInViewer(deletedAnnotation.id);
   }
 
   onCoordsAnnotation(coords: any) {

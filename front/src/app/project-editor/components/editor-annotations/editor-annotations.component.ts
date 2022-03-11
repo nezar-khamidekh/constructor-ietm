@@ -23,6 +23,7 @@ export class EditorAnnotationsComponent implements OnInit {
   @Input() step: number;
   @Output() applyAnnotation = new EventEmitter();
   @Output() saveAnnotation = new EventEmitter();
+  @Output() deleteAnnotation = new EventEmitter();
   @Output() changedStep = new EventEmitter();
 
   @ViewChild('buttonApplyAnnotation', { static: false }) buttonApplyAnnotationRef: ElementRef;

@@ -1,5 +1,5 @@
 export interface AnnotationI {
-  title: string;
+  id: number;
   description: string;
   position: {
     x: number;

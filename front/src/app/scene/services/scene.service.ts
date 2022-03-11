@@ -324,7 +324,7 @@ export class SceneService {
     );
     if (intersectedAnnotations.length) {
       const annotation: AnnotationI = this.annotations$.value.find(
-        (annotation: any) => annotation.title == intersectedAnnotations[0].object.userData.id,
+        (annotation: any) => annotation.id == intersectedAnnotations[0].object.userData.id,
       );
       if (annotation && annotation.description)
         annotation.descriptionDomElement!.style.display = 'block';
@@ -555,7 +555,23 @@ export class SceneService {
   }
 
   setAnnotationMarkers(annotationMarkers: THREE.Sprite[]) {
-    this.annotationMarkers = annotationMarkers;
+    this.annotationMarkers = [...this.annotationMarkers, ...annotationMarkers];
+  }
+
+  refreshAnnotationsInViewer(lastModifiedAnnotationId: number) {
+    const annotationMarker = this.annotationMarkers.find(
+      (marker) => marker.userData.id === lastModifiedAnnotationId,
+    );
+    if (this.annotations$.value.some((annotation) => annotation.id === lastModifiedAnnotationId)) {
+    } else {
+      const annotationLabel = this.viewer.scene.getObjectByName(
+        'annotationLabel_' + lastModifiedAnnotationId,
+      );
+      this.viewer.scene.remove(annotationMarker!);
+      this.viewer.scene.remove(annotationLabel!);
+    }
+    console.log(annotationMarker);
+    console.log(this.annotationMarkers);
   }
 
   createPlanes() {

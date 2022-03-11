@@ -25,6 +25,7 @@
               [step]="step"
               (saveAnnotation)="onSaveAnnotation()"
               (applyAnnotation)="onApplyAnnotation($event)"
+              (deleteAnnotation)="onDeleteAnnotation($event)"
               (changedStep)="changedStep.emit($event)"
             ></app-editor-annotations>
           </div>
