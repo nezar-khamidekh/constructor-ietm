@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ViewerModule } from './viewer/viewer.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TeamModule } from './team/team.module';
 
 const modules = [
   ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', './.env'] }),
@@ -15,6 +16,7 @@ const modules = [
   UserModule,
   AuthModule,
   ViewerModule,
+  TeamModule,
 ];
 
 if (process.env.NODE_ENV !== 'development') {

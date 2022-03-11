@@ -6,7 +6,6 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { UserI } from 'src/user/models/interfaces/user.inteface';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { UserService } from 'src/user/service/user.service';
 import { SessionI } from '../models/interfaces/session.interface';

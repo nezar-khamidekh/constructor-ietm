@@ -14,7 +14,6 @@ import { RefreshTokenDocument } from 'src/auth/models/schema/refresh-token.schem
 export class UserService {
   constructor(
     private authService: AuthService,
-
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
@@ -60,7 +59,9 @@ export class UserService {
   }
 
   login(loginUserDto: LoginUserDto): Observable<SessionI> {
-    return this.findUserByEmailOrLogin(loginUserDto.login).pipe(
+    return this.findUserByEmailOrLogin(
+      loginUserDto.login || loginUserDto.email,
+    ).pipe(
       switchMap((user: UserDocument) => {
         if (user) {
           return this.validatePassword(
@@ -129,7 +130,6 @@ export class UserService {
   private findUserByEmailOrLogin(str: string): Observable<UserDocument> {
     return from(
       this.userModel.findOne({ $or: [{ login: str }, { email: str }] }, [
-        'email',
         'login',
         'lastName',
         'firstName',
@@ -148,7 +148,6 @@ export class UserService {
   findOne(id: string): Observable<UserDocument> {
     return from(
       this.userModel.findById(id, [
-        'email',
         'login',
         'lastName',
         'firstName',

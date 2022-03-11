@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { RefreshToken } from 'src/auth/models/schema/refresh-token.schema';
 
 export type UserDocument = User & Document;
 

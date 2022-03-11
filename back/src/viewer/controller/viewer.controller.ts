@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { join } from 'path';
-import { CreateCatDto } from '../models/dto/createCat.dto';
 import { ViewerService } from '../service/viewer.service';
 
 @Controller('viewer')
