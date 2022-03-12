@@ -91,6 +91,10 @@ export class EditorViewerComponent implements OnInit {
     this.sceneService.refreshAnnotationsInViewer(deletedAnnotation.id);
   }
 
+  onHideAnnotation(hideAnnotation: AnnotationI) {
+    this.sceneService.refreshAnnotationsInViewer(hideAnnotation.id);
+  }
+
   onCoordsAnnotation(coords: any) {
     this.currentAnnotation = {
       text: this.currentAnnotation.text,

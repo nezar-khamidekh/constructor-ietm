@@ -9,6 +9,7 @@ import {
   ElementRef,
   HostListener,
 } from '@angular/core';
+import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 
 @Component({
@@ -24,11 +25,12 @@ export class EditorAnnotationsComponent implements OnInit {
   @Output() applyAnnotation = new EventEmitter();
   @Output() saveAnnotation = new EventEmitter();
   @Output() deleteAnnotation = new EventEmitter();
+  @Output() hideAnnotation = new EventEmitter();
   @Output() changedStep = new EventEmitter();
 
   @ViewChild('buttonApplyAnnotation', { static: false }) buttonApplyAnnotationRef: ElementRef;
 
-  constructor() {}
+  constructor(public sceneService: SceneService) {}
 
   ngOnInit(): void {}
 

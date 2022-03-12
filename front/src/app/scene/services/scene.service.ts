@@ -562,17 +562,30 @@ export class SceneService {
     const annotationMarker = this.annotationMarkers.find(
       (marker) => marker.userData.id === lastModifiedAnnotationId,
     );
+    const annotationLabel = this.viewer.scene.getObjectByName(
+      'annotationLabel_' + lastModifiedAnnotationId,
+    );
     if (this.annotations$.value.some((annotation) => annotation.id === lastModifiedAnnotationId)) {
+      if (annotationMarker?.visible) {
+        annotationMarker.visible = false;
+        annotationLabel!.visible = false;
+      } else {
+        annotationMarker!.visible = true;
+        annotationLabel!.visible = true;
+      }
     } else {
-      const annotationLabel = this.viewer.scene.getObjectByName(
-        'annotationLabel_' + lastModifiedAnnotationId,
-      );
       this.viewer.scene.remove(annotationMarker!);
       this.viewer.scene.remove(annotationLabel!);
       this.annotationMarkers = this.annotationMarkers.filter(
         (marker) => marker.userData.id !== lastModifiedAnnotationId,
       );
     }
+  }
+
+  annotationIsHidden(lastModifiedAnnotationId: number) {
+    return this.annotationMarkers.some(
+      (annotation) => annotation.userData.id === lastModifiedAnnotationId && annotation.visible,
+    );
   }
 
   createPlanes() {

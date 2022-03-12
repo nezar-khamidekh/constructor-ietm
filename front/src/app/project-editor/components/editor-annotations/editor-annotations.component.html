@@ -80,6 +80,22 @@
                   alt="удалить"
                 />
               </button>
+              <button
+                mat-icon-button
+                class="annotations-editor__btn"
+                matTooltip="Скрыть аннотацию"
+                (click)="hideAnnotation.emit(annotation)"
+              >
+                <img
+                  class="annotations-editor__btn-icon"
+                  [src]="
+                    sceneService.annotationIsHidden(annotation.id)
+                      ? 'assets/svg/visibility.svg'
+                      : 'assets/svg/visibility_off.svg'
+                  "
+                  alt="скрыть"
+                />
+              </button>
             </td>
           </tr>
         </tbody>
