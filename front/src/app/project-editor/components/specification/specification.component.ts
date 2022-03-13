@@ -7,6 +7,7 @@ import {
   ChangeDetectorRef,
 } from '@angular/core';
 import { SceneService } from 'src/app/scene/services/scene.service';
+import * as THREE from 'three';
 
 const LEVEL_PADDING_LEFT = 10;
 

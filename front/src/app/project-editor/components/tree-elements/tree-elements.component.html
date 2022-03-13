@@ -2,7 +2,13 @@
   <div class="tree">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="example-tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-        {{ node.userData.name || node.name }}
+        <div
+          class="tree__name-element"
+          (mouseenter)="sceneService.setHighLightObj(node, 'mouseenter')"
+          (mouseleave)="sceneService.setHighLightObj(node, 'mouseleave')"
+        >
+          {{ node.userData.name || node.name }}
+        </div>
         <ng-container *ngIf="!node.isRoot">
           <button
             class="tree__button"
@@ -46,7 +52,13 @@
               [alt]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
             />
           </button>
-          {{ node.userData.name || node.name }}
+          <div
+            class="tree__name-element"
+            (mouseenter)="sceneService.setHighLightObj(node, 'mouseenter')"
+            (mouseleave)="sceneService.setHighLightObj(node, 'mouseleave')"
+          >
+            {{ node.userData.name || node.name }}
+          </div>
           <ng-container *ngIf="!node.isRoot">
             <button
               class="tree__button"

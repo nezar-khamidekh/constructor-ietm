@@ -1,7 +1,15 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component, OnInit, ChangeDetectionStrategy, Input, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { SceneService } from 'src/app/scene/services/scene.service';
+import * as THREE from 'three';
 
 @Component({
   selector: 'app-tree-elements',
@@ -9,7 +17,7 @@ import { SceneService } from 'src/app/scene/services/scene.service';
   styleUrls: ['./tree-elements.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TreeElementsComponent implements OnInit {
+export class TreeElementsComponent implements OnInit, OnChanges {
   @Input() model: any;
 
   treeControl = new NestedTreeControl((node: any) => node.children);

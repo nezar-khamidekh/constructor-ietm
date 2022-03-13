@@ -13,7 +13,11 @@
           </thead>
           <tbody>
             <ng-container *ngFor="let item of specification; let i = index">
-              <tr class="item">
+              <tr
+                class="item"
+                (mouseenter)="sceneService.setHighlightObjByIds(item.meshes, 'mouseenter')"
+                (mouseleave)="sceneService.setHighlightObjByIds(item.meshes, 'mouseleave')"
+              >
                 <td class="specification__column specification__number-column">
                   <div class="specification__flex-td">
                     {{ i }}

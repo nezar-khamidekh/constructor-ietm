@@ -12,6 +12,7 @@ import {
   CLICKED_OBJ_MATERIAL,
   GRID_HELPER_DIVISIONS,
   GRID_HELPER_SIZE_RATE,
+  HIGHLIGHT_COLOR,
   OUTLINE_PASS_EDGE_STRENGTH,
   OUTLINE_PASS_EDGE_THICKNESS,
   OUTLINE_PASS_HIDDEN_EDGE_COLOR,
@@ -384,6 +385,55 @@ export class SceneService {
     }
   }
 
+  setHighlightObjByIds(meshesIds: number[], typeEvent: string) {
+    meshesIds.forEach((meshId) => {
+      const mesh = this.viewer.scene.getObjectById(meshId)!;
+      this.setHighLightObj(mesh, typeEvent);
+    });
+  }
+
+  setHighLightObj(node: any, typeEvent: string) {
+    switch (typeEvent) {
+      case 'mouseenter':
+        this.checkChildrenNodeForFillColor(node, 'mouseenter');
+        break;
+      case 'mouseleave':
+        this.checkChildrenNodeForFillColor(node, 'mouseleave');
+        break;
+      default:
+        break;
+    }
+  }
+
+  checkChildrenNodeForFillColor(node: any, typeEvent: string) {
+    if (!node.children.length) {
+      this.highlightElement(typeEvent, node);
+    } else {
+      node.children.forEach((child: any) => {
+        if (child.children.length > 0) {
+          this.checkChildrenNodeForFillColor(child, typeEvent);
+        } else {
+          this.highlightElement(typeEvent, child);
+        }
+      });
+    }
+  }
+
+  highlightElement(typeEvent: string, node: any) {
+    if (node.uuid !== this.selectedObj?.uuid) {
+      switch (typeEvent) {
+        case 'mouseenter':
+          node.material.color.setHex(HIGHLIGHT_COLOR);
+          break;
+        case 'mouseleave':
+          node.material.color.setHex(node.defaultMaterial.color.getHex());
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   resetSelectedObjView() {
     this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
     this.viewer.outlinePass.selectedObjects = [];
@@ -493,7 +543,7 @@ export class SceneService {
 
   getItemStructureTabular(nodes: any) {
     const structure: any = [];
-    structure.push({ ...nodes[0], specificationCount: 1 });
+    structure.push({ ...nodes[0], specificationCount: 1, meshes: [nodes[0].id] });
     this.getStructureByNodes(nodes[0].children, structure);
     this.showRootStructureNode(structure);
     return structure;
@@ -507,11 +557,13 @@ export class SceneService {
         );
         if (obj) {
           ++obj.specificationCount;
+          obj.meshes.push(node.id);
         } else
           structure.push({
             ...node,
             userData: { name: node.userData.name.split('.')[0].replace('_', ' ') },
             specificationCount: 1,
+            meshes: [node.id],
           });
       } else if (node.children?.length) {
         this.getStructureByNodes(node.children, structure);

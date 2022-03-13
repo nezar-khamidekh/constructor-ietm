@@ -13,6 +13,7 @@ export const OUTLINE_PASS_EDGE_STRENGTH = 2;
 export const OUTLINE_PASS_EDGE_THICKNESS = 1;
 export const OUTLINE_PASS_VISIBLE_EDGE_COLOR = '#0159d3';
 export const OUTLINE_PASS_HIDDEN_EDGE_COLOR = '#0159d3';
+export const HIGHLIGHT_COLOR = 0xffff00;
 export const CAMERA_ROTATE_SPEED = 2;
 export const EXPLODE_POWER = 0;
 export const CUTTING_LENGTH = [0, 0, 0];
