@@ -39,9 +39,22 @@
           alt="подписки"
         />
       </a>
-      <button class="user-actions__btn" mat-icon-button color="primary">
+      <button
+        class="user-actions__btn"
+        mat-icon-button
+        color="primary"
+        [matMenuTriggerFor]="createNewMenu"
+      >
         <img class="user-actions__btn-icon" src="assets/svg/plus.svg" alt="меню действий" />
       </button>
+      <mat-menu #createNewMenu="matMenu" class="create-new-menu">
+        <div class="create-new-menu__item" mat-menu-item>
+          <a class="create-new-menu__item-action" routerLink="#">Новый репозиторий</a>
+        </div>
+        <div class="create-new-menu__item" mat-menu-item>
+          <a class="create-new-menu__item-action" routerLink="/team/create">Новая команда</a>
+        </div>
+      </mat-menu>
       <div class="vertical-line"></div>
       <div class="user-actions__avatar">
         <button class="user-actions__btn" [matMenuTriggerFor]="userMenu">
@@ -58,7 +71,7 @@
           </div>
           <div class="user-menu__item" mat-menu-item>
             <img class="user-menu__item-image" src="assets/svg/team.svg" alt="команды" />
-            <a class="user-menu__item-action" routerLink="#">Команды</a>
+            <a class="user-menu__item-action" routerLink="/team/user-teams">Команды</a>
           </div>
           <div class="user-menu__item" mat-menu-item>
             <img class="user-menu__item-image" src="assets/svg/settings.svg" alt="настройки" />

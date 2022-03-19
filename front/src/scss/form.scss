@@ -1,0 +1,77 @@
+@import '_variables';
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid $formBorderColor;
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    &:not(:first-child) {
+      margin-top: 25px;
+    }
+  }
+
+  &__field-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    min-width: auto !important;
+    height: 24px;
+    border-radius: 4px;
+    margin-left: 12px;
+  }
+
+  &__field-btn-img {
+  }
+
+  &__label {
+    font-weight: 700;
+  }
+
+  &__control-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+
+    &_w-60 {
+      width: 60%;
+    }
+  }
+
+  &__input,
+  &__textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border: 1px solid $primaryBlueGreyColor;
+    border-radius: 8px;
+    line-height: 20px;
+  }
+
+  &__textarea {
+    height: 8em;
+    resize: none;
+  }
+
+  &__actions {
+    display: flex;
+    margin-top: 30px;
+
+    &_align-end {
+      justify-content: flex-end;
+    }
+  }
+
+  &__action {
+    &:not(:first-child) {
+      margin-left: 35px;
+    }
+  }
+}

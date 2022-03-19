@@ -1,3 +1,5 @@
+@import 'page-title';
+
 .repositories-page {
   display: flex;
   flex-direction: column;
@@ -14,14 +16,5 @@
     margin: 0 auto;
     margin-top: 20px;
     padding: 0 15px;
-  }
-
-  &__title {
-    font-size: 36px;
-    font-weight: 400;
-    text-align: center;
-  }
-
-  &__repositories {
   }
 }

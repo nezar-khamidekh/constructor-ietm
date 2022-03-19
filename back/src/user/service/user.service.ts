@@ -7,7 +7,7 @@ import { CreateUserDto } from '../models/dto/CreateUser.dto';
 import { LoginUserDto } from '../models/dto/LoginUser.dto';
 import { UserI } from '../models/interfaces/user.inteface';
 import { User, UserDocument } from '../models/schemas/user.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { RefreshTokenDocument } from 'src/auth/models/schema/refresh-token.schema';
 
 @Injectable()
@@ -145,16 +145,32 @@ export class UserService {
     );
   }
 
-  findOne(id: string): Observable<UserDocument> {
+  findOne(enrty: any): Observable<UserDocument> {
     return from(
-      this.userModel.findById(id, [
-        'login',
-        'lastName',
-        'firstName',
-        'email',
-        'username',
-        'avatar',
-      ]),
+      this.userModel.findOne(
+        {
+          $or: [
+            { login: enrty },
+            {
+              _id:
+                enrty.length == 24
+                  ? new Types.ObjectId(enrty)
+                  : new Types.ObjectId('000000000000'),
+            },
+          ],
+        },
+        ['login', 'lastName', 'firstName', 'email', 'username', 'avatar'],
+      ),
+    ).pipe(
+      map((user) => {
+        if (user) {
+          return user;
+        } else
+          throw new HttpException(
+            'Пользователь не найден',
+            HttpStatus.NOT_FOUND,
+          );
+      }),
     );
   }
 
@@ -170,8 +186,8 @@ export class UserService {
           return from(
             this.userModel.updateOne({ _id: updateData._id }, updateData),
           ).pipe(
-            map((result) => {
-              return true;
+            map((result: any) => {
+              return result.modifiedCount ? true : false;
             }),
           );
         }),
@@ -180,8 +196,8 @@ export class UserService {
       return from(
         this.userModel.updateOne({ _id: updateData._id }, updateData),
       ).pipe(
-        map((result) => {
-          return true;
+        map((result: any) => {
+          return result.modifiedCount ? true : false;
         }),
       );
   }

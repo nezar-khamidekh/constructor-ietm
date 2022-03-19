@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { from, map, switchMap } from 'rxjs';
+import { Model, Types } from 'mongoose';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { UserService } from 'src/user/service/user.service';
+import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
+import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
+import { UpdateParticipantDto } from '../models/dto/updateParticipant.dto';
 import { Team, TeamDocument } from '../models/schemas/team.schema';
 
 @Injectable()
@@ -13,60 +16,185 @@ export class TeamService {
     private userService: UserService,
   ) {}
 
-  removeAll() {
-    return from(this.teamModel.deleteMany());
-  }
-
-  create(createTeamDto: CreateTeamDto) {
-    const newTeam = new this.teamModel(createTeamDto);
-    return from(newTeam.save()).pipe(
-      switchMap((team: TeamDocument) => {
-        return this.addParticipant(
-          createTeamDto.creatorId,
-          team._id,
-          'author',
-        ).pipe(
-          map((result) => {
-            return true;
-          }),
-        );
+  getOneById(id: string): Observable<TeamDocument> {
+    return from(this.teamModel.findById(id)).pipe(
+      map((team) => {
+        if (team) return team;
+        else
+          throw new HttpException('Команда не найдена', HttpStatus.NOT_FOUND);
       }),
     );
   }
 
-  addParticipant(userId: string, teamId: string, role: string) {
-    return this.userService.findOne(userId).pipe(
-      switchMap((user) => {
-        return from(this.teamModel.findById(teamId)).pipe(
-          switchMap((team) => {
-            team.participants.push({
-              userId: user._id,
-              login: user.login,
-              role: role,
-            });
-            return from(
-              this.teamModel.updateOne(
-                { _id: team._id },
-                {
-                  participants: team.participants,
-                },
-              ),
-            );
-          }),
-        );
-      }),
-    );
-  }
-
-  findUserTeams(login: string) {
+  getManyByUser(searchEntry: string): Observable<TeamDocument[]> {
     return from(
       this.teamModel.aggregate([
         { $unwind: '$participants' },
-        { $match: { 'participants.login': login } },
+        {
+          $match: {
+            $or: [
+              { 'participants.login': searchEntry },
+              { 'participants.userId': new Types.ObjectId(searchEntry) },
+            ],
+          },
+        },
       ]),
     );
   }
 
+  createOne(createTeamDto: CreateTeamDto): Observable<TeamDocument> {
+    return this.checkIfTeamTitleIsFree(createTeamDto.title).pipe(
+      switchMap((check) => {
+        if (check) {
+          const newTeam = new this.teamModel(createTeamDto);
+          return from(newTeam.save()).pipe(
+            switchMap((team: TeamDocument) => {
+              return this.addParticipant({
+                userEntry: createTeamDto.creatorId,
+                teamId: team._id,
+                role: 0,
+              }).pipe(
+                map(() => {
+                  return team;
+                }),
+              );
+            }),
+          );
+        } else
+          throw new HttpException(
+            'Название команды уже занято',
+            HttpStatus.NOT_FOUND,
+          );
+      }),
+    );
+  }
+
+  updateOne(updateData: TeamDocument): Observable<boolean> {
+    return from(
+      this.teamModel.updateOne({ _id: updateData._id }, updateData),
+    ).pipe(
+      map((result: any) => {
+        return result.modifiedCount ? true : false;
+      }),
+    );
+  }
+
+  checkIfTeamTitleIsFree(title: string): Observable<boolean> {
+    return from(this.teamModel.findOne({ title })).pipe(
+      map((team) => {
+        if (team) return false;
+        else return true;
+      }),
+    );
+  }
+
+  deleteOne(id: string): Observable<boolean> {
+    return from(this.teamModel.deleteOne({ _id: id })).pipe(
+      map((result: any) => {
+        return result.deletedCount ? true : false;
+      }),
+    );
+  }
+
+  addParticipant(participantDto: AddParticipantDto): Observable<boolean> {
+    return this.userService.findOne(participantDto.userEntry).pipe(
+      switchMap((user) => {
+        return from(this.teamModel.findById(participantDto.teamId)).pipe(
+          switchMap((team) => {
+            if (
+              team.participants.some(
+                (participant) => participant.login === user.login,
+              )
+            )
+              throw new HttpException(
+                'Пользователь уже является участником команды',
+                HttpStatus.NOT_FOUND,
+              );
+            else {
+              team.participants.push({
+                userId: user._id,
+                login: user.login,
+                role: participantDto.role,
+              });
+              return from(
+                this.teamModel.updateOne(
+                  { _id: team._id },
+                  {
+                    participants: team.participants,
+                  },
+                ),
+              ).pipe(
+                map((result: any) => {
+                  return result.modifiedCount ? true : false;
+                }),
+              );
+            }
+          }),
+        );
+      }),
+    );
+  }
+
+  removeParticipant(
+    removeParticipantDto: RemoveParticipantDto,
+  ): Observable<boolean> {
+    return this.userService.findOne(removeParticipantDto.userEntry).pipe(
+      switchMap((user) => {
+        return this.getOneById(removeParticipantDto.teamId).pipe(
+          switchMap((team) => {
+            if (
+              team.participants.some(
+                (participant) =>
+                  participant.role === 0 && participant.login === user.login,
+              )
+            )
+              throw new HttpException(
+                'Нельзя удалить создателя команды',
+                HttpStatus.NOT_FOUND,
+              );
+            if (
+              team.participants.some(
+                (participant) => participant.login === user.login,
+              )
+            ) {
+              team.participants = team.participants.filter(
+                (participant) => participant.login !== user.login,
+              );
+              return this.updateOne(team);
+            } else
+              throw new HttpException(
+                'Пользователь не является участником команды',
+                HttpStatus.NOT_FOUND,
+              );
+          }),
+        );
+      }),
+    );
+  }
+
+  updateParticipant(
+    updateParticipantDto: UpdateParticipantDto,
+  ): Observable<boolean> {
+    return this.userService.findOne(updateParticipantDto.userEntry).pipe(
+      switchMap((user) => {
+        return this.getOneById(updateParticipantDto.teamId).pipe(
+          switchMap((team) => {
+            const updatedParticipant = team.participants.find(
+              (participant) => participant.login === user.login,
+            );
+            if (updatedParticipant) {
+              updatedParticipant.role = updateParticipantDto.role;
+              return this.updateOne(team);
+            } else
+              throw new HttpException(
+                'Пользователь не является участником команды',
+                HttpStatus.NOT_FOUND,
+              );
+          }),
+        );
+      }),
+    );
+  }
   getAll() {
     return from(this.teamModel.find());
   }

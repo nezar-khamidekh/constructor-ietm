@@ -24,6 +24,10 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'team',
+        loadChildren: () => import('../team/team.module').then((m) => m.TeamModule),
+      },
+      {
         path: 'editor',
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
