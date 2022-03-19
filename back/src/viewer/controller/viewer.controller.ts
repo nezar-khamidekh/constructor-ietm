@@ -6,9 +6,13 @@ import {
   Post,
   Response,
   StreamableFile,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
-import { join } from 'path';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
 import { ViewerService } from '../service/viewer.service';
 
 @Controller('viewer')
@@ -50,7 +54,32 @@ export class ViewerController {
         );
         return new StreamableFile(impeller);
       default:
-        break;
+        const other = createReadStream(
+          join(process.cwd(), `/testmodels/${id}.gltf`),
+        );
+        return new StreamableFile(other);
     }
+  }
+
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('model', {
+      storage: diskStorage({
+        destination: './buffer/',
+        filename: (req, file, cb) => {
+          const randomName =
+            Array(8)
+              .fill(null)
+              .map(() => Math.round(Math.random() * 16).toString(16))
+              .join('') + extname(file.originalname);
+          return cb(null, randomName);
+        },
+      }),
+    }),
+  )
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    let modelPath = file.filename.replace(extname(file.filename), '.gltf');
+    let outputPath = 'testmodels/' + modelPath;
+    this.viewerService.convertModel(file.path, outputPath);
   }
 }
