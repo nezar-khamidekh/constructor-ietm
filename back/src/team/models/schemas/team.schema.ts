@@ -6,8 +6,11 @@ export type TeamDocument = Team & Document;
 
 @Schema({ timestamps: true })
 export class Team {
-  @Prop({ length: 200 })
+  @Prop({ length: 200, unique: true })
   title: string;
+
+  @Prop({ default: null })
+  avatar: string;
 
   @Prop({ length: 2000, default: null })
   description: string;
