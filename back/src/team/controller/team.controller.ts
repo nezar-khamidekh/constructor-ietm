@@ -52,7 +52,7 @@ export class TeamController {
     return this.teamService.updateParticipant(updateParticipantDto);
   }
 
-  @Get('check-title')
+  @Post('check-title')
   checkIfTeamTitleIsFree(@Body() data: { title: string }): Observable<boolean> {
     return this.teamService.checkIfTeamTitleIsFree(data.title);
   }
