@@ -53,6 +53,7 @@ export class SceneService {
   annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
   planes: THREE.Plane[] = [];
+  planeHelpers: THREE.PlaneHelper[] = [];
 
   constructor(private http: HttpClient) {}
 
@@ -644,12 +645,12 @@ export class SceneService {
     // console.log(this.viewer.model);
     this.planes = [
       new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
-      // new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
-      // new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
+      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
     ];
 
-    let planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
-    planeHelpers.forEach((planeHelper) => {
+    this.planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
+    this.planeHelpers.forEach((planeHelper) => {
       // (planeHelper.material as any).side = THREE.DoubleSide;
       planeHelper.visible = true;
       this.viewer.scene.add(planeHelper);
@@ -659,6 +660,18 @@ export class SceneService {
 
     //из за него шакалит плоскости, но необходим для обрезки
     this.viewer.renderer.clippingPlanes = this.planes;
+  }
+
+  removePlanes() {
+    this.planes = [
+      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
+      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
+    ];
+    this.viewer.renderer.clippingPlanes = this.planes;
+    this.planeHelpers.forEach((planeHelper) => {
+      this.viewer.scene.remove(planeHelper);
+    });
   }
 
   cutModel(planeIndex: number, cuttingModelValue: number) {

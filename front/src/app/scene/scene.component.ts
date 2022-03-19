@@ -456,6 +456,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   stopCuttingModel() {
     this.btnIsInAction = false;
+    this.sceneService.removePlanes();
   }
 
   onCuttingLengthChanged(dataCut: any) {
