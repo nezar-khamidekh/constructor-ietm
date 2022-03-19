@@ -33,6 +33,19 @@
     left: 0;
   }
 
+  &__row {
+    display: flex;
+  }
+
+  &__column {
+    display: flex;
+    flex-direction: column;
+
+    &_w-300 {
+      min-width: 300px;
+    }
+  }
+
   &__field {
   }
 
