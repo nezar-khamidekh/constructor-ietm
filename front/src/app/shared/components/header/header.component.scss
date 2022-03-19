@@ -118,6 +118,18 @@ input.search-bar__input::placeholder {
   color: #24292f;
 }
 
+.create-new-menu {
+  &__item {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  &__item-action {
+    font-size: inherit;
+  }
+}
+
 .user-menu {
   &__item {
     display: flex;
