@@ -34,6 +34,8 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+const DIFFERENCE_BETWEEN_PLANES = 0.00001;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -53,7 +55,10 @@ export class SceneService {
   annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
   planes: THREE.Plane[] = [];
+  planesForVisibleHelpers: THREE.Plane[] = [];
   planeHelpers: THREE.PlaneHelper[] = [];
+  planesHelpersVisible: THREE.PlaneHelper[] = [];
+  differenceBetweenPlanes: number = DIFFERENCE_BETWEEN_PLANES;
 
   constructor(private http: HttpClient) {}
 
@@ -642,33 +647,37 @@ export class SceneService {
   }
 
   createPlanes() {
-    // console.log(this.viewer.model);
     this.planes = [
       new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
       new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
       new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
     ];
+    this.planesForVisibleHelpers = [
+      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1 - this.differenceBetweenPlanes),
+      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1 - this.differenceBetweenPlanes),
+      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1 - this.differenceBetweenPlanes),
+    ];
 
     this.planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
-    this.planeHelpers.forEach((planeHelper) => {
-      // (planeHelper.material as any).side = THREE.DoubleSide;
+    this.planesHelpersVisible = this.planesForVisibleHelpers.map(
+      (plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2),
+    );
+    this.planesHelpersVisible.forEach((planeHelper) => {
       planeHelper.visible = true;
       this.viewer.scene.add(planeHelper);
     });
+    this.planeHelpers.forEach((planeHelper) => {
+      planeHelper.visible = false;
+      this.viewer.scene.add(planeHelper);
+    });
 
-    // this.quad.frustumCulled = false;
-
-    //из за него шакалит плоскости, но необходим для обрезки
     this.viewer.renderer.clippingPlanes = this.planes;
   }
 
   removePlanes() {
-    this.planes = [
-      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
-      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
-      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
-    ];
-    this.viewer.renderer.clippingPlanes = this.planes;
+    this.planesHelpersVisible.forEach((planeHelper) => {
+      this.viewer.scene.remove(planeHelper);
+    });
     this.planeHelpers.forEach((planeHelper) => {
       this.viewer.scene.remove(planeHelper);
     });
@@ -676,6 +685,8 @@ export class SceneService {
 
   cutModel(planeIndex: number, cuttingModelValue: number) {
     this.planes[planeIndex].constant = cuttingModelValue;
+    this.planesForVisibleHelpers[planeIndex].constant =
+      cuttingModelValue - this.differenceBetweenPlanes;
   }
 
   createPlaneStencilGroup() {}
