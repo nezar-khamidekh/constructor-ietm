@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ImageSanitizedModule } from '../shared/directives/image-sanitized/image-sanitized.module';
 
 @NgModule({
   declarations: [PageComponent, HeaderComponent, SettingsComponent],
@@ -29,6 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatDialogModule,
     MatTooltipModule,
     ReactiveFormsModule,
+    ImageSanitizedModule,
   ],
 })
 export class PageModule {}

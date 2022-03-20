@@ -7,10 +7,11 @@ import {
   ElementRef,
   ChangeDetectorRef,
   Renderer2,
+  OnDestroy,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { SubSink } from 'subsink';
 import { UserI } from '../../models/user.interface';
 import { UserUpdateI } from '../../models/userUpdate.interface';
@@ -28,13 +29,12 @@ interface DIALOG_DATA {
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
 
   hidePass = true;
   userFormGroup: FormGroup;
   imageLoadFailed = false;
-  userImgPath!: SafeResourceUrl;
   croppieObj: any;
   fileReader = new FileReader();
   previewImage: any;
@@ -54,9 +54,6 @@ export class SettingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userImgPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-      'data:image/jpg;base64,' + this.data.user.avatar,
-    );
     this.initializeUserForm();
   }
 
@@ -69,12 +66,11 @@ export class SettingsComponent implements OnInit {
       const user: UserUpdateI = {
         _id: this.data.user._id!,
         email: String(this.userFormGroup.get('email')?.value).toLowerCase(),
-        username: String(this.userFormGroup.get('login')?.value),
+        username: String(this.userFormGroup.get('username')?.value),
         password: String(this.userFormGroup.get('password')?.value),
         firstName: String(this.userFormGroup.get('firstName')?.value),
         lastName: String(this.userFormGroup.get('lastName')?.value),
-        avatar:
-          this.previewImageUrl.replace('data:image/png;base64,', '') || this.data.user.avatar || '',
+        avatar: this.previewImageUrl || this.data.user.avatar || '',
       };
       this.subs.add(
         this.userService.updateUser(user).subscribe(

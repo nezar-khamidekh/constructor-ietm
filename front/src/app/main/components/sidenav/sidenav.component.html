@@ -2,7 +2,9 @@
   <div class="account">
     <img
       class="account__image"
-      [src]="user.avatar ? userAvatarPath : 'assets/svg/avatar.svg'"
+      appImageSanitized
+      [imagePath]="user.avatar || ''"
+      [defaultImage]="'assets/svg/avatar.svg'"
       alt="аккаунт"
     />
     <span class="account__nickname">{{ user.username }}</span>

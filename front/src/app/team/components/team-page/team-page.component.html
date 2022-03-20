@@ -1,25 +1,31 @@
 <div class="team-page">
   <div class="team-page__container">
-    <h1 class="team-page__title page-title">Морковные разработчики</h1>
+    <h1 class="team-page__title page-title">{{ team.title }}</h1>
     <div class="team-page__card team-card">
       <div class="team-card__header">
-        <img class="team-card__image" src="assets/svg/team.svg" alt="команда" />
+        <img
+          class="team-card__image"
+          appImageSanitized
+          [imagePath]="team.avatar"
+          [defaultImage]="'assets/svg/team.svg'"
+          alt="команда"
+        />
         <p class="team-card__description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
+          {{ team.description }}
         </p>
         <div class="team-card__actions">
-          <button class="team-card__action" mat-flat-button color="primary">
+          <a
+            class="team-card__action"
+            mat-flat-button
+            color="primary"
+            [routerLink]="'/team/edit/' + team._id"
+          >
             <img
               class="team-card__action-img"
               src="assets/svg/edit_white.svg"
               alt="редактировать"
             />
-          </button>
+          </a>
           <button class="team-card__action" mat-flat-button color="warn">
             <img class="team-card__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
           </button>

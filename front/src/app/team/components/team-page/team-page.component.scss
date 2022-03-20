@@ -32,6 +32,8 @@
   border: 1px solid $primaryGreyBorderColor;
   background-color: $primaryGreyBgColor;
   padding: 10px 15px;
+  min-width: 450px;
+  min-height: 350px;
 
   &__header {
     display: flex;
@@ -43,6 +45,8 @@
   }
 
   &__description {
+    flex: 1;
+    line-height: 18px;
     margin-left: 15px;
   }
 

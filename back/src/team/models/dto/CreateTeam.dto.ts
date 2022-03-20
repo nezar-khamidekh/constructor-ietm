@@ -8,6 +8,10 @@ export class CreateTeamDto {
   @IsString()
   description?: string;
 
+  @IsOptional()
+  @IsString()
+  avatar?: string;
+
   @IsString()
   creatorId: string;
 }

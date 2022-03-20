@@ -60,7 +60,9 @@
         <button class="user-actions__btn" [matMenuTriggerFor]="userMenu">
           <img
             class="user-actions__avatar-icon"
-            [src]="user.avatar ? userAvatarPath : 'assets/svg/avatar.svg'"
+            appImageSanitized
+            [imagePath]="user.avatar || ''"
+            [defaultImage]="'assets/svg/avatar.svg'"
             alt="меню пользователя"
           />
         </button>

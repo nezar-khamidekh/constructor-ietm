@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { UserI } from 'src/app/shared/models/user.interface';
 
 @Component({
@@ -15,24 +7,8 @@ import { UserI } from 'src/app/shared/models/user.interface';
   styleUrls: ['./sidenav.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavComponent implements OnInit, OnChanges {
+export class SidenavComponent {
   @Input() user!: UserI;
-  userAvatarPath!: SafeResourceUrl;
 
-  constructor(private sanitizer: DomSanitizer) {}
-
-  ngOnInit(): void {
-    if (this.user)
-      this.userAvatarPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-        'data:image/jpg;base64,' + this.user.avatar,
-      );
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.user && !changes.user.firstChange && this.user) {
-      this.userAvatarPath = this.sanitizer.bypassSecurityTrustResourceUrl(
-        'data:image/jpg;base64,' + this.user.avatar,
-      );
-    }
-  }
+  constructor() {}
 }

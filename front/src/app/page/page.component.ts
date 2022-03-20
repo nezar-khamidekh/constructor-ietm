@@ -1,5 +1,4 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { SubSink } from 'subsink';
 import { UserI } from '../shared/models/user.interface';
 import { DataStoreService } from '../shared/services/data-store.service';
@@ -15,15 +14,9 @@ export class PageComponent implements OnInit {
 
   user: UserI | null = null;
 
-  constructor(
-    private route: ActivatedRoute,
-    private dataStore: DataStoreService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  constructor(private dataStore: DataStoreService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.dataStore.setUser(this.route.snapshot.data.user);
-
     this.subs.add(
       this.dataStore.getUser().subscribe((user) => {
         this.user = user;

@@ -8,6 +8,7 @@ import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
 import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
 import { UpdateParticipantDto } from '../models/dto/updateParticipant.dto';
+import { ParticipantRole } from '../models/schemas/participant.schema';
 import { Team, TeamDocument } from '../models/schemas/team.schema';
 
 @Injectable()
@@ -52,7 +53,7 @@ export class TeamService {
               return this.addParticipant({
                 userId: createTeamDto.creatorId,
                 teamId: team._id,
-                role: 0,
+                role: ParticipantRole.Author,
               }).pipe(
                 map(() => {
                   return team;

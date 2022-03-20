@@ -4,6 +4,8 @@ import { AuthGuard } from '../shared/guards/auth.guard';
 import { ManageTeamComponent } from './components/manage-team/manage-team.component';
 import { TeamPageComponent } from './components/team-page/team-page.component';
 import { TeamsListComponent } from './components/teams-list/teams-list.component';
+import { TeamResolverService } from './resolvers/team-resolver.service';
+import { UserTeamsResolverService } from './resolvers/user-teams.service';
 import { TeamComponent } from './team.component';
 
 const routes: Routes = [
@@ -23,6 +25,7 @@ const routes: Routes = [
         path: 'edit/:teamId',
         component: ManageTeamComponent,
         canActivate: [AuthGuard],
+        resolve: { team: TeamResolverService },
         data: {
           checkUser: true,
         },
@@ -31,14 +34,16 @@ const routes: Routes = [
         path: 'user-teams',
         component: TeamsListComponent,
         canActivate: [AuthGuard],
+        resolve: { teams: UserTeamsResolverService },
         data: {
           checkUser: true,
         },
       },
       {
-        path: ':id',
+        path: ':teamId',
         component: TeamPageComponent,
         canActivate: [AuthGuard],
+        resolve: { team: TeamResolverService },
         data: {
           checkUser: true,
         },

@@ -12,7 +12,9 @@
                 <ng-container *ngIf="!imageLoadFailed; else errorLoadImage">
                   <img
                     class="user-avatar__img"
-                    [src]="data.user.avatar ? userImgPath : 'assets/svg/avatar.svg'"
+                    appImageSanitized
+                    [imagePath]="data.user.avatar || ''"
+                    [defaultImage]="'assets/svg/avatar.svg'"
                     alt="аватар"
                   />
                   <button class="user-avatar__pfp-button" (click)="fileInput.click()">

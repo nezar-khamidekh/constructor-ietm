@@ -1,21 +1,32 @@
 <div class="manage-team">
   <div class="manage-team__container">
-    <h1 class="manage-team__title page-title">Новая команда</h1>
-    <form class="manage-team__form form">
+    <h1 class="manage-team__title page-title">
+      {{ editMode ? 'Команда 	&#34;' + teamToEdit?.title + '&#34;' : 'Новая команда' }}
+    </h1>
+    <form class="manage-team__form form" [formGroup]="teamFormGroup" (ngSubmit)="onSubmit()">
       <div class="manage-team__header">
         <div class="form__field">
           <label class="form__label" for="name">Название</label>
           <div class="form__control-wrapper form__control-wrapper_w-60">
-            <input class="form__input" placeholder="Название команды" id="name" />
+            <input
+              class="form__input"
+              placeholder="Название команды"
+              id="name"
+              formControlName="title"
+            />
           </div>
         </div>
         <div class="manage-team__avatar-container edit-avatar">
           <img
             class="manage-team__avatar edit-avatar__img"
-            [src]="'assets/svg/team.svg'"
+            [src]="teamAvatar || 'assets/svg/team.svg'"
             alt="аватар"
           />
-          <button class="manage-team__pfp-button edit-avatar__pfp-button" type="button">
+          <button
+            class="manage-team__pfp-button edit-avatar__pfp-button"
+            type="button"
+            (click)="openDialogChooseImage()"
+          >
             <img
               class="manage-team__select-avatar edit-avatar__select-avatar"
               src="assets/svg/edit_white.svg"
@@ -31,10 +42,11 @@
             class="form__textarea"
             placeholder="Описание команды"
             id="description"
+            formControlName="description"
           ></textarea>
         </div>
       </div>
-      <div class="form__field">
+      <!-- <div class="form__field">
         <label class="form__label" for="description">Добавить участника</label>
         <div class="form__control-wrapper form__control-wrapper_w-60">
           <input
@@ -55,11 +67,11 @@
             />
           </button>
         </div>
-      </div>
+      </div> -->
       <div class="form__actions form__actions_align-end">
         <button class="form__action" mat-raised-button color="warn" type="button">Отмена</button>
-        <button class="form__action" mat-raised-button color="primary" type="button">
-          Создать
+        <button class="form__action" mat-raised-button color="primary" type="submit">
+          {{ editMode ? 'Сохранить' : 'Создать' }}
         </button>
       </div>
     </form>

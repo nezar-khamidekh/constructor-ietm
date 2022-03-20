@@ -18,7 +18,7 @@ export class Participant {
 export const ParticipantSchema = SchemaFactory.createForClass(Participant);
 
 export enum ParticipantRole {
-  'Author',
-  'Editor',
-  'Reader',
+  Author,
+  Editor,
+  Reader,
 }

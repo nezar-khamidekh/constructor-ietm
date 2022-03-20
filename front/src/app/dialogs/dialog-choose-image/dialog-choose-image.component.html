@@ -1,0 +1,45 @@
+<div class="dialog">
+  <mat-dialog-content class="choose-image">
+    <button
+      class="choose-image__pfp-button"
+      mat-flat-button
+      color="primary"
+      (click)="fileInput.click()"
+    >
+      Выбрать файл
+    </button>
+    <input
+      #fileInput
+      type="file"
+      accept=".png, .jpg, .jpeg"
+      style="display: none"
+      (change)="onFileChange($event)"
+    />
+    <div class="choose-image__crop-wrapper">
+      <div id="croppie" class="choose-image__cropper" #croppie></div>
+      <div class="choose-image__crop-result" *ngIf="previewImage">
+        <img
+          [src]="previewImage"
+          alt="аватар"
+          class="choose-image__result-image choose-image__result-image_big"
+        />
+        <img
+          [src]="previewImage"
+          alt="аватар"
+          class="choose-image__result-image choose-image__result-image_small"
+        />
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-flat-button mat-dialog-close color="warn">Отмена</button>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="dialogRef.close({ imageUrl: previewImageUrl, image: previewImage })"
+      *ngIf="previewImageUrl"
+    >
+      Сохранить
+    </button>
+  </mat-dialog-actions>
+</div>
