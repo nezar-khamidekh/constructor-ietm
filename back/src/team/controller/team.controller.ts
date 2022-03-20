@@ -34,7 +34,7 @@ export class TeamController {
 
   @Post('user')
   getTeamsByUser(
-    @Param('enrty') userEntryDto: UserEntryDto,
+    @Body() userEntryDto: UserEntryDto,
   ): Observable<TeamDocument[]> {
     return this.teamService.getManyByUser(userEntryDto);
   }

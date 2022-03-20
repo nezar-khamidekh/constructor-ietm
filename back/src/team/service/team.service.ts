@@ -27,7 +27,7 @@ export class TeamService {
     );
   }
 
-  getManyByUser(userEntryDto: UserEntryDto): Observable<TeamDocument[]> {
+  getManyByUser(userEntryDto: UserEntryDto): Observable<any> {
     const filter = [];
     if (userEntryDto.login)
       filter.push({ 'participants.login': userEntryDto.login });
@@ -35,15 +35,10 @@ export class TeamService {
       filter.push({
         'participants.userId': new Types.ObjectId(userEntryDto.userId),
       });
-    return from(
-      this.teamModel.aggregate([
-        { $unwind: '$participants' },
-        {
-          $match: {
-            $or: filter,
-          },
-        },
-      ]),
+    return from(this.teamModel.find({ $or: filter })).pipe(
+      map((teams) => {
+        return teams;
+      }),
     );
   }
 
