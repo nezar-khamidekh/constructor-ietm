@@ -17,6 +17,11 @@ export class TeamController {
     return this.teamService.createOne(createTeamDto);
   }
 
+  @Post('update')
+  updateTeam(@Body() teamData: TeamDocument): Observable<boolean> {
+    return this.teamService.updateOne(teamData);
+  }
+
   @Get('all')
   getAllTeams() {
     return this.teamService.getAll();
@@ -35,7 +40,7 @@ export class TeamController {
   }
 
   @Post('participant/add')
-  addPerticipantToTheTeam(
+  addParticipantToTheTeam(
     @Body() participantDto: AddParticipantDto,
   ): Observable<boolean> {
     return this.teamService.addParticipant(participantDto);
