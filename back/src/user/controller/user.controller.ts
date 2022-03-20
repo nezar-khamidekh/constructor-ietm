@@ -75,7 +75,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get()
   getCurUser(@Req() req): Observable<UserI> {
-    return this.userService.findOne(req.user._id);
+    return this.userService.findOne({ userId: req.user._id });
   }
 
   @UseGuards(JwtAuthGuard)
