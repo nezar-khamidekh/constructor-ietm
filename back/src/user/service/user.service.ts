@@ -9,6 +9,7 @@ import { UserI } from '../models/interfaces/user.inteface';
 import { User, UserDocument } from '../models/schemas/user.schema';
 import { Model, Types } from 'mongoose';
 import { RefreshTokenDocument } from 'src/auth/models/schema/refresh-token.schema';
+import { UserEntryDto } from '../models/dto/userEntry.dto';
 
 @Injectable()
 export class UserService {
@@ -59,7 +60,7 @@ export class UserService {
   }
 
   login(loginUserDto: LoginUserDto): Observable<SessionI> {
-    return this.findUserByEmailOrLogin(
+    return this.findUserWithPassword(
       loginUserDto.login || loginUserDto.email,
     ).pipe(
       switchMap((user: UserDocument) => {
@@ -127,7 +128,7 @@ export class UserService {
     );
   }
 
-  private findUserByEmailOrLogin(str: string): Observable<UserDocument> {
+  private findUserWithPassword(str: string): Observable<UserDocument> {
     return from(
       this.userModel.findOne({ $or: [{ login: str }, { email: str }] }, [
         'login',
@@ -145,19 +146,16 @@ export class UserService {
     );
   }
 
-  findOne(enrty: any): Observable<UserDocument> {
+  findOne(userEntryDto: UserEntryDto): Observable<UserDocument> {
+    const filter = [];
+    if (userEntryDto.email) filter.push({ email: userEntryDto.email });
+    if (userEntryDto.login) filter.push({ login: userEntryDto.login });
+    if (userEntryDto.userId)
+      filter.push({ _id: new Types.ObjectId(userEntryDto.userId) });
     return from(
       this.userModel.findOne(
         {
-          $or: [
-            { login: enrty },
-            {
-              _id:
-                enrty.length == 24
-                  ? new Types.ObjectId(enrty)
-                  : new Types.ObjectId('000000000000'),
-            },
-          ],
+          $or: filter,
         },
         ['login', 'lastName', 'firstName', 'email', 'username', 'avatar'],
       ),

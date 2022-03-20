@@ -1,9 +1,7 @@
 import { IsNumber, IsString } from 'class-validator';
+import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
 
-export class UpdateParticipantDto {
-  @IsString()
-  userEntry: string;
-
+export class UpdateParticipantDto extends UserEntryDto {
   @IsString()
   teamId: string;
 

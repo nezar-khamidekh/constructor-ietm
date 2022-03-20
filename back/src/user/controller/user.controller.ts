@@ -17,6 +17,7 @@ import { UserI } from '../models/interfaces/user.inteface';
 import { UserService } from '../service/user.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserDocument } from '../models/schemas/user.schema';
+import { UserEntryDto } from '../models/dto/userEntry.dto';
 
 @Controller('user')
 export class UserController {
@@ -87,4 +88,7 @@ export class UserController {
   getAllUsers() {
     return this.userService.findAll();
   }
+
+  @Post('check')
+  checkIfUserExist(@Body() userEntryDto: UserEntryDto) {}
 }

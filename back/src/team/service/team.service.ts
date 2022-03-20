@@ -50,7 +50,7 @@ export class TeamService {
           return from(newTeam.save()).pipe(
             switchMap((team: TeamDocument) => {
               return this.addParticipant({
-                userEntry: createTeamDto.creatorId,
+                userId: createTeamDto.creatorId,
                 teamId: team._id,
                 role: 0,
               }).pipe(
@@ -97,7 +97,7 @@ export class TeamService {
   }
 
   addParticipant(participantDto: AddParticipantDto): Observable<boolean> {
-    return this.userService.findOne(participantDto.userEntry).pipe(
+    return this.userService.findOne(participantDto).pipe(
       switchMap((user) => {
         return from(this.teamModel.findById(participantDto.teamId)).pipe(
           switchMap((team) => {
@@ -138,7 +138,7 @@ export class TeamService {
   removeParticipant(
     removeParticipantDto: RemoveParticipantDto,
   ): Observable<boolean> {
-    return this.userService.findOne(removeParticipantDto.userEntry).pipe(
+    return this.userService.findOne(removeParticipantDto).pipe(
       switchMap((user) => {
         return this.getOneById(removeParticipantDto.teamId).pipe(
           switchMap((team) => {
@@ -175,7 +175,7 @@ export class TeamService {
   updateParticipant(
     updateParticipantDto: UpdateParticipantDto,
   ): Observable<boolean> {
-    return this.userService.findOne(updateParticipantDto.userEntry).pipe(
+    return this.userService.findOne(updateParticipantDto).pipe(
       switchMap((user) => {
         return this.getOneById(updateParticipantDto.teamId).pipe(
           switchMap((team) => {
