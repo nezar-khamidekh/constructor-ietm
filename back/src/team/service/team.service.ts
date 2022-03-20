@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { from, map, Observable, switchMap } from 'rxjs';
+import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
@@ -26,16 +27,20 @@ export class TeamService {
     );
   }
 
-  getManyByUser(searchEntry: string): Observable<TeamDocument[]> {
+  getManyByUser(userEntryDto: UserEntryDto): Observable<TeamDocument[]> {
+    const filter = [];
+    if (userEntryDto.login)
+      filter.push({ 'participants.login': userEntryDto.login });
+    if (userEntryDto.userId)
+      filter.push({
+        'participants.userId': new Types.ObjectId(userEntryDto.userId),
+      });
     return from(
       this.teamModel.aggregate([
         { $unwind: '$participants' },
         {
           $match: {
-            $or: [
-              { 'participants.login': searchEntry },
-              { 'participants.userId': new Types.ObjectId(searchEntry) },
-            ],
+            $or: filter,
           },
         },
       ]),

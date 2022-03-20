@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
 import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
@@ -26,9 +27,11 @@ export class TeamController {
     return this.teamService.getOneById(id);
   }
 
-  @Get('user/:enrty')
-  getTeamsByUser(@Param('enrty') enrty: string): Observable<TeamDocument[]> {
-    return this.teamService.getManyByUser(enrty);
+  @Post('user')
+  getTeamsByUser(
+    @Param('enrty') userEntryDto: UserEntryDto,
+  ): Observable<TeamDocument[]> {
+    return this.teamService.getManyByUser(userEntryDto);
   }
 
   @Post('participant/add')
