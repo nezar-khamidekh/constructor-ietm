@@ -5,25 +5,41 @@ import { TeamRoutingModule } from './team-routing.module';
 import { TeamComponent } from './team.component';
 import { ManageTeamComponent } from './components/manage-team/manage-team.component';
 import { MatButtonModule } from '@angular/material/button';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TeamsListComponent } from './components/teams-list/teams-list.component';
 import { TeamPageComponent } from './components/team-page/team-page.component';
 import { DialogChooseImageModule } from '../dialogs/dialog-choose-image/dialog-choose-image.module';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ImageSanitizedModule } from '../shared/directives/image-sanitized/image-sanitized.module';
 import { ParticipantRolePipe } from './pipes/participant-role.pipe';
+import { ParticipantsTableComponent } from './components/participants-table/participants-table.component';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
 
 @NgModule({
-  declarations: [TeamComponent, ManageTeamComponent, TeamsListComponent, TeamPageComponent, ParticipantRolePipe],
+  declarations: [
+    TeamComponent,
+    ManageTeamComponent,
+    TeamsListComponent,
+    TeamPageComponent,
+    ParticipantRolePipe,
+    ParticipantsTableComponent,
+    IsTeamAuthorPipe,
+  ],
   imports: [
     CommonModule,
     TeamRoutingModule,
     MatButtonModule,
     ReactiveFormsModule,
+    FormsModule,
     DialogChooseImageModule,
     MatDialogModule,
-    ReactiveFormsModule,
     ImageSanitizedModule,
+    MatTableModule,
+    MatFormFieldModule,
+    MatSelectModule,
   ],
 })
 export class TeamModule {}

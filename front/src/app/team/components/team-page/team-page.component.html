@@ -31,7 +31,14 @@
           </button>
         </div>
       </div>
-      <div class="team-card__content">Таблица участников</div>
+      <div class="team-card__content">
+        <app-participants-table
+          *ngIf="team.participants && team.participants?.length"
+          [participants]="team.participants || []"
+          [viewMode]="true"
+        >
+        </app-participants-table>
+      </div>
     </div>
   </div>
 </div>

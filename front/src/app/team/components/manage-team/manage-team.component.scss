@@ -41,8 +41,19 @@
     width: 36px;
     height: 36px;
   }
+}
 
-  &__send-invite-btn {
+.new-participant {
+  &__input {
+    flex-grow: 1;
+  }
+
+  &__select {
+    margin-left: 15px;
+  }
+
+  &__btn {
+    margin-left: 15px;
     background-color: $primaryBlueColor;
   }
 }

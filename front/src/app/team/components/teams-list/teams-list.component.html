@@ -1,28 +1,35 @@
 <div class="teams-list">
   <div class="teams-list__container">
-    <h1 class="teams-list__title page-title">Ваши команды</h1>
-    <div class="teams-list__content">
-      <div class="team" *ngFor="let team of teams" (click)="onNavigateToTeam(team._id)">
-        <img
-          class="team__image"
-          appImageSanitized
-          [imagePath]="team.avatar"
-          [defaultImage]="'assets/svg/team.svg'"
-          alt="команда"
-        />
-        <div class="team__content">
-          <h2 class="team__title">{{ team.title }}</h2>
-          <p class="team__user-role">
-            Роль: {{ team.participants | participantRole: dataStore.getUserValue()?._id! }}
-          </p>
-          <p class="team__description">
-            {{ team.description }}
-          </p>
+    <ng-container *ngIf="teams.length; else noTeamsFound">
+      <h1 class="teams-list__title page-title">Ваши команды</h1>
+      <div class="teams-list__content">
+        <div class="team" *ngFor="let team of teams" (click)="onNavigateToTeam(team._id!)">
+          <img
+            class="team__image"
+            appImageSanitized
+            [imagePath]="team.avatar"
+            [defaultImage]="'assets/svg/team.svg'"
+            alt="команда"
+          />
+          <div class="team__content">
+            <h2 class="team__title">{{ team.title }}</h2>
+            <p class="team__user-role">
+              Роль: {{ team.participants! | participantRole: dataStore.getUserValue()?._id! }}
+            </p>
+            <p class="team__description">
+              {{ team.description }}
+            </p>
+          </div>
+          <button class="team__action" mat-flat-button color="warn" (click)="onLeaveTeam($event)">
+            <img class="team__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
+          </button>
         </div>
-        <button class="team__action" mat-flat-button color="warn" (click)="onLeaveTeam($event)">
-          <img class="team__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
-        </button>
       </div>
-    </div>
+    </ng-container>
+    <ng-template #noTeamsFound>
+      <div class="teams-list__no-found">
+        <span>Вы не состоите ни в одной команде!</span>
+      </div>
+    </ng-template>
   </div>
 </div>

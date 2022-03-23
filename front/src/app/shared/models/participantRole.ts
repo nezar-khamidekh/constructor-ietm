@@ -4,4 +4,8 @@ export enum ParticipantRole {
   Reader,
 }
 
-export const PARTICIPANT_ROLES = ['Автор', 'Редактор', 'Читатель'];
+export const PARTICIPANT_ROLES = [
+  { title: 'Автор', disabled: true },
+  { title: 'Редактор', disabled: false },
+  { title: 'Читатель', disabled: false },
+];

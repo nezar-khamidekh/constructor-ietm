@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
+import { isEmail } from 'src/app/shared/helpers/helpers';
+import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UserI } from 'src/app/shared/models/user.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
@@ -49,16 +51,26 @@ export class ManageTeamComponent implements OnInit {
     );
 
     this.teamFormGroup = this.fb.group({
-      title: [
-        !this.editMode ? '' : this.teamToEdit?.title,
-        [Validators.required, Validators.maxLength(200)],
-      ],
-      avatar: [!this.editMode ? '' : this.teamToEdit?.avatar, []],
-      description: [
-        !this.editMode ? '' : this.teamToEdit?.description,
-        [Validators.required, Validators.maxLength(2000)],
-      ],
+      team: this.fb.group({
+        title: [
+          !this.editMode ? '' : this.teamToEdit?.title,
+          [Validators.required, Validators.maxLength(200)],
+        ],
+        avatar: [!this.editMode ? '' : this.teamToEdit?.avatar, []],
+        description: [
+          !this.editMode ? '' : this.teamToEdit?.description,
+          [Validators.required, Validators.maxLength(2000)],
+        ],
+      }),
+      newParticipant: this.fb.group({
+        username: ['', Validators.required],
+        role: ['', Validators.required],
+      }),
     });
+  }
+
+  getParticipantRoles() {
+    return PARTICIPANT_ROLES.slice(1, PARTICIPANT_ROLES.length);
   }
 
   openDialogChooseImage(): void {
@@ -81,12 +93,40 @@ export class ManageTeamComponent implements OnInit {
     );
   }
 
+  sendInvitation() {
+    if (this.teamFormGroup.get('newParticipant')?.valid) {
+      const username = this.teamFormGroup.get(['newParticipant', 'username'])?.value;
+      const email = isEmail(username) ? username : null;
+      this.subs.add(
+        this.teamService
+          .sendInvitation({
+            teamId: this.teamToEdit?._id!,
+            email: email ?? '',
+            login: email ? '' : username,
+            role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
+          })
+          .subscribe((res) => {
+            // this.teamToEdit?.participants = [...this.teamToEdit?.participants, {userId: string;
+            //   login: string;
+            //   role: this.teamFormGroup.get(['newParticipant', 'role'])?.value;}]
+            console.log(res);
+          }),
+      );
+    }
+  }
+
   onSubmit() {
-    if (this.teamFormGroup.valid) {
+    const teamGroup = this.teamFormGroup.get('team')!;
+    if (teamGroup.valid) {
+      const teamInfo: TeamI = {
+        title: teamGroup.get('title')?.value,
+        avatar: teamGroup.get('avatar')?.value,
+        description: teamGroup.get('description')?.value,
+      };
       if (!this.editMode)
         this.subs.add(
           this.teamService
-            .createTeam({ ...this.teamFormGroup.value, creatorId: this.user._id })
+            .createTeam({ ...teamGroup.value, creatorId: this.user._id })
             .subscribe((res) => {
               this.router.navigate(['/team', res._id]);
             }),
@@ -94,9 +134,9 @@ export class ManageTeamComponent implements OnInit {
       else
         this.subs.add(
           this.teamService
-            .updateTeam({ ...this.teamFormGroup.value, _id: this.teamToEdit?._id })
+            .updateTeam({ ...teamGroup.value, _id: this.teamToEdit?._id })
             .subscribe((res) => {
-              this.teamToEdit!.title = this.teamFormGroup.get('title')!.value;
+              this.teamToEdit!.title = teamGroup.get('title')!.value;
               this.cdr.detectChanges();
             }),
         );

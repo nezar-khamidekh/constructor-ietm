@@ -6,10 +6,10 @@ import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
   name: 'participantRole',
 })
 export class ParticipantRolePipe implements PipeTransform {
-  transform(participants: ParticipantI[], userId: string): string {
+  transform(participants: ParticipantI[], userId: string): any {
     const userTeamRoleIndex = participants.find(
       (participant) => participant.userId === userId,
     )?.role;
-    return PARTICIPANT_ROLES[userTeamRoleIndex!];
+    return PARTICIPANT_ROLES[userTeamRoleIndex!].title.toLocaleLowerCase();
   }
 }

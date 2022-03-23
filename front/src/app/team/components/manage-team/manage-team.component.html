@@ -4,70 +4,91 @@
       {{ editMode ? 'Команда 	&#34;' + teamToEdit?.title + '&#34;' : 'Новая команда' }}
     </h1>
     <form class="manage-team__form form" [formGroup]="teamFormGroup" (ngSubmit)="onSubmit()">
-      <div class="manage-team__header">
-        <div class="form__field">
-          <label class="form__label" for="name">Название</label>
-          <div class="form__control-wrapper form__control-wrapper_w-60">
-            <input
-              class="form__input"
-              placeholder="Название команды"
-              id="name"
-              formControlName="title"
+      <fieldset formGroupName="team">
+        <div class="manage-team__header">
+          <div class="form__field">
+            <label class="form__label" for="name">Название</label>
+            <div class="form__control-wrapper form__control-wrapper_w-60">
+              <input
+                class="form__input"
+                placeholder="Название команды"
+                id="name"
+                formControlName="title"
+              />
+            </div>
+          </div>
+          <div class="manage-team__avatar-container edit-avatar">
+            <img
+              class="manage-team__avatar edit-avatar__img"
+              [src]="teamAvatar || 'assets/svg/team.svg'"
+              alt="аватар"
             />
+            <button
+              class="manage-team__pfp-button edit-avatar__pfp-button"
+              type="button"
+              (click)="openDialogChooseImage()"
+            >
+              <img
+                class="manage-team__select-avatar edit-avatar__select-avatar"
+                src="assets/svg/edit_white.svg"
+                alt="изменить аватар"
+              />
+            </button>
           </div>
         </div>
-        <div class="manage-team__avatar-container edit-avatar">
-          <img
-            class="manage-team__avatar edit-avatar__img"
-            [src]="teamAvatar || 'assets/svg/team.svg'"
-            alt="аватар"
-          />
-          <button
-            class="manage-team__pfp-button edit-avatar__pfp-button"
-            type="button"
-            (click)="openDialogChooseImage()"
-          >
-            <img
-              class="manage-team__select-avatar edit-avatar__select-avatar"
-              src="assets/svg/edit_white.svg"
-              alt="изменить аватар"
+        <div class="form__field">
+          <label class="form__label" for="description">Описание</label>
+          <div class="form__control-wrapper">
+            <textarea
+              class="form__textarea"
+              placeholder="Описание команды"
+              id="description"
+              formControlName="description"
+            ></textarea>
+          </div>
+        </div>
+      </fieldset>
+      <ng-container *ngIf="teamToEdit?.participants && teamToEdit?.participants?.length">
+        <div
+          class="form__field new-participant"
+          formGroupName="newParticipant"
+          *ngIf="teamToEdit?.participants! | isTeamAuthor: user._id!"
+        >
+          <label class="form__label" for="description">Добавить участника</label>
+          <div class="form__control-wrapper form__control-wrapper_w-100">
+            <input
+              class="form__input new-participant__input"
+              placeholder="Email/login нового участника"
+              id="newParticipant"
+              formControlName="username"
             />
-          </button>
+            <select class="form__select new-participant__select" formControlName="role">
+              <option *ngFor="let role of getParticipantRoles(); let i = index" [ngValue]="i + 1">
+                {{ role.title }}
+              </option>
+            </select>
+            <button
+              class="form__field-btn new-participant__btn"
+              mat-flat-button
+              color="primary"
+              type="button"
+              (click)="sendInvitation()"
+            >
+              <img
+                class="form__field-btn-img"
+                src="assets/svg/send.svg"
+                alt="Отправить приглашение"
+              />
+            </button>
+          </div>
         </div>
-      </div>
-      <div class="form__field">
-        <label class="form__label" for="description">Описание</label>
-        <div class="form__control-wrapper">
-          <textarea
-            class="form__textarea"
-            placeholder="Описание команды"
-            id="description"
-            formControlName="description"
-          ></textarea>
-        </div>
-      </div>
-      <!-- <div class="form__field">
-        <label class="form__label" for="description">Добавить участника</label>
-        <div class="form__control-wrapper form__control-wrapper_w-60">
-          <input
-            class="form__input"
-            placeholder="Email/login нового участника"
-            id="newParticipant"
-          />
-          <button
-            class="manage-team__send-invite-btn form__field-btn"
-            mat-flat-button
-            color="primary"
-            type="button"
-          >
-            <img
-              class="form__field-btn-img"
-              src="assets/svg/send.svg"
-              alt="Отправить приглашение"
-            />
-          </button>
-        </div>
-      </div> -->
+        <app-participants-table
+          *ngIf="teamToEdit"
+          [participants]="teamToEdit.participants || []"
+          [userIsAuthor]="teamToEdit.participants! | isTeamAuthor: user._id!"
+        >
+        </app-participants-table>
+      </ng-container>
       <div class="form__actions form__actions_align-end">
         <button class="form__action" mat-raised-button color="warn" type="button">Отмена</button>
         <button class="form__action" mat-raised-button color="primary" type="submit">

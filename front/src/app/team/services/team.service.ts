@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.interface';
 import { CreateTeamDto } from 'src/app/shared/models/createTeamDto.interface';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UpdateTeamDto } from 'src/app/shared/models/updateTeamDto.interface';
@@ -35,5 +36,11 @@ export class TeamService {
 
   getTeamById(id: string): Observable<TeamI> {
     return this.http.get<TeamI>(`${this.apiUrl}/team/one/${id}`, { withCredentials: true });
+  }
+
+  sendInvitation(addParticipantDto: AddParticipantDto) {
+    return this.http.post(`${this.apiUrl}/team/participant/add`, addParticipantDto, {
+      withCredentials: true,
+    });
   }
 }
