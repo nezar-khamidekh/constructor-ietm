@@ -26,7 +26,7 @@
             mat-icon-button
             class="new-annotation-panel__btn"
             [disabled]="!currentAnnotation.position"
-            (click)="onSaveAnnotation()"
+            (click)="onSaveAnnotation(editedAnnotation, currentAnnotation.text)"
             matTooltip="Сохранить аннотацию"
           >
             <img class="new-annotation-panel__btn-icon" src="assets/svg/save.svg" alt="сохранить" />
@@ -61,6 +61,7 @@
                 mat-icon-button
                 class="annotations-editor__btn"
                 matTooltip="Редактировать аннотацию"
+                (click)="editAnnotation(annotation)"
               >
                 <img
                   class="annotations-editor__btn-icon"

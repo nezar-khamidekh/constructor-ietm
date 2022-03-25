@@ -28,6 +28,8 @@ export class EditorAnnotationsComponent implements OnInit {
   @Output() hideAnnotation = new EventEmitter();
   @Output() changedStep = new EventEmitter();
 
+  editedAnnotation = null;
+
   @ViewChild('buttonApplyAnnotation', { static: false }) buttonApplyAnnotationRef: ElementRef;
 
   constructor(public sceneService: SceneService) {}
@@ -41,7 +43,17 @@ export class EditorAnnotationsComponent implements OnInit {
     }
   }
 
-  onSaveAnnotation() {
-    this.saveAnnotation.emit();
+  editAnnotation(annotation: any) {
+    this.currentAnnotation.text = annotation.description;
+    this.currentAnnotation.position = annotation.position;
+    this.editedAnnotation = annotation;
+  }
+
+  onSaveAnnotation(editedAnnotation?: any, currentAnnotationText?: string) {
+    this.saveAnnotation.emit({
+      editedAnnotation: editedAnnotation,
+      currentAnnotationText: currentAnnotationText,
+    });
+    this.editedAnnotation = null;
   }
 }

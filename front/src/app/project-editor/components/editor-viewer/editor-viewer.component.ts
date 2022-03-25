@@ -65,19 +65,29 @@ export class EditorViewerComponent implements OnInit {
     this.viewerMouseMode = status ? VIEWER_MOUSE_MODE.ApplyAnnotation : VIEWER_MOUSE_MODE.Default;
   }
 
-  onSaveAnnotation() {
-    this.sceneService.setAnnotations([
-      ...this.annotations,
-      {
-        id: this.annotations.length + 1,
-        description: this.currentAnnotation.text,
-        position: {
-          x: this.currentAnnotation.position!.x,
-          y: this.currentAnnotation.position!.y,
-          z: this.currentAnnotation.position!.z,
+  onSaveAnnotation(dataAnnotation?: any) {
+    if (dataAnnotation.editedAnnotation) {
+      this.annotations.find(
+        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
+      )!.description = dataAnnotation.currentAnnotationText;
+      this.annotations.find(
+        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
+      )!.descriptionDomElement!.innerText = dataAnnotation.currentAnnotationText;
+      this.sceneService.setAnnotations(this.annotations);
+    } else {
+      this.sceneService.setAnnotations([
+        ...this.annotations,
+        {
+          id: this.annotations.length + 1,
+          description: this.currentAnnotation.text,
+          position: {
+            x: this.currentAnnotation.position!.x,
+            y: this.currentAnnotation.position!.y,
+            z: this.currentAnnotation.position!.z,
+          },
         },
-      },
-    ]);
+      ]);
+    }
     this.currentAnnotation = {
       text: '',
       position: null,
