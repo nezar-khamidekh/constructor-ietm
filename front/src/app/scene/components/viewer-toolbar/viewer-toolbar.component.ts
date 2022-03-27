@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import {
   CAMERA_ROTATE_SPEED,
-  CUTTING_LENGTH,
+  SECTION_DEFAULT_CONSTANT,
   EXPLODE_POWER,
 } from 'src/app/shared/models/viewerConstants';
 import { VIEWER_BUTTONS } from '../../scene.component';
@@ -23,11 +23,12 @@ export class ViewerToolbarComponent implements OnInit {
   @Input() activeBtnIndex!: number;
   @Input() rotateAnimationSliderValue = CAMERA_ROTATE_SPEED;
   @Input() explodeSliderValue = EXPLODE_POWER;
-  @Input() cuttingLengthValue = CUTTING_LENGTH;
   @Output() viewerBtnClicked = new EventEmitter<number>();
   @Output() rotateCameraSpeedChanged = new EventEmitter<number>();
   @Output() explodePowerChanged = new EventEmitter<number>();
-  @Output() cuttingLengthChanged = new EventEmitter();
+  @Output() moveSectionYZ = new EventEmitter();
+  @Output() moveSectionXZ = new EventEmitter();
+  @Output() moveSectionXY = new EventEmitter();
 
   rotateAnimationSliderMinValue = CAMERA_ROTATE_SPEED;
   rotateAnimationSliderMaxValue = 20;
@@ -35,6 +36,10 @@ export class ViewerToolbarComponent implements OnInit {
   explodeSliderMinValue = EXPLODE_POWER;
   explodeSliderMaxValue = 1.5;
   explodeSliderStep = 0.1;
+
+  constantSectionYZ = SECTION_DEFAULT_CONSTANT;
+  constantSectionXZ = SECTION_DEFAULT_CONSTANT;
+  constantSectionXY = SECTION_DEFAULT_CONSTANT;
 
   constructor() {}
 

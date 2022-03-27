@@ -32,9 +32,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-
-const DIFFERENCE_BETWEEN_PLANES = 0.00001;
+import { SectionService } from './section.service';
 
 @Injectable({
   providedIn: 'root',
@@ -54,13 +52,9 @@ export class SceneService {
   annotations$ = new BehaviorSubject<any[]>([]);
   annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
-  planes: THREE.Plane[] = [];
-  planesForVisibleHelpers: THREE.Plane[] = [];
-  planeHelpers: THREE.PlaneHelper[] = [];
-  planesHelpersVisible: THREE.PlaneHelper[] = [];
-  differenceBetweenPlanes: number = DIFFERENCE_BETWEEN_PLANES;
+  crossSectionObject: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private sectionService: SectionService) {}
 
   loadDefaultModel(): Observable<any> {
     return this.http.get(`${this.apiUrl}/viewer/default`, { withCredentials: true });
@@ -110,7 +104,6 @@ export class SceneService {
       model: new THREE.Object3D(),
       plant: new THREE.Vector3(),
       state: VIEWER_STATE.Default,
-      object: new THREE.Group(),
     };
   }
 
@@ -156,7 +149,7 @@ export class SceneService {
       pixelRatio > RENDERER_PIXEL_RATIO ? RENDERER_PIXEL_RATIO : pixelRatio,
     );
     this.viewer.renderer.setClearColor(RENDERER_CLEAR_COLOR);
-    this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
+    // this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
     this.viewer.renderer.localClippingEnabled = true;
   }
 
@@ -647,46 +640,30 @@ export class SceneService {
   }
 
   createPlanes() {
-    this.planes = [
-      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1),
-      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1),
-      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1),
-    ];
-    this.planesForVisibleHelpers = [
-      new THREE.Plane(new THREE.Vector3(-1, 0, 0), 1 - this.differenceBetweenPlanes),
-      new THREE.Plane(new THREE.Vector3(0, -1, 0), 1 - this.differenceBetweenPlanes),
-      new THREE.Plane(new THREE.Vector3(0, 0, -1), 1 - this.differenceBetweenPlanes),
-    ];
-
-    this.planeHelpers = this.planes.map((plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2));
-    this.planesHelpersVisible = this.planesForVisibleHelpers.map(
-      (plane) => new THREE.PlaneHelper(plane, 1, 0x007ef2),
-    );
-    this.planesHelpersVisible.forEach((planeHelper) => {
-      planeHelper.visible = true;
-      this.viewer.scene.add(planeHelper);
-    });
-    this.planeHelpers.forEach((planeHelper) => {
-      planeHelper.visible = false;
-      this.viewer.scene.add(planeHelper);
-    });
-
-    this.viewer.renderer.clippingPlanes = this.planes;
+    this.viewer.scene.add(this.sectionService.createSection(this.viewer.model));
   }
 
   removePlanes() {
-    this.planesHelpersVisible.forEach((planeHelper) => {
-      this.viewer.scene.remove(planeHelper);
-    });
-    this.planeHelpers.forEach((planeHelper) => {
-      this.viewer.scene.remove(planeHelper);
+    this.viewer.scene.remove(this.viewer.scene.getObjectByName('__CrossSection')!);
+    this.viewer.model.traverse((n: any) => {
+      if (n.type === 'Mesh' && n.material !== undefined) {
+        n.material.clippingPlanes = [];
+      } else if (n.type === 'LineSegments') {
+        n.material.clippingPlanes = [];
+      }
     });
   }
 
-  cutModel(planeIndex: number, cuttingModelValue: number) {
-    this.planes[planeIndex].constant = cuttingModelValue;
-    this.planesForVisibleHelpers[planeIndex].constant =
-      cuttingModelValue - this.differenceBetweenPlanes;
+  moveYZ(value: number) {
+    this.sectionService.moveYZ(value);
+  }
+
+  moveXZ(value: number) {
+    this.sectionService.moveXZ(value);
+  }
+
+  moveXY(value: number) {
+    this.sectionService.moveXY(value);
   }
 
   createPlaneStencilGroup() {}

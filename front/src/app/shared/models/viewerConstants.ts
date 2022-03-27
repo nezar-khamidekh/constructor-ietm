@@ -16,7 +16,7 @@ export const OUTLINE_PASS_HIDDEN_EDGE_COLOR = '#0159d3';
 export const HIGHLIGHT_COLOR = 0xffff00;
 export const CAMERA_ROTATE_SPEED = 2;
 export const EXPLODE_POWER = 0;
-export const CUTTING_LENGTH = [0, 0, 0];
+export const SECTION_DEFAULT_CONSTANT = 0.5;
 export const CLICKED_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
   color: 0x7092d4,
   roughness: 1.0,

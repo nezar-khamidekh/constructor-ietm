@@ -18,7 +18,6 @@ export interface ViewerI {
   model: THREE.Object3D;
   plant: THREE.Vector3;
   state: VIEWER_STATE;
-  object: THREE.Group;
 }
 
 export enum VIEWER_STATE {

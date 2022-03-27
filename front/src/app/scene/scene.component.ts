@@ -25,7 +25,7 @@ import { VIEWER_MOUSE_MODE } from '../project-editor/components/editor-viewer/ed
 import { MatMenuTrigger } from '@angular/material/menu';
 import {
   CAMERA_ROTATE_SPEED,
-  CUTTING_LENGTH,
+  SECTION_DEFAULT_CONSTANT,
   EXPLODE_POWER,
 } from '../shared/models/viewerConstants';
 import { ActivatedRoute } from '@angular/router';
@@ -78,7 +78,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   rotateAnimationBtnIsActive = false;
   rotateSpeedValue = CAMERA_ROTATE_SPEED;
   explodePowerValue = EXPLODE_POWER;
-  cuttingLengthValue = CUTTING_LENGTH;
+  sectionDefaultContant = SECTION_DEFAULT_CONSTANT;
   activeBtnIndex = VIEWER_BUTTONS.Default;
   btnIsInAction = false;
 
@@ -459,8 +459,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sceneService.removePlanes();
   }
 
-  onCuttingLengthChanged(dataCut: any) {
-    this.cuttingLengthValue[dataCut.index] = dataCut.value;
-    this.sceneService.cutModel(dataCut.index, dataCut.value);
+  moveYZ(value: number) {
+    this.sceneService.moveYZ(value);
+  }
+
+  moveXZ(value: number) {
+    this.sceneService.moveXZ(value);
+  }
+
+  moveXY(value: number) {
+    this.sceneService.moveXY(value);
   }
 }

@@ -4,11 +4,12 @@
       [activeBtnIndex]="activeBtnIndex"
       [rotateAnimationSliderValue]="rotateSpeedValue"
       [explodeSliderValue]="explodePowerValue"
-      [cuttingLengthValue]="cuttingLengthValue"
       (viewerBtnClicked)="onViewerBtnClicked($event)"
       (rotateCameraSpeedChanged)="onRotateCameraSpeedChanged($event)"
       (explodePowerChanged)="onExplodePowerChanged($event)"
-      (cuttingLengthChanged)="onCuttingLengthChanged($event)"
+      (moveSectionYZ)="moveYZ($event)"
+      (moveSectionXZ)="moveXZ($event)"
+      (moveSectionXY)="moveXY($event)"
     ></app-viewer-toolbar>
   </ng-container>
   <canvas

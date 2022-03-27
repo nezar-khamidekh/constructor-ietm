@@ -9,6 +9,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent],
@@ -20,6 +21,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatMenuModule,
     MatTooltipModule,
     MatRadioModule,
+    FormsModule,
   ],
   exports: [SceneComponent],
 })

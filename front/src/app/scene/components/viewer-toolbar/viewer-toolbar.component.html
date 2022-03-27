@@ -78,38 +78,41 @@
       <div class="toolbar__panel" [hidden]="!cutModelBtnIsActive()">
         <mat-radio-group>
           <div class="toolbar__row-plane">
-            <mat-radio-button value="1">x</mat-radio-button>
+            <!-- <mat-radio-button value="1">x</mat-radio-button> -->
+            <span class="toolbar__text">YZ</span>
             <div class="toolbar__wrapper-slider">
               <mat-slider
-                [min]="-2"
-                [max]="2"
-                [step]="0.001"
-                [value]="cuttingLengthValue[0]"
-                (input)="cuttingLengthChanged.emit({ index: 0, value: $event.value! })"
+                [min]="0"
+                [max]="1"
+                [step]="0.01"
+                [(ngModel)]="constantSectionYZ"
+                (input)="moveSectionYZ.emit($event.value!)"
               ></mat-slider>
             </div>
           </div>
           <div class="toolbar__row-plane">
-            <mat-radio-button value="2">y</mat-radio-button>
+            <!-- <mat-radio-button value="2">y</mat-radio-button> -->
+            <span class="toolbar__text">XZ</span>
             <div class="toolbar__wrapper-slider">
               <mat-slider
-                [min]="-2"
-                [max]="2"
-                [step]="0.001"
-                [value]="cuttingLengthValue[1]"
-                (input)="cuttingLengthChanged.emit({ index: 1, value: $event.value! })"
+                [min]="0"
+                [max]="1"
+                [step]="0.01"
+                [(ngModel)]="constantSectionXZ"
+                (input)="moveSectionXZ.emit($event.value!)"
               ></mat-slider>
             </div>
           </div>
           <div class="toolbar__row-plane">
-            <mat-radio-button value="3">z</mat-radio-button>
+            <!-- <mat-radio-button value="3">z</mat-radio-button> -->
+            <span class="toolbar__text">XY</span>
             <div class="toolbar__wrapper-slider">
               <mat-slider
-                [min]="-2"
-                [max]="2"
-                [step]="0.001"
-                [value]="cuttingLengthValue[2]"
-                (input)="cuttingLengthChanged.emit({ index: 2, value: $event.value! })"
+                [min]="0"
+                [max]="1"
+                [step]="0.01"
+                [(ngModel)]="constantSectionXY"
+                (input)="moveSectionXY.emit($event.value!)"
               ></mat-slider>
             </div>
           </div>
