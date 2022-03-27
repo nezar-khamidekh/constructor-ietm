@@ -5,5 +5,5 @@ export interface TeamI {
   avatar: string;
   description: string;
   participants?: ParticipantI[];
-  _id?: string;
+  _id: string;
 }

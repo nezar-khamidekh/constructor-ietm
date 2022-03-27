@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.interface';
 import { CreateTeamDto } from 'src/app/shared/models/createTeamDto.interface';
+import { RemoveParticipantDto } from 'src/app/shared/models/removeParticipantDto.interface';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UpdateTeamDto } from 'src/app/shared/models/updateTeamDto.interface';
+import { UserI } from 'src/app/shared/models/user.interface';
 import { UserEntryDto } from 'src/app/shared/models/userEntryDto.interface';
 import { environment } from 'src/environments/environment';
 
@@ -38,8 +40,14 @@ export class TeamService {
     return this.http.get<TeamI>(`${this.apiUrl}/team/one/${id}`, { withCredentials: true });
   }
 
-  sendInvitation(addParticipantDto: AddParticipantDto) {
-    return this.http.post(`${this.apiUrl}/team/participant/add`, addParticipantDto, {
+  sendInvitation(addParticipantDto: AddParticipantDto): Observable<UserI> {
+    return this.http.post<UserI>(`${this.apiUrl}/team/participant/add`, addParticipantDto, {
+      withCredentials: true,
+    });
+  }
+
+  removeParticipant(removeParticipantDto: RemoveParticipantDto) {
+    return this.http.post(`${this.apiUrl}/team/participant/remove`, removeParticipantDto, {
       withCredentials: true,
     });
   }

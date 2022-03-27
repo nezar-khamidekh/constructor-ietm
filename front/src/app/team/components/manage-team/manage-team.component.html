@@ -86,11 +86,20 @@
           *ngIf="teamToEdit"
           [participants]="teamToEdit.participants || []"
           [userIsAuthor]="teamToEdit.participants! | isTeamAuthor: user._id!"
+          (removeParticipant)="onRemoveParticipant($event)"
         >
         </app-participants-table>
       </ng-container>
       <div class="form__actions form__actions_align-end">
-        <button class="form__action" mat-raised-button color="warn" type="button">Отмена</button>
+        <button
+          class="form__action"
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="goBack()"
+        >
+          Отмена
+        </button>
         <button class="form__action" mat-raised-button color="primary" type="submit">
           {{ editMode ? 'Сохранить' : 'Создать' }}
         </button>

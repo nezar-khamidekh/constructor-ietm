@@ -6,11 +6,11 @@
       <img
         class="participants-table__participant-avatar"
         appImageSanitized
-        [imagePath]="participant.avatar || ''"
+        [imagePath]="participant.user.avatar || ''"
         [defaultImage]="'assets/svg/avatar.svg'"
         alt="аватар пользователя"
       />
-      <span class="participants-table__participant-nickname">{{ participant.nickname }}</span>
+      <span class="participants-table__participant-nickname">{{ participant.user.username }}</span>
     </td>
   </ng-container>
   <ng-container matColumnDef="role">
@@ -39,6 +39,7 @@
         mat-icon-button
         color="warn"
         [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
+        (click)="removeParticipant.emit(participant.user._id)"
       >
         <img src="assets/svg/delete.svg" alt="удалить" />
       </button>

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
+import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
 import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
@@ -42,7 +43,7 @@ export class TeamController {
   @Post('participant/add')
   addParticipantToTheTeam(
     @Body() participantDto: AddParticipantDto,
-  ): Observable<boolean> {
+  ): Observable<UserDocument | boolean> {
     return this.teamService.addParticipant(participantDto);
   }
 

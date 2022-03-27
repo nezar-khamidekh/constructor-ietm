@@ -19,6 +19,7 @@
             mat-flat-button
             color="primary"
             [routerLink]="'/team/edit/' + team._id"
+            *ngIf="team.participants! | isTeamAuthor: dataStore.getUserValue()!._id"
           >
             <img
               class="team-card__action-img"
@@ -26,7 +27,13 @@
               alt="редактировать"
             />
           </a>
-          <button class="team-card__action" mat-flat-button color="warn">
+          <button
+            class="team-card__action"
+            mat-flat-button
+            color="warn"
+            *ngIf="!(team.participants! | isTeamAuthor: dataStore.getUserValue()!._id)"
+            (click)="leaveFromTeam()"
+          >
             <img class="team-card__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
           </button>
         </div>

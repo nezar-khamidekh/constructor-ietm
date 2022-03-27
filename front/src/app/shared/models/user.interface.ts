@@ -5,5 +5,5 @@ export interface UserI {
   firstName: string;
   lastName: string;
   avatar?: string;
-  _id?: string;
+  _id: string;
 }
