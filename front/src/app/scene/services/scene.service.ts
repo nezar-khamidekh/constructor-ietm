@@ -185,6 +185,9 @@ export class SceneService {
     this.viewer.outlinePass.visibleEdgeColor.set(OUTLINE_PASS_VISIBLE_EDGE_COLOR);
     this.viewer.outlinePass.hiddenEdgeColor.set(OUTLINE_PASS_HIDDEN_EDGE_COLOR);
     this.viewer.composer.addPass(this.viewer.outlinePass);
+
+    this.viewer.composer.renderTarget1.stencilBuffer = true;
+    this.viewer.composer.renderTarget2.stencilBuffer = true;
   }
 
   setControls() {
@@ -640,7 +643,7 @@ export class SceneService {
   }
 
   createPlanes() {
-    this.viewer.scene.add(this.sectionService.createSection(this.viewer.model));
+    this.viewer.scene.add(this.sectionService.createSection(this.viewer.model, this.viewer.scene));
   }
 
   removePlanes() {

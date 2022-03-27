@@ -18,7 +18,7 @@ export class SectionService {
 
   constructor() {}
 
-  createSection(model: any): THREE.Object3D {
+  createSection(model: any, scene: any): THREE.Object3D {
     this.crossSectionObject.name = '__CrossSection';
     this.boundBox.setFromObject(model);
     this.boundBox.getSize(this.size);
@@ -43,14 +43,15 @@ export class SectionService {
         n.material.clippingPlanes = this.planes;
       }
     });
-
     let solidGeom = BufferGeometryUtils.mergeBufferGeometries(bufGeoms);
 
-    let object = new THREE.Group();
-    object.name = '__StencilGroups';
-    this.crossSectionObject.add(object);
+    let stencilGroups = new THREE.Group();
+
+    stencilGroups.name = '__StencilGroups';
+    scene.add(stencilGroups);
 
     let planeGeom = new THREE.PlaneBufferGeometry(longestSide * 2, longestSide * 2);
+    planeGeom.translate(0, 0, 0);
 
     for (let i = 0; i < 3; i++) {
       let poGroup = new THREE.Group();
@@ -59,25 +60,27 @@ export class SectionService {
       stencilGroup.name = '__StencilGroup' + i;
 
       // plane is clipped by the other clipping planes
-      // let planeMat = new THREE.MeshStandardMaterial({
-      //   color: '#ff0000',
-      //   clippingPlanes: this.planes.filter((p: any) => p !== plane),
-      //   stencilWrite: true,
-      //   stencilRef: 0,
-      //   stencilFunc: THREE.NotEqualStencilFunc,
-      //   stencilFail: THREE.ReplaceStencilOp,
-      //   stencilZFail: THREE.ReplaceStencilOp,
-      //   stencilZPass: THREE.ReplaceStencilOp,
-      // });
-      // let po = new THREE.Mesh(planeGeom, planeMat);
-      // po.onAfterRender = function (renderer) {
-      //   renderer.clearStencil();
-      // };
-      // po.renderOrder = i + 1.1;
-      object.add(stencilGroup);
-      // poGroup.add(po);
+      let planeMat = new THREE.MeshStandardMaterial({
+        color: 0xe91e63,
+        metalness: 0.1,
+        roughness: 0.75,
+        clippingPlanes: this.planes.filter((p) => p !== plane),
+        stencilWrite: true,
+        stencilRef: 0,
+        stencilFunc: THREE.NotEqualStencilFunc,
+        stencilFail: THREE.ReplaceStencilOp,
+        stencilZFail: THREE.ReplaceStencilOp,
+        stencilZPass: THREE.ReplaceStencilOp,
+      });
+      let po = new THREE.Mesh(planeGeom, planeMat);
+      po.onAfterRender = (renderer) => {
+        renderer.clearStencil();
+      };
+      po.renderOrder = i + 1.1;
+      stencilGroups.add(stencilGroup);
+      poGroup.add(po);
       poGroup.name = '__Caps' + i;
-      // this.planeObjects.push(po);
+      this.planeObjects.push(po);
       this.crossSectionObject.add(poGroup);
     }
 
@@ -93,15 +96,13 @@ export class SectionService {
 
   buildHelpers() {
     this.clearHelpers();
-    // const width = Math.max(this.size.x, this.size.z);
-    // const height = Math.max(this.size.y, this.size.z);
     let planeMat = new THREE.MeshBasicMaterial({
-      color: 'blue',
+      color: '#007ef2',
       transparent: true,
       opacity: 0.05,
       side: THREE.DoubleSide,
     });
-    let planeLineMat = new THREE.LineBasicMaterial({ color: 'black' });
+    // let planeLineMat = new THREE.LineBasicMaterial({ color: 'black' });
 
     let planeXYGeom = new THREE.PlaneBufferGeometry(this.size.x, this.size.y);
     planeXYGeom.translate(this.size.x / 2, this.size.y / 2, 0);
@@ -110,14 +111,36 @@ export class SectionService {
 
     // const verticesXY = [
     //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(this._sizeX, 0, 0),
-    //   new THREE.Vector3(this._sizeX, this._sizeY, 0),
-    //   new THREE.Vector3(0, this._sizeY, 0),
+    //   new THREE.Vector3(this.size.x, 0, 0),
+    //   new THREE.Vector3(this.size.x, this.size.y, 0),
+    //   new THREE.Vector3(0, this.size.y, 0),
     //   new THREE.Vector3(0, 0, 0),
     // ];
     // let planeXYLineGeom = new THREE.BufferGeometry().setFromPoints(verticesXY);
     // let planeXYLine = new THREE.Line(planeXYLineGeom, planeLineMat);
-    // this._planeXYHelper.add(planeXYLine);
+    // this.planeXYHelper.add(planeXYLine);
+
+    // const verticesYZ = [
+    //   new THREE.Vector3(0, 0, 0),
+    //   new THREE.Vector3(0, 0, this.size.z),
+    //   new THREE.Vector3(0, this.size.y, this.size.z),
+    //   new THREE.Vector3(0, this.size.y, 0),
+    //   new THREE.Vector3(0, 0, 0),
+    // ];
+    // let planeYZLineGeom = new THREE.BufferGeometry().setFromPoints(verticesYZ);
+    // let planeYZLine = new THREE.Line(planeYZLineGeom, planeLineMat);
+    // this.planeYZHelper.add(planeYZLine);
+
+    // const verticesXZ = [
+    //   new THREE.Vector3(0, 0, 0),
+    //   new THREE.Vector3(0, 0, this.size.z),
+    //   new THREE.Vector3(this.size.x, 0, this.size.z),
+    //   new THREE.Vector3(this.size.x, 0, 0),
+    //   new THREE.Vector3(0, 0, 0),
+    // ];
+    // let planeXZLineGeom = new THREE.PlaneBufferGeometry().setFromPoints(verticesXZ);
+    // let planeXZLine = new THREE.Line(planeXZLineGeom, planeLineMat);
+    // this.planeXZHelper.add(planeXZLine);
 
     let planeYZGeom = new THREE.PlaneBufferGeometry(this.size.z, this.size.y);
     planeYZGeom.translate(this.size.z / 2, this.size.y / 2, 0);
@@ -125,33 +148,12 @@ export class SectionService {
     let planeYZMesh = new THREE.Mesh(planeYZGeom, planeMat);
     this.planeYZHelper.add(planeYZMesh);
 
-    // const verticesYZ = [
-    //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(0, 0, this._sizeZ),
-    //   new THREE.Vector3(0, this._sizeY, this._sizeZ),
-    //   new THREE.Vector3(0, this._sizeY, 0),
-    //   new THREE.Vector3(0, 0, 0),
-    // ];
-    // let planeYZLineGeom = new THREE.BufferGeometry().setFromPoints(verticesYZ);
-    // let planeYZLine = new THREE.Line(planeYZLineGeom, planeLineMat);
-    // this._planeYZHelper.add(planeYZLine);
     let planeXZGeom = new THREE.PlaneBufferGeometry(this.size.x, this.size.z);
     planeXZGeom.translate(this.size.x / 2, this.size.z / 2, 0);
     planeXZGeom.rotateX(Math.PI / 2);
     let planeXZMesh = new THREE.Mesh(planeXZGeom, planeMat);
 
     this.planeXZHelper.add(planeXZMesh);
-
-    // const verticesXZ = [
-    //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(0, 0, this._sizeZ),
-    //   new THREE.Vector3(this._sizeX, 0, this._sizeZ),
-    //   new THREE.Vector3(this._sizeX, 0, 0),
-    //   new THREE.Vector3(0, 0, 0),
-    // ];
-    // let planeXZLineGeom = new THREE.PlaneBufferGeometry().setFromPoints(verticesXZ);
-    // let planeXZLine = new THREE.Line(planeXZLineGeom, planeLineMat);
-    // this._planeXZHelper.add(planeXZLine);
 
     this.moveXY(SECTION_DEFAULT_CONSTANT);
     this.moveXZ(SECTION_DEFAULT_CONSTANT);
