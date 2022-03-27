@@ -6,7 +6,7 @@ export type ParticipantDocument = Participant & Document;
 @Schema({ _id: false })
 export class Participant {
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  userId: Types.ObjectId;
+  user: Types.ObjectId;
 
   @Prop()
   login: string;

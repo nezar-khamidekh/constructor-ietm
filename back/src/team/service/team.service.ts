@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { from, map, Observable, switchMap } from 'rxjs';
 import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
+import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
@@ -19,7 +20,17 @@ export class TeamService {
   ) {}
 
   getOneById(id: string): Observable<TeamDocument> {
-    return from(this.teamModel.findById(id)).pipe(
+    return from(
+      this.teamModel
+        .findById(id)
+        .populate('participants.user', [
+          'avatar',
+          'lastName',
+          'firstName',
+          'email',
+          'username',
+        ]),
+    ).pipe(
       map((team) => {
         if (team) return team;
         else
@@ -34,9 +45,19 @@ export class TeamService {
       filter.push({ 'participants.login': userEntryDto.login });
     if (userEntryDto.userId)
       filter.push({
-        'participants.userId': new Types.ObjectId(userEntryDto.userId),
+        'participants.user': new Types.ObjectId(userEntryDto.userId),
       });
-    return from(this.teamModel.find({ $or: filter })).pipe(
+    return from(
+      this.teamModel
+        .find({ $or: filter })
+        .populate('participants.user', [
+          'avatar',
+          'lastName',
+          'firstName',
+          'email',
+          'username',
+        ]),
+    ).pipe(
       map((teams) => {
         return teams;
       }),
@@ -97,7 +118,9 @@ export class TeamService {
     );
   }
 
-  addParticipant(participantDto: AddParticipantDto): Observable<boolean> {
+  addParticipant(
+    participantDto: AddParticipantDto,
+  ): Observable<UserDocument | boolean> {
     return this.userService.findOne(participantDto).pipe(
       switchMap((user) => {
         return from(this.teamModel.findById(participantDto.teamId)).pipe(
@@ -113,7 +136,7 @@ export class TeamService {
               );
             else {
               team.participants.push({
-                userId: user._id,
+                user: user._id,
                 login: user.login,
                 role: participantDto.role,
               });
@@ -126,7 +149,7 @@ export class TeamService {
                 ),
               ).pipe(
                 map((result: any) => {
-                  return result.modifiedCount ? true : false;
+                  return result.modifiedCount ? user : false;
                 }),
               );
             }
@@ -196,7 +219,18 @@ export class TeamService {
       }),
     );
   }
+
   getAll() {
-    return from(this.teamModel.find());
+    return from(
+      this.teamModel
+        .find()
+        .populate('participants.user', [
+          'avatar',
+          'lastName',
+          'firstName',
+          'email',
+          'username',
+        ]),
+    );
   }
 }
