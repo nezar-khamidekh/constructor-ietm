@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,6 +36,7 @@ export class ManageTeamComponent implements OnInit {
     private dataStore: DataStoreService,
     private router: Router,
     private route: ActivatedRoute,
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
@@ -105,24 +107,35 @@ export class ManageTeamComponent implements OnInit {
             login: email ? '' : username,
             role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
           })
-          .subscribe((res) => {
-            // this.teamToEdit?.participants = [...this.teamToEdit?.participants, {userId: string;
-            //   login: string;
-            //   role: this.teamFormGroup.get(['newParticipant', 'role'])?.value;}]
-            console.log(res);
+          .subscribe((addedParticipant) => {
+            this.teamToEdit!.participants = [
+              ...this.teamToEdit!.participants!,
+              {
+                login: addedParticipant.login,
+                role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
+                user: {
+                  avatar: addedParticipant.avatar || '',
+                  email: addedParticipant.email,
+                  firstName: addedParticipant.firstName,
+                  lastName: addedParticipant.lastName,
+                  username: addedParticipant.username,
+                  _id: addedParticipant._id,
+                },
+              },
+            ];
+            this.cdr.detectChanges();
           }),
       );
     }
   }
 
+  goBack() {
+    this.location.back();
+  }
+
   onSubmit() {
     const teamGroup = this.teamFormGroup.get('team')!;
     if (teamGroup.valid) {
-      const teamInfo: TeamI = {
-        title: teamGroup.get('title')?.value,
-        avatar: teamGroup.get('avatar')?.value,
-        description: teamGroup.get('description')?.value,
-      };
       if (!this.editMode)
         this.subs.add(
           this.teamService
@@ -141,5 +154,18 @@ export class ManageTeamComponent implements OnInit {
             }),
         );
     }
+  }
+
+  onRemoveParticipant(userId: string) {
+    this.subs.add(
+      this.teamService
+        .removeParticipant({ teamId: this.teamToEdit?._id!, userId: userId })
+        .subscribe((res) => {
+          this.teamToEdit!.participants = this.teamToEdit!.participants!.filter(
+            (participant) => participant.user._id !== userId,
+          );
+          this.cdr.detectChanges();
+        }),
+    );
   }
 }

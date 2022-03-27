@@ -8,7 +8,7 @@ import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
 export class ParticipantRolePipe implements PipeTransform {
   transform(participants: ParticipantI[], userId: string): any {
     const userTeamRoleIndex = participants.find(
-      (participant) => participant.userId === userId,
+      (participant) => participant.user._id === userId,
     )?.role;
     return PARTICIPANT_ROLES[userTeamRoleIndex!].title.toLocaleLowerCase();
   }

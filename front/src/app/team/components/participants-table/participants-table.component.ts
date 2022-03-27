@@ -1,4 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { ParticipantI } from 'src/app/shared/models/participant.interface';
 import { ParticipantRole, PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
 
@@ -12,6 +19,7 @@ export class ParticipantsTableComponent implements OnInit {
   @Input() participants: ParticipantI[] = [];
   @Input() userIsAuthor = false;
   @Input() viewMode = false;
+  @Output() removeParticipant = new EventEmitter();
 
   displayedColumns: string[] = ['user', 'role', 'actions'];
 

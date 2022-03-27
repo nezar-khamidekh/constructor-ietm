@@ -1,7 +1,14 @@
 export interface ParticipantI {
-  userId: string;
   login: string;
   role: ParticipantRole;
+  user: {
+    avatar: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    _id: string;
+  };
 }
 
 export enum ParticipantRole {
