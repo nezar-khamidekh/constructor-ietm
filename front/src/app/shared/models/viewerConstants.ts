@@ -16,7 +16,7 @@ export const OUTLINE_PASS_HIDDEN_EDGE_COLOR = '#0159d3';
 export const HIGHLIGHT_COLOR = 0xffff00;
 export const CAMERA_ROTATE_SPEED = 2;
 export const EXPLODE_POWER = 0;
-export const SECTION_DEFAULT_CONSTANT = 0.5;
+export const SECTION_DEFAULT_CONSTANT = 1;
 export const CLICKED_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
   color: 0x7092d4,
   roughness: 1.0,
@@ -33,4 +33,10 @@ export const TRANSPARENT_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide,
   opacity: 0.3,
   transparent: true,
+});
+export const PLANE_INTERSECTION_COLOR = '#e91e63';
+export const PLANE_HELPER_MATERIAL = new THREE.MeshBasicMaterial({
+  transparent: true,
+  opacity: 0,
+  side: THREE.DoubleSide,
 });

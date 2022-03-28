@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as THREE from 'three';
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { SECTION_DEFAULT_CONSTANT } from 'src/app/shared/models/viewerConstants';
+import {
+  PLANE_HELPER_MATERIAL,
+  PLANE_INTERSECTION_COLOR,
+  SECTION_DEFAULT_CONSTANT,
+} from 'src/app/shared/models/viewerConstants';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +26,7 @@ export class SectionService {
     this.crossSectionObject.name = '__CrossSection';
     this.boundBox.setFromObject(model);
     this.boundBox.getSize(this.size);
-    let longestSide = Math.max(this.size.y, this.size.x, this.size.z);
+    const longestSide = Math.max(this.size.y, this.size.x, this.size.z);
 
     this.planes = [
       new THREE.Plane(new THREE.Vector3(-1, 0, 0), this.boundBox.min.x),
@@ -30,58 +34,28 @@ export class SectionService {
       new THREE.Plane(new THREE.Vector3(0, 0, -1), this.boundBox.min.z),
     ];
 
-    let bufGeoms: any = [];
-    model.traverse((n: any) => {
-      if (n.type === 'Mesh' && n.material !== undefined) {
-        let bufGeom = n.geometry.clone();
-        n.updateWorldMatrix(true, true);
-        n.renderOrder = 6;
-        n.material.clippingPlanes = this.planes;
-        bufGeom.applyMatrix4(n.matrixWorld);
-        bufGeoms.push(bufGeom);
-      } else if (n.type === 'LineSegments') {
-        n.material.clippingPlanes = this.planes;
+    const bufferGeometries: any = [];
+    model.traverse((node: any) => {
+      if (node.type === 'Mesh' && node.material !== undefined) {
+        const bufferGeometry = node.geometry.clone();
+        node.updateWorldMatrix(true, true);
+        node.renderOrder = 6;
+        node.material.clippingPlanes = this.planes;
+        bufferGeometry.applyMatrix4(node.matrixWorld);
+        bufferGeometries.push(bufferGeometry);
+      } else if (node.type === 'LineSegments') {
+        node.material.clippingPlanes = this.planes;
       }
     });
-    let solidGeom = BufferGeometryUtils.mergeBufferGeometries(bufGeoms);
 
-    let stencilGroups = new THREE.Group();
-
+    const solidGeometry = BufferGeometryUtils.mergeBufferGeometries(bufferGeometries);
+    const stencilGroups = new THREE.Group();
     stencilGroups.name = '__StencilGroups';
     scene.add(stencilGroups);
 
-    let planeGeom = new THREE.PlaneBufferGeometry(longestSide * 2, longestSide * 2);
-    planeGeom.translate(0, 0, 0);
-
+    const planeGeometry = new THREE.PlaneBufferGeometry(longestSide * 2, longestSide * 2);
     for (let i = 0; i < 3; i++) {
-      let poGroup = new THREE.Group();
-      let plane = this.planes[i];
-      let stencilGroup = this.createPlaneStencilGroup(solidGeom, plane, i + 1);
-      stencilGroup.name = '__StencilGroup' + i;
-
-      // plane is clipped by the other clipping planes
-      let planeMat = new THREE.MeshStandardMaterial({
-        color: 0xe91e63,
-        metalness: 0.1,
-        roughness: 0.75,
-        clippingPlanes: this.planes.filter((p) => p !== plane),
-        stencilWrite: true,
-        stencilRef: 0,
-        stencilFunc: THREE.NotEqualStencilFunc,
-        stencilFail: THREE.ReplaceStencilOp,
-        stencilZFail: THREE.ReplaceStencilOp,
-        stencilZPass: THREE.ReplaceStencilOp,
-      });
-      let po = new THREE.Mesh(planeGeom, planeMat);
-      po.onAfterRender = (renderer) => {
-        renderer.clearStencil();
-      };
-      po.renderOrder = i + 1.1;
-      stencilGroups.add(stencilGroup);
-      poGroup.add(po);
-      poGroup.name = '__Caps' + i;
-      this.planeObjects.push(po);
-      this.crossSectionObject.add(poGroup);
+      this.createClippingPlane(solidGeometry, i, planeGeometry, stencilGroups);
     }
 
     this.updatePlanes();
@@ -91,126 +65,161 @@ export class SectionService {
     helpers.position.copy(this.boundBox.min);
     this.crossSectionObject.add(helpers);
     this.crossSectionObject.visible = true;
+
     return this.crossSectionObject;
   }
 
-  buildHelpers() {
-    this.clearHelpers();
-    let planeMat = new THREE.MeshBasicMaterial({
-      color: '#007ef2',
-      transparent: true,
-      opacity: 0.05,
-      side: THREE.DoubleSide,
+  createClippingPlane(
+    solidGeometry: THREE.BufferGeometry,
+    index: number,
+    planeGeometry: THREE.PlaneBufferGeometry,
+    stencilGroups: THREE.Group,
+  ) {
+    const planeGroup = new THREE.Group();
+    const plane = this.planes[index];
+    const stencilGroup = this.createPlaneStencilGroup(solidGeometry, plane, index + 1);
+    stencilGroup.name = '__StencilGroup' + index;
+
+    const planeMaterial = new THREE.MeshStandardMaterial({
+      color: PLANE_INTERSECTION_COLOR,
+      clippingPlanes: this.planes.filter((p) => p !== plane),
+      stencilWrite: true,
+      stencilRef: 0,
+      stencilFunc: THREE.NotEqualStencilFunc,
+      stencilFail: THREE.ReplaceStencilOp,
+      stencilZFail: THREE.ReplaceStencilOp,
+      stencilZPass: THREE.ReplaceStencilOp,
     });
-    // let planeLineMat = new THREE.LineBasicMaterial({ color: 'black' });
 
-    let planeXYGeom = new THREE.PlaneBufferGeometry(this.size.x, this.size.y);
-    planeXYGeom.translate(this.size.x / 2, this.size.y / 2, 0);
-    let planeXYMesh = new THREE.Mesh(planeXYGeom, planeMat);
-    this.planeXYHelper.add(planeXYMesh);
-
-    // const verticesXY = [
-    //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(this.size.x, 0, 0),
-    //   new THREE.Vector3(this.size.x, this.size.y, 0),
-    //   new THREE.Vector3(0, this.size.y, 0),
-    //   new THREE.Vector3(0, 0, 0),
-    // ];
-    // let planeXYLineGeom = new THREE.BufferGeometry().setFromPoints(verticesXY);
-    // let planeXYLine = new THREE.Line(planeXYLineGeom, planeLineMat);
-    // this.planeXYHelper.add(planeXYLine);
-
-    // const verticesYZ = [
-    //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(0, 0, this.size.z),
-    //   new THREE.Vector3(0, this.size.y, this.size.z),
-    //   new THREE.Vector3(0, this.size.y, 0),
-    //   new THREE.Vector3(0, 0, 0),
-    // ];
-    // let planeYZLineGeom = new THREE.BufferGeometry().setFromPoints(verticesYZ);
-    // let planeYZLine = new THREE.Line(planeYZLineGeom, planeLineMat);
-    // this.planeYZHelper.add(planeYZLine);
-
-    // const verticesXZ = [
-    //   new THREE.Vector3(0, 0, 0),
-    //   new THREE.Vector3(0, 0, this.size.z),
-    //   new THREE.Vector3(this.size.x, 0, this.size.z),
-    //   new THREE.Vector3(this.size.x, 0, 0),
-    //   new THREE.Vector3(0, 0, 0),
-    // ];
-    // let planeXZLineGeom = new THREE.PlaneBufferGeometry().setFromPoints(verticesXZ);
-    // let planeXZLine = new THREE.Line(planeXZLineGeom, planeLineMat);
-    // this.planeXZHelper.add(planeXZLine);
-
-    let planeYZGeom = new THREE.PlaneBufferGeometry(this.size.z, this.size.y);
-    planeYZGeom.translate(this.size.z / 2, this.size.y / 2, 0);
-    planeYZGeom.rotateY(-Math.PI / 2);
-    let planeYZMesh = new THREE.Mesh(planeYZGeom, planeMat);
-    this.planeYZHelper.add(planeYZMesh);
-
-    let planeXZGeom = new THREE.PlaneBufferGeometry(this.size.x, this.size.z);
-    planeXZGeom.translate(this.size.x / 2, this.size.z / 2, 0);
-    planeXZGeom.rotateX(Math.PI / 2);
-    let planeXZMesh = new THREE.Mesh(planeXZGeom, planeMat);
-
-    this.planeXZHelper.add(planeXZMesh);
-
-    this.moveXY(SECTION_DEFAULT_CONSTANT);
-    this.moveXZ(SECTION_DEFAULT_CONSTANT);
-    this.moveYZ(SECTION_DEFAULT_CONSTANT);
+    const planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+    planeMesh.onAfterRender = (renderer) => {
+      renderer.clearStencil();
+    };
+    planeMesh.renderOrder = index + 1.1;
+    stencilGroups.add(stencilGroup);
+    planeGroup.add(planeMesh);
+    planeGroup.name = '__Caps' + index;
+    this.planeObjects.push(planeGroup);
+    this.crossSectionObject.add(planeGroup);
   }
 
-  clearHelpers() {
-    if (this.planeXYHelper.children.length)
-      this.planeXYHelper.remove(this.planeXYHelper.children[0]);
-    if (this.planeYZHelper.children.length)
-      this.planeYZHelper.remove(this.planeYZHelper.children[0]);
-    if (this.planeXZHelper.children.length)
-      this.planeXZHelper.remove(this.planeXZHelper.children[0]);
+  buildHelpers() {
+    const planeYZGeometry = new THREE.PlaneBufferGeometry(this.size.z, this.size.y);
+    planeYZGeometry.translate(this.size.z / 2, this.size.y / 2, 0);
+    planeYZGeometry.rotateY(-Math.PI / 2);
+    const planeYZMesh = new THREE.Mesh(planeYZGeometry, PLANE_HELPER_MATERIAL);
+    this.planeYZHelper.add(planeYZMesh);
+
+    const planeXZGeometry = new THREE.PlaneBufferGeometry(this.size.x, this.size.z);
+    planeXZGeometry.translate(this.size.x / 2, this.size.z / 2, 0);
+    planeXZGeometry.rotateX(Math.PI / 2);
+    const planeXZMesh = new THREE.Mesh(planeXZGeometry, PLANE_HELPER_MATERIAL);
+    this.planeXZHelper.add(planeXZMesh);
+
+    const planeXYGeometry = new THREE.PlaneBufferGeometry(this.size.x, this.size.y);
+    planeXYGeometry.translate(this.size.x / 2, this.size.y / 2, 0);
+    const planeXYMesh = new THREE.Mesh(planeXYGeometry, PLANE_HELPER_MATERIAL);
+    this.planeXYHelper.add(planeXYMesh);
+
+    this.moveHelpersToDefault();
+    this.drawHelpersBorder();
+  }
+
+  drawHelpersBorder() {
+    const helperLineMat = new THREE.LineBasicMaterial({ color: 'black' });
+
+    this.drawHelperBorder(
+      helperLineMat,
+      [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, this.size.z),
+        new THREE.Vector3(0, this.size.y, this.size.z),
+        new THREE.Vector3(0, this.size.y, 0),
+        new THREE.Vector3(0, 0, 0),
+      ],
+      this.planeYZHelper,
+    );
+
+    this.drawHelperBorder(
+      helperLineMat,
+      [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, 0, this.size.z),
+        new THREE.Vector3(this.size.x, 0, this.size.z),
+        new THREE.Vector3(this.size.x, 0, 0),
+        new THREE.Vector3(0, 0, 0),
+      ],
+      this.planeXZHelper,
+    );
+
+    this.drawHelperBorder(
+      helperLineMat,
+      [
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(this.size.x, 0, 0),
+        new THREE.Vector3(this.size.x, this.size.y, 0),
+        new THREE.Vector3(0, this.size.y, 0),
+        new THREE.Vector3(0, 0, 0),
+      ],
+      this.planeXYHelper,
+    );
+  }
+
+  drawHelperBorder(
+    borderMaterial: THREE.LineBasicMaterial,
+    vertices: THREE.Vector3[],
+    helper: THREE.Group,
+  ) {
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints(vertices);
+    const line = new THREE.Line(lineGeometry, borderMaterial);
+    helper.add(line);
+  }
+
+  moveHelpersToDefault() {
+    this.moveYZ(SECTION_DEFAULT_CONSTANT);
+    this.moveXZ(SECTION_DEFAULT_CONSTANT);
+    this.moveXY(SECTION_DEFAULT_CONSTANT);
   }
 
   createPlaneStencilGroup(geometry: any, plane: any, renderOrder: any) {
-    let group = new THREE.Group();
-    let baseMat = new THREE.MeshBasicMaterial();
-    baseMat.depthWrite = false;
-    baseMat.depthTest = false;
-    baseMat.colorWrite = false;
-    baseMat.stencilWrite = true;
-    baseMat.stencilFunc = THREE.AlwaysStencilFunc;
+    const stencilGroup = new THREE.Group();
+    const baseMaterial = new THREE.MeshBasicMaterial({
+      depthWrite: false,
+      depthTest: false,
+      colorWrite: false,
+      stencilWrite: true,
+      stencilFunc: THREE.AlwaysStencilFunc,
+    });
 
-    // back faces
-    let mat0 = baseMat.clone();
-    mat0.side = THREE.BackSide;
-    mat0.clippingPlanes = [plane];
-    mat0.stencilFail = THREE.IncrementStencilOp;
-    mat0.stencilZFail = THREE.IncrementStencilOp;
-    mat0.stencilZPass = THREE.IncrementStencilOp;
+    const backMaterial = baseMaterial.clone();
+    backMaterial.side = THREE.BackSide;
+    backMaterial.clippingPlanes = [plane];
+    backMaterial.stencilFail = THREE.IncrementStencilOp;
+    backMaterial.stencilZFail = THREE.IncrementStencilOp;
+    backMaterial.stencilZPass = THREE.IncrementStencilOp;
 
-    let mesh0 = new THREE.Mesh(geometry, mat0);
-    mesh0.renderOrder = renderOrder;
+    const backMesh = new THREE.Mesh(geometry, backMaterial);
+    backMesh.renderOrder = renderOrder;
+    stencilGroup.add(backMesh);
 
-    group.add(mesh0);
+    const frontMaterial = baseMaterial.clone();
+    frontMaterial.side = THREE.FrontSide;
+    frontMaterial.clippingPlanes = [plane];
+    frontMaterial.stencilFail = THREE.DecrementStencilOp;
+    frontMaterial.stencilZFail = THREE.DecrementStencilOp;
+    frontMaterial.stencilZPass = THREE.DecrementStencilOp;
 
-    // front faces
-    let mat1 = baseMat.clone();
-    mat1.side = THREE.FrontSide;
-    mat1.clippingPlanes = [plane];
-    mat1.stencilFail = THREE.DecrementStencilOp;
-    mat1.stencilZFail = THREE.DecrementStencilOp;
-    mat1.stencilZPass = THREE.DecrementStencilOp;
+    const frontMesh = new THREE.Mesh(geometry, frontMaterial);
+    frontMesh.renderOrder = renderOrder;
+    stencilGroup.add(frontMesh);
 
-    let mesh1 = new THREE.Mesh(geometry, mat1);
-    mesh1.renderOrder = renderOrder;
-
-    group.add(mesh1);
-
-    return group;
+    return stencilGroup;
   }
 
   updatePlanes() {
     for (let i = 0; i < this.planeObjects.length; i++) {
-      let plane = this.planes[i];
-      let po = this.planeObjects[i];
+      const plane = this.planes[i];
+      const po = this.planeObjects[i];
       plane.coplanarPoint(po.position);
       po.lookAt(
         po.position.x - plane.normal.x,
