@@ -41,10 +41,9 @@ export class SectionService {
         node.updateWorldMatrix(true, true);
         node.renderOrder = 6;
         node.material.clippingPlanes = this.planes;
+        node.material.clipIntersection = true;
         bufferGeometry.applyMatrix4(node.matrixWorld);
         bufferGeometries.push(bufferGeometry);
-      } else if (node.type === 'LineSegments') {
-        node.material.clippingPlanes = this.planes;
       }
     });
 
@@ -219,12 +218,12 @@ export class SectionService {
   updatePlanes() {
     for (let i = 0; i < this.planeObjects.length; i++) {
       const plane = this.planes[i];
-      const po = this.planeObjects[i];
-      plane.coplanarPoint(po.position);
-      po.lookAt(
-        po.position.x - plane.normal.x,
-        po.position.y - plane.normal.y,
-        po.position.z - plane.normal.z,
+      const planeObject = this.planeObjects[i];
+      plane.coplanarPoint(planeObject.position);
+      planeObject.lookAt(
+        planeObject.position.x - plane.normal.x,
+        planeObject.position.y - plane.normal.y,
+        planeObject.position.z - plane.normal.z,
       );
     }
   }
