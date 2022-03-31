@@ -1,3 +1,5 @@
+@import '_variables';
+
 :host {
   height: 100%;
 }
@@ -65,6 +67,10 @@
 
 .item {
   border-bottom: 1px solid #d8dee4;
+
+  &:hover {
+    background-color: $secondaryGreyBgColor;
+  }
 }
 
 .new-annotation-panel {

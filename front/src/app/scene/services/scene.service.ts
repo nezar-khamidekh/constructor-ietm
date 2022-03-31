@@ -627,13 +627,16 @@ export class SceneService {
         annotationMarker!.visible = true;
         annotationLabel!.visible = true;
       }
-      if (annotationMarker?.visible && !visibleAnnotation) {
-        annotationMarker!.visible = false;
-        annotationLabel!.visible = false;
-      }
-      if (!annotationMarker?.visible && visibleAnnotation) {
-        annotationMarker!.visible = true;
-        annotationLabel!.visible = true;
+
+      if (typeof visibleAnnotation == 'boolean') {
+        if (annotationMarker?.visible && !visibleAnnotation) {
+          annotationMarker!.visible = false;
+          annotationLabel!.visible = false;
+        }
+        if (!annotationMarker?.visible && visibleAnnotation) {
+          annotationMarker!.visible = true;
+          annotationLabel!.visible = true;
+        }
       }
     } else {
       this.viewer.scene.remove(annotationMarker!);
