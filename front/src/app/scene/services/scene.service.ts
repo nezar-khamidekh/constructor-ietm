@@ -260,7 +260,6 @@ export class SceneService {
   animateScene() {
     this.viewer.mixer?.update(this.viewer.clock.getDelta() / 3);
     this.viewer.controls.update();
-    this.viewer.renderer.render(this.viewer.scene, this.viewer.camera);
     if (this.viewer.composer) this.viewer.composer.render();
     if (this.viewer.labelRenderer)
       this.viewer.labelRenderer.render(this.viewer.scene, this.viewer.camera);

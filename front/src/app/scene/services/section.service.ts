@@ -41,7 +41,6 @@ export class SectionService {
         node.updateWorldMatrix(true, true);
         node.renderOrder = 6;
         node.material.clippingPlanes = this.planes;
-        node.material.clipIntersection = true;
         bufferGeometry.applyMatrix4(node.matrixWorld);
         bufferGeometries.push(bufferGeometry);
       }
