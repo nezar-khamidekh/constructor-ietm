@@ -7,6 +7,7 @@ import {
   ChangeDetectorRef,
   EventEmitter,
 } from '@angular/core';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { SubSink } from 'subsink';
@@ -44,6 +45,7 @@ export class EditorViewerComponent implements OnInit {
   };
 
   viewerMouseMode = VIEWER_MOUSE_MODE.Default;
+  previousTabIndex = 0;
 
   constructor(private sceneService: SceneService, private cdr: ChangeDetectorRef) {}
 
@@ -59,6 +61,22 @@ export class EditorViewerComponent implements OnInit {
         this.cdr.detectChanges();
       }),
     );
+  }
+
+  changeTab(currentTab: MatTabChangeEvent) {
+    if (this.annotations.length) {
+      if (currentTab.index === 0) {
+        for (let i = 0; i < this.annotations.length; i++) {
+          this.sceneService.refreshAnnotationsInViewer(this.annotations[i].id, true);
+        }
+      }
+      if ((currentTab.index === 1 || currentTab.index === 2) && this.previousTabIndex === 0) {
+        for (let i = 0; i < this.annotations.length; i++) {
+          this.sceneService.refreshAnnotationsInViewer(this.annotations[i].id, false);
+        }
+      }
+      this.previousTabIndex = currentTab.index;
+    }
   }
 
   onApplyAnnotation(status: boolean) {

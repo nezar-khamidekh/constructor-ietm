@@ -612,7 +612,7 @@ export class SceneService {
     this.annotationMarkers = [...this.annotationMarkers, ...annotationMarkers];
   }
 
-  refreshAnnotationsInViewer(lastModifiedAnnotationId: number) {
+  refreshAnnotationsInViewer(lastModifiedAnnotationId: number, visibleAnnotation?: boolean) {
     const annotationMarker = this.annotationMarkers.find(
       (marker) => marker.userData.id === lastModifiedAnnotationId,
     );
@@ -621,9 +621,17 @@ export class SceneService {
     );
     if (this.annotations$.value.some((annotation) => annotation.id === lastModifiedAnnotationId)) {
       if (annotationMarker?.visible) {
-        annotationMarker.visible = false;
+        annotationMarker!.visible = false;
         annotationLabel!.visible = false;
       } else {
+        annotationMarker!.visible = true;
+        annotationLabel!.visible = true;
+      }
+      if (annotationMarker?.visible && !visibleAnnotation) {
+        annotationMarker!.visible = false;
+        annotationLabel!.visible = false;
+      }
+      if (!annotationMarker?.visible && visibleAnnotation) {
         annotationMarker!.visible = true;
         annotationLabel!.visible = true;
       }
