@@ -6,6 +6,7 @@ import {
   Output,
   ChangeDetectorRef,
   EventEmitter,
+  Renderer2,
 } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SceneService } from 'src/app/scene/services/scene.service';
@@ -17,6 +18,7 @@ export const enum VIEWER_MOUSE_MODE {
 }
 
 interface CurrentAnnotationI {
+  title: string;
   text: string;
   position: null | {
     x: number;
@@ -40,6 +42,7 @@ export class EditorViewerComponent implements OnInit {
   annotations: AnnotationI[] = [];
 
   currentAnnotation: CurrentAnnotationI = {
+    title: '',
     text: '',
     position: null,
   };
@@ -47,7 +50,11 @@ export class EditorViewerComponent implements OnInit {
   viewerMouseMode = VIEWER_MOUSE_MODE.Default;
   previousTabIndex = 0;
 
-  constructor(private sceneService: SceneService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private sceneService: SceneService,
+    private cdr: ChangeDetectorRef,
+    private renderer: Renderer2,
+  ) {}
 
   ngOnInit(): void {
     this.initAnnotations();
@@ -84,19 +91,36 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onSaveAnnotation(dataAnnotation?: any) {
-    if (dataAnnotation.editedAnnotation) {
+    if (dataAnnotation) {
       this.annotations.find(
         (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
-      )!.description = dataAnnotation.currentAnnotationText;
+      )!.description = dataAnnotation.text;
       this.annotations.find(
         (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
-      )!.descriptionDomElement!.innerText = dataAnnotation.currentAnnotationText;
+      )!.descriptionDomElement!.innerText = dataAnnotation.text;
+
+      this.annotations.find(
+        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
+      )!.title = dataAnnotation.title;
+
+      this.annotations.find(
+        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
+      )!.labelDomElement!.innerText = dataAnnotation.title;
+
+      this.renderer.appendChild(
+        this.annotations.find((annotation) => annotation.id === dataAnnotation.editedAnnotation.id)!
+          .labelDomElement,
+        this.annotations.find((annotation) => annotation.id === dataAnnotation.editedAnnotation.id)!
+          .descriptionDomElement,
+      );
+
       this.sceneService.setAnnotations(this.annotations);
     } else {
       this.sceneService.setAnnotations([
         ...this.annotations,
         {
           id: this.annotations.length + 1,
+          title: this.currentAnnotation.title,
           description: this.currentAnnotation.text,
           position: {
             x: this.currentAnnotation.position!.x,
@@ -107,6 +131,7 @@ export class EditorViewerComponent implements OnInit {
       ]);
     }
     this.currentAnnotation = {
+      title: '',
       text: '',
       position: null,
     };
@@ -125,6 +150,7 @@ export class EditorViewerComponent implements OnInit {
 
   onCoordsAnnotation(coords: any) {
     this.currentAnnotation = {
+      title: this.currentAnnotation.title,
       text: this.currentAnnotation.text,
       position: coords,
     };

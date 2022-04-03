@@ -1,5 +1,6 @@
 export interface AnnotationI {
   id: number;
+  title: string;
   description: string;
   position: {
     x: number;
@@ -7,5 +8,6 @@ export interface AnnotationI {
     z: number;
   };
   descriptionDomElement?: HTMLElement;
+  labelDomElement?: HTMLElement;
   rendered?: boolean;
 }

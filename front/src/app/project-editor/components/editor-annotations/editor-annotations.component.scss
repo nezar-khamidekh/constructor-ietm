@@ -17,8 +17,8 @@
     display: flex;
     flex-direction: column;
     overflow: auto;
-    min-height: 240px;
-    max-height: 240px;
+    min-height: 180px;
+    max-height: 180px;
   }
 
   &__table {
@@ -78,8 +78,16 @@
   padding: 0 16px;
 
   &__title {
-    margin-top: 20px;
+    margin-top: 15px;
     font-weight: 700;
+  }
+
+  &__input {
+    border: 1px solid #d8dee4;
+    border-radius: 8px;
+    padding: 12px 10px;
+    margin-top: 10px;
+    width: 50%;
   }
 
   &__content {
@@ -90,7 +98,7 @@
 
   &__text-annotation {
     resize: none;
-    height: 6em;
+    height: 4em;
     width: 80%;
     border: 1px solid #d8dee4;
     border-radius: 8px;
@@ -99,7 +107,6 @@
 
   &__actions {
     display: flex;
-    flex-direction: column;
     margin-left: 14px;
   }
 

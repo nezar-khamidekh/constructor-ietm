@@ -267,12 +267,13 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
       const annotationDiv = this.renderer.createElement('div');
       this.renderer.addClass(annotationDiv, 'annotation-label');
-      this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.id);
+      this.renderer.setProperty(annotationDiv, 'innerHTML', annotation.title);
       const annotationLabel = new CSS2DObject(annotationDiv);
       annotationLabel.position.copy(
         vector.set(annotation.position.x, annotation.position.y, annotation.position.z),
       );
       annotationLabel.name = 'annotationLabel_' + annotation.id;
+      annotation.labelDomElement = annotationDiv;
       this.viewer.scene.add(annotationLabel);
 
       annotation.rendered = true;

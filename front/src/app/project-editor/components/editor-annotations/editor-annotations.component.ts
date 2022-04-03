@@ -47,14 +47,18 @@ export class EditorAnnotationsComponent implements OnInit {
     e.stopPropagation();
     this.currentAnnotation.text = annotation.description;
     this.currentAnnotation.position = annotation.position;
+    this.currentAnnotation.title = annotation.title;
     this.editedAnnotation = annotation;
   }
 
-  onSaveAnnotation(editedAnnotation?: any, currentAnnotationText?: string) {
-    this.saveAnnotation.emit({
-      editedAnnotation: editedAnnotation,
-      currentAnnotationText: currentAnnotationText,
-    });
+  onSaveAnnotation(editedAnnotation?: any, text?: string, title?: string) {
+    if (editedAnnotation) {
+      this.saveAnnotation.emit({
+        editedAnnotation: editedAnnotation,
+        text: text,
+        title: title,
+      });
+    } else this.saveAnnotation.emit();
     this.editedAnnotation = null;
   }
 }

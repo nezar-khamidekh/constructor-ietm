@@ -1,5 +1,7 @@
 <div class="annotations-editor">
   <div class="annotations-editor__new-annotation new-annotation-panel">
+    <p class="new-annotation-panel__title">Заголовок аннотации</p>
+    <input class="new-annotation-panel__input" [(ngModel)]="currentAnnotation.title" />
     <p class="new-annotation-panel__title">Текст аннотации</p>
     <div class="new-annotation-panel__content">
       <textarea
@@ -26,7 +28,9 @@
             mat-icon-button
             class="new-annotation-panel__btn"
             [disabled]="!currentAnnotation.position"
-            (click)="onSaveAnnotation(editedAnnotation, currentAnnotation.text)"
+            (click)="
+              onSaveAnnotation(editedAnnotation, currentAnnotation.text, currentAnnotation.title)
+            "
             matTooltip="Сохранить аннотацию"
           >
             <img class="new-annotation-panel__btn-icon" src="assets/svg/save.svg" alt="сохранить" />
@@ -41,7 +45,7 @@
       <table class="annotations-editor__table">
         <thead>
           <tr class="annotations-editor__row">
-            <th class="annotations-editor__column annotations-editor__number-column">Id</th>
+            <th class="annotations-editor__column annotations-editor__number-column">Заголовок</th>
             <th class="annotations-editor__column annotations-editor__description-column">
               Описание
             </th>
@@ -55,7 +59,7 @@
             (click)="sceneService.showAnnotationDesciption(annotation)"
           >
             <td class="annotations-editor__column annotations-editor__number-column">
-              {{ annotation.id }}
+              {{ annotation.title }}
             </td>
             <td class="annotations-editor__column annotations-editor__description-column">
               {{ annotation.description }}
