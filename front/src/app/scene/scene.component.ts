@@ -174,8 +174,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sceneService.setControls();
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
-      this.sceneService.setMixer(gltf);
       this.sceneService.setModel(gltf);
+      this.sceneService.setMixer(gltf);
       this.sceneService.setMeshesDefaultMaterial();
       this.sceneService.setGridHelper(gltf);
       this.sceneService.setLight();
@@ -186,150 +186,11 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cdr.detectChanges();
     });
 
-    var animate = () => {
-      TWEEN.update();
-      requestAnimationFrame(animate);
-      this.setHoveredObj();
-      this.sceneService.animateScene();
-    };
-
-    animate();
+    this.animate();
   }
 
   getViewerButtonsEnum() {
     return VIEWER_BUTTONS;
-  }
-
-  onViewerBtnClicked(activeBtnIndex: number) {
-    if (this.activeBtnIndex !== activeBtnIndex) this.resetPrevBtnAction(activeBtnIndex);
-    this.activeBtnIndex = this.btnIsInAction ? VIEWER_BUTTONS.Default : activeBtnIndex;
-    switch (activeBtnIndex) {
-      case VIEWER_BUTTONS.Home:
-        this.resetCamera();
-        break;
-      case VIEWER_BUTTONS.RotateAnimation:
-        if (!this.btnIsInAction) this.rotateCamera();
-        else this.stopRotatingCamera();
-        break;
-      case VIEWER_BUTTONS.Explode:
-        if (!this.btnIsInAction) this.explode();
-        else this.stopExplodingModel();
-        break;
-      case VIEWER_BUTTONS.RestoreView:
-        this.resetContextMenu();
-        this.sceneService.restoreView();
-        break;
-      case VIEWER_BUTTONS.Hide:
-        this.resetContextMenu();
-        this.sceneService.hideObject();
-        break;
-      case VIEWER_BUTTONS.Isolate:
-        this.resetContextMenu();
-        this.sceneService.isolateObject();
-        break;
-      case VIEWER_BUTTONS.StopAnimation:
-        this.sceneService.stopAnimation();
-        break;
-      case VIEWER_BUTTONS.PlayAnimation:
-        this.sceneService.playAnimation();
-        break;
-      case VIEWER_BUTTONS.PauseAnimation:
-        this.sceneService.pauseAnimation();
-        break;
-      case VIEWER_BUTTONS.Cut:
-        if (!this.btnIsInAction) {
-          this.btnIsInAction = true;
-          this.sceneService.createPlanes();
-        } else this.stopCuttingModel();
-        break;
-      default:
-        break;
-    }
-  }
-
-  resetPrevBtnAction(newButtonIndex: number) {
-    switch (this.activeBtnIndex) {
-      case VIEWER_BUTTONS.RotateAnimation:
-        this.stopRotatingCamera();
-        this.rotateSpeedValue = CAMERA_ROTATE_SPEED;
-        this.resetCamera();
-        break;
-      case VIEWER_BUTTONS.Explode:
-        this.stopExplodingModel();
-        this.explodePowerValue = EXPLODE_POWER;
-        this.resetCamera();
-        break;
-      case VIEWER_BUTTONS.Isolate:
-        this.sceneService.resetObjectIsolation();
-        break;
-      case VIEWER_BUTTONS.PlayAnimation:
-        if (newButtonIndex !== VIEWER_BUTTONS.PauseAnimation) this.sceneService.stopAnimation();
-        break;
-      case VIEWER_BUTTONS.PauseAnimation:
-        if (newButtonIndex !== VIEWER_BUTTONS.PlayAnimation) this.sceneService.stopAnimation();
-        break;
-      case VIEWER_BUTTONS.Cut:
-        this.stopCuttingModel();
-        this.resetCamera();
-        break;
-      default:
-        break;
-    }
-  }
-
-  resetCamera() {
-    this.sceneService.moveCameraWithAnimation(() => {
-      this.viewer.controls.enabled = true;
-    });
-  }
-
-  rotateCamera() {
-    this.btnIsInAction = true;
-    this.viewer.controls.enabled = false;
-    this.viewer.controls.autoRotate = true;
-    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
-    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
-  }
-
-  stopRotatingCamera() {
-    this.btnIsInAction = false;
-    this.viewer.controls.enabled = true;
-    this.viewer.controls.autoRotate = false;
-  }
-
-  onRotateCameraSpeedChanged(valueSpeed: any) {
-    this.rotateSpeedValue = valueSpeed;
-    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
-  }
-
-  explode() {
-    this.btnIsInAction = true;
-    this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
-  }
-
-  stopExplodingModel() {
-    this.btnIsInAction = false;
-    this.sceneService.explodeModel(this.viewer.model, 0);
-  }
-
-  onExplodePowerChanged(explodeValue: any) {
-    this.explodePowerValue = explodeValue;
-    this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
-  }
-
-  onMouseUp(e: MouseEvent) {
-    this.mouseUpPos = { ...this.getMouseCoorsByMouseEvent(e) };
-  }
-
-  onMouseDown(e: MouseEvent) {
-    this.mouseDownPos = { ...this.getMouseCoorsByMouseEvent(e) };
-  }
-
-  onMouseClick(e: MouseEvent) {
-    if (this.mouseDownPos.x === this.mouseUpPos.x && this.mouseDownPos.y === this.mouseUpPos.y) {
-      this.setMouseCoords(e);
-      this.setSelectedObj();
-    }
   }
 
   getMouseCoorsByMouseEvent(e: MouseEvent) {
@@ -342,6 +203,13 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
           2 +
         1,
     };
+  }
+
+  animate() {
+    TWEEN.update();
+    window.requestAnimationFrame(() => this.animate());
+    this.setHoveredObj();
+    this.sceneService.animateScene();
   }
 
   setMouseCoords(e: MouseEvent) {
@@ -420,26 +288,69 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sceneService.setAnnotationMarkers(annotationMarkers);
   }
 
-  onRightClick(event: MouseEvent) {
-    this.contextMenuClickedOutside = false;
-    event.preventDefault();
-    if (this.sceneService.selectedObj) {
-      this.sceneService.resetSelectedObjView();
-      this.sceneService.selectedObj = null;
+  resetPrevBtnAction(newButtonIndex: number) {
+    switch (this.activeBtnIndex) {
+      case VIEWER_BUTTONS.RotateAnimation:
+        this.stopRotatingCamera();
+        this.rotateSpeedValue = CAMERA_ROTATE_SPEED;
+        this.resetCamera();
+        break;
+      case VIEWER_BUTTONS.Explode:
+        this.stopExplodingModel();
+        this.explodePowerValue = EXPLODE_POWER;
+        this.resetCamera();
+        break;
+      case VIEWER_BUTTONS.Isolate:
+        this.sceneService.resetObjectIsolation();
+        break;
+      case VIEWER_BUTTONS.PlayAnimation:
+        if (newButtonIndex !== VIEWER_BUTTONS.PauseAnimation) this.sceneService.stopAnimation();
+        break;
+      case VIEWER_BUTTONS.PauseAnimation:
+        if (newButtonIndex !== VIEWER_BUTTONS.PlayAnimation) this.sceneService.stopAnimation();
+        break;
+      case VIEWER_BUTTONS.Cut:
+        this.stopCuttingModel();
+        this.resetCamera();
+        break;
+      default:
+        break;
     }
-    this.setMouseCoords(event);
-    this.setSelectedObj();
-    this.contextMenuPosition.x = event.clientX + 'px';
-    this.contextMenuPosition.y = event.clientY + 'px';
-    if (this.contextMenuIsOpened) {
-      this.contextMenuIsOpened = false;
-      this.matMenuTrigger.closeMenu();
-    }
-    if (this.contextMenuFirstOpen) {
-      this.contextMenuIsOpened = true;
-      this.contextMenuFirstOpen = false;
-      this.matMenuTrigger.openMenu();
-    }
+  }
+
+  resetCamera() {
+    this.sceneService.moveCameraWithAnimation(() => {
+      this.viewer.controls.enabled = true;
+    });
+  }
+
+  rotateCamera() {
+    this.btnIsInAction = true;
+    this.viewer.controls.enabled = false;
+    this.viewer.controls.autoRotate = true;
+    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
+    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+  }
+
+  stopRotatingCamera() {
+    this.btnIsInAction = false;
+    this.viewer.controls.enabled = true;
+    this.viewer.controls.autoRotate = false;
+  }
+
+  onRotateCameraSpeedChanged(valueSpeed: any) {
+    this.rotateSpeedValue = valueSpeed;
+    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
+  }
+
+  explode() {
+    this.btnIsInAction = true;
+    this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
+  }
+
+  stopExplodingModel() {
+    this.btnIsInAction = false;
+    this.sceneService.explodeModel(this.viewer.model, 0);
   }
 
   resetContextMenu() {
@@ -469,5 +380,94 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   moveXY(value: number) {
     this.sceneService.moveXY(value);
+  }
+
+  onViewerBtnClicked(activeBtnIndex: number) {
+    if (this.activeBtnIndex !== activeBtnIndex) this.resetPrevBtnAction(activeBtnIndex);
+    this.activeBtnIndex = this.btnIsInAction ? VIEWER_BUTTONS.Default : activeBtnIndex;
+    switch (activeBtnIndex) {
+      case VIEWER_BUTTONS.Home:
+        this.resetCamera();
+        break;
+      case VIEWER_BUTTONS.RotateAnimation:
+        if (!this.btnIsInAction) this.rotateCamera();
+        else this.stopRotatingCamera();
+        break;
+      case VIEWER_BUTTONS.Explode:
+        if (!this.btnIsInAction) this.explode();
+        else this.stopExplodingModel();
+        break;
+      case VIEWER_BUTTONS.RestoreView:
+        this.resetContextMenu();
+        this.sceneService.restoreView();
+        break;
+      case VIEWER_BUTTONS.Hide:
+        this.resetContextMenu();
+        this.sceneService.hideObject();
+        break;
+      case VIEWER_BUTTONS.Isolate:
+        this.resetContextMenu();
+        this.sceneService.isolateObject();
+        break;
+      case VIEWER_BUTTONS.StopAnimation:
+        this.sceneService.stopAnimation();
+        break;
+      case VIEWER_BUTTONS.PlayAnimation:
+        this.sceneService.playAnimation();
+        break;
+      case VIEWER_BUTTONS.PauseAnimation:
+        this.sceneService.pauseAnimation();
+        break;
+      case VIEWER_BUTTONS.Cut:
+        if (!this.btnIsInAction) {
+          this.btnIsInAction = true;
+          this.sceneService.createPlanes();
+        } else this.stopCuttingModel();
+        break;
+      default:
+        break;
+    }
+  }
+
+  onExplodePowerChanged(explodeValue: any) {
+    this.explodePowerValue = explodeValue;
+    this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
+  }
+
+  onMouseUp(e: MouseEvent) {
+    this.mouseUpPos = { ...this.getMouseCoorsByMouseEvent(e) };
+  }
+
+  onMouseDown(e: MouseEvent) {
+    this.mouseDownPos = { ...this.getMouseCoorsByMouseEvent(e) };
+  }
+
+  onMouseClick(e: MouseEvent) {
+    if (this.mouseDownPos.x === this.mouseUpPos.x && this.mouseDownPos.y === this.mouseUpPos.y) {
+      this.setMouseCoords(e);
+      this.setSelectedObj();
+    }
+  }
+
+  onRightClick(event: MouseEvent) {
+    this.contextMenuClickedOutside = false;
+    event.preventDefault();
+    if (this.sceneService.selectedObj) {
+      this.sceneService.resetSelectedObjView();
+      this.sceneService.selectedObj = null;
+    }
+    this.setMouseCoords(event);
+    this.setSelectedObj();
+    this.contextMenuPosition.x = event.clientX + 'px';
+    this.contextMenuPosition.y = event.clientY + 'px';
+    if (this.contextMenuIsOpened) {
+      this.contextMenuIsOpened = false;
+      this.matMenuTrigger.closeMenu();
+    }
+    if (this.contextMenuFirstOpen) {
+      this.contextMenuIsOpened = true;
+      this.contextMenuFirstOpen = false;
+      this.matMenuTrigger.openMenu();
+    }
   }
 }
