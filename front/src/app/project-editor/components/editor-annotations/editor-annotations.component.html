@@ -49,7 +49,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="item" *ngFor="let annotation of annotations">
+          <tr
+            class="item"
+            *ngFor="let annotation of annotations"
+            (click)="sceneService.showAnnotationDesciption(annotation)"
+          >
             <td class="annotations-editor__column annotations-editor__number-column">
               {{ annotation.id }}
             </td>
@@ -61,7 +65,7 @@
                 mat-icon-button
                 class="annotations-editor__btn"
                 matTooltip="Редактировать аннотацию"
-                (click)="editAnnotation(annotation)"
+                (click)="editAnnotation($event, annotation)"
               >
                 <img
                   class="annotations-editor__btn-icon"
@@ -79,22 +83,6 @@
                   class="annotations-editor__btn-icon"
                   src="assets/svg/delete.svg"
                   alt="удалить"
-                />
-              </button>
-              <button
-                mat-icon-button
-                class="annotations-editor__btn"
-                matTooltip="Скрыть аннотацию"
-                (click)="hideAnnotation.emit(annotation)"
-              >
-                <img
-                  class="annotations-editor__btn-icon"
-                  [src]="
-                    sceneService.annotationIsHidden(annotation.id)
-                      ? 'assets/svg/visibility.svg'
-                      : 'assets/svg/visibility_off.svg'
-                  "
-                  alt="скрыть"
                 />
               </button>
             </td>

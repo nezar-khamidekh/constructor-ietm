@@ -53,6 +53,7 @@ export class SceneService {
   annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
   crossSectionObject: any;
+  preAnnotationId: number | null = null;
 
   constructor(private http: HttpClient, private sectionService: SectionService) {}
 
@@ -345,6 +346,24 @@ export class SceneService {
     return null;
   }
 
+  showAnnotationDesciption(curAnnotation: AnnotationI) {
+    if (this.preAnnotationId === curAnnotation.id) {
+      this.annotations$.value.forEach((annotation) => {
+        if (annotation.description) annotation.descriptionDomElement!.style.display = 'none';
+      });
+      this.preAnnotationId = null;
+    } else {
+      this.annotations$.value.forEach((annotation) => {
+        if (annotation.description) annotation.descriptionDomElement!.style.display = 'none';
+      });
+      const annotation: AnnotationI = this.annotations$.value.find(
+        (annotation: any) => annotation.id === curAnnotation.id,
+      );
+      if (annotation.description) annotation.descriptionDomElement!.style.display = 'block';
+      this.preAnnotationId = curAnnotation.id;
+    }
+  }
+
   selectObject(filteredIntersects: THREE.Intersection[]) {
     if (this.selectedObj) {
       this.selectedObj.material = this.selectedObj.defaultMaterial.clone();
@@ -619,14 +638,6 @@ export class SceneService {
       'annotationLabel_' + lastModifiedAnnotationId,
     );
     if (this.annotations$.value.some((annotation) => annotation.id === lastModifiedAnnotationId)) {
-      if (annotationMarker?.visible) {
-        annotationMarker!.visible = false;
-        annotationLabel!.visible = false;
-      } else {
-        annotationMarker!.visible = true;
-        annotationLabel!.visible = true;
-      }
-
       if (typeof visibleAnnotation == 'boolean') {
         if (annotationMarker?.visible && !visibleAnnotation) {
           annotationMarker!.visible = false;
@@ -644,12 +655,6 @@ export class SceneService {
         (marker) => marker.userData.id !== lastModifiedAnnotationId,
       );
     }
-  }
-
-  annotationIsHidden(lastModifiedAnnotationId: number) {
-    return this.annotationMarkers.some(
-      (annotation) => annotation.userData.id === lastModifiedAnnotationId && annotation.visible,
-    );
   }
 
   createPlanes() {

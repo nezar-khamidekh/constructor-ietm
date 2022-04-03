@@ -43,7 +43,8 @@ export class EditorAnnotationsComponent implements OnInit {
     }
   }
 
-  editAnnotation(annotation: any) {
+  editAnnotation(e: any, annotation: any) {
+    e.stopPropagation();
     this.currentAnnotation.text = annotation.description;
     this.currentAnnotation.position = annotation.position;
     this.editedAnnotation = annotation;
