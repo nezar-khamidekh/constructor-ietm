@@ -14,6 +14,10 @@ import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipamt.dto'
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
 import { ParticipantRole } from 'src/team/models/schemas/participant.schema';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
+import { ViewerService } from 'src/viewer/service/viewer.service';
+import { extname } from 'path';
+import { RemoveModelDto } from '../models/dto/removeModel.dto';
+import { TakeModelDto } from '../models/dto/takeModel.dto';
 
 @Injectable()
 export class RepositoryService {
@@ -22,6 +26,7 @@ export class RepositoryService {
     private repositoryModel: Model<RepositoryDocument>,
     private teamService: TeamService,
     private userService: UserService,
+    private viewerService: ViewerService,
   ) {}
 
   create(createRepositoryDto: CreateRepositoryDto) {
@@ -89,7 +94,12 @@ export class RepositoryService {
         ]),
     ).pipe(
       map((repo) => {
-        return repo;
+        if (repo) return repo;
+        else
+          throw new HttpException(
+            'Репозиторий не найден',
+            HttpStatus.NOT_FOUND,
+          );
       }),
     );
   }
@@ -176,7 +186,7 @@ export class RepositoryService {
     );
   }
 
-  updateOne(updateData: RepositoryDocument) {
+  updateOne(updateData: any) {
     return from(
       this.repositoryModel.updateOne({ _id: updateData._id }, updateData),
     ).pipe(
@@ -276,6 +286,124 @@ export class RepositoryService {
     return from(this.repositoryModel.deleteOne({ _id: id })).pipe(
       map((result: any) => {
         return result.deletedCount ? true : false;
+      }),
+    );
+  }
+
+  reisterModel(file: Express.Multer.File, repoId: string) {
+    return this.getOneById(repoId).pipe(
+      switchMap((repo) => {
+        return this.viewerService.checkIfRepoDirectoryExists(repo._id).pipe(
+          switchMap((check) => {
+            if (check)
+              return this.viewerService
+                .convertModelAndSave(
+                  process.cwd() + '\\' + file.path,
+                  process.cwd() +
+                    '\\repositories\\' +
+                    repo._id +
+                    '\\' +
+                    file.filename.replace(extname(file.filename), '.gltf'),
+                )
+                .pipe(
+                  switchMap(() => {
+                    repo.models.push({
+                      name: file.originalname.slice(
+                        0,
+                        file.originalname.lastIndexOf('.'),
+                      ),
+                      filename: file.originalname,
+                      path: file.filename.replace(
+                        extname(file.filename),
+                        '.gltf',
+                      ),
+                    });
+                    return from(
+                      this.updateOne({ _id: repo._id, models: repo.models }),
+                    ).pipe(
+                      map((result) => {
+                        return repo;
+                      }),
+                    );
+                  }),
+                );
+            else
+              return this.viewerService.writeRepoDirectoryById(repo._id).pipe(
+                switchMap(() => {
+                  return this.viewerService
+                    .convertModelAndSave(
+                      process.cwd() + '\\' + file.path,
+                      process.cwd() +
+                        '\\repositories\\' +
+                        repo._id +
+                        '\\' +
+                        file.filename.replace(extname(file.filename), '.gltf'),
+                    )
+                    .pipe(
+                      switchMap(() => {
+                        repo.models.push({
+                          name: file.originalname.slice(
+                            0,
+                            file.originalname.lastIndexOf('.'),
+                          ),
+                          filename: file.originalname,
+                          path: file.filename.replace(
+                            extname(file.filename),
+                            '.gltf',
+                          ),
+                        });
+                        return from(
+                          this.updateOne({
+                            _id: repo._id,
+                            models: repo.models,
+                          }),
+                        ).pipe(
+                          map((result) => {
+                            return repo;
+                          }),
+                        );
+                      }),
+                    );
+                }),
+              );
+          }),
+        );
+      }),
+    );
+  }
+
+  removeModel(removeModelDto: RemoveModelDto) {
+    return this.getOneById(removeModelDto.repoId).pipe(
+      switchMap((repo) => {
+        const filteredModels = repo.models.filter(
+          (model) => model.filename !== removeModelDto.filename,
+        );
+        return this.updateOne({ _id: repo._id, models: filteredModels }).pipe(
+          switchMap((result) => {
+            const modelPath =
+              './repositories/' +
+              repo._id +
+              '/' +
+              repo.models.filter(
+                (model) => model.filename === removeModelDto.filename,
+              )[0].path;
+            return this.viewerService.checkIfModelExists(modelPath).pipe(
+              switchMap((check) => {
+                return this.viewerService.deleteModel(modelPath);
+              }),
+            );
+          }),
+        );
+      }),
+    );
+  }
+
+  takeModel(takeModelDto: TakeModelDto) {
+    return this.getOneById(takeModelDto.repoId).pipe(
+      map((repo) => {
+        return repo.models.filter(
+          (model) => model.filename === takeModelDto.filename,
+        )[0];
       }),
     );
   }
