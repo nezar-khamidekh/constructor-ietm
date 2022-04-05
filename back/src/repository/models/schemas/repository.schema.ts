@@ -13,7 +13,7 @@ export class Repository {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   author: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'Team' })
+  @Prop({ type: Types.ObjectId, ref: 'Team', default: null })
   team: Types.ObjectId;
 
   @Prop({ length: 200, unique: true })
@@ -22,8 +22,11 @@ export class Repository {
   @Prop()
   type: RepositoryType;
 
-  @Prop()
+  @Prop({ default: null })
   description: string;
+
+  @Prop({ default: null })
+  preview: string;
 
   @Prop({ type: [ParticipantSchema], default: [] })
   participants: Participant[];

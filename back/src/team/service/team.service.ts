@@ -7,6 +7,7 @@ import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
+import { FindParticipantDto } from '../models/dto/findParticipant.dto';
 import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
 import { UpdateParticipantDto } from '../models/dto/updateParticipant.dto';
 import { ParticipantRole } from '../models/schemas/participant.schema';
@@ -231,6 +232,34 @@ export class TeamService {
           'email',
           'username',
         ]),
+    );
+  }
+
+  checkIfTeamHasUser(findParticipantDto: FindParticipantDto) {
+    const filter = [];
+    if (findParticipantDto.login)
+      filter.push({ 'participants.login': findParticipantDto.login });
+    if (findParticipantDto.userId)
+      filter.push({
+        'participants.user': new Types.ObjectId(findParticipantDto.userId),
+      });
+    return from(
+      this.teamModel
+        .find({
+          _id: new Types.ObjectId(findParticipantDto.teamId),
+          $or: filter,
+        })
+        .populate('participants.user', [
+          'avatar',
+          'lastName',
+          'firstName',
+          'email',
+          'username',
+        ]),
+    ).pipe(
+      map((team) => {
+        return team ? true : false;
+      }),
     );
   }
 }
