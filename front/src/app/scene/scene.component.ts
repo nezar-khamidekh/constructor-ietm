@@ -29,6 +29,7 @@ import {
   EXPLODE_POWER,
 } from '../shared/models/viewerConstants';
 import { ActivatedRoute } from '@angular/router';
+import { SectionPlanes } from './services/section.service';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -94,6 +95,11 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   contextMenuFirstOpen = true;
 
   viewer!: ViewerI;
+
+  constantSectionYZ = SECTION_DEFAULT_CONSTANT;
+  constantSectionXZ = SECTION_DEFAULT_CONSTANT;
+  constantSectionXY = SECTION_DEFAULT_CONSTANT;
+  currentPlane: number | null = null;
 
   constructor(
     public sceneService: SceneService,
@@ -361,14 +367,30 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.matMenuTrigger.closeMenu();
   }
 
-  // cutModel() {
-  //   this.btnIsInAction = true;
-  //   this.sceneService.cutModel();
-  // }
+  createSectionPlane(data: any) {
+    this.currentPlane = data.indexPlane;
+    this.sceneService.createSectionPlane(data);
+  }
+
+  changeConstantSection(data: any) {
+    switch (data.index) {
+      case SectionPlanes.YZ:
+        this.constantSectionYZ = data.value;
+        break;
+      case SectionPlanes.XZ:
+        this.constantSectionXZ = data.value;
+        break;
+      case SectionPlanes.XY:
+        this.constantSectionXY = data.value;
+        break;
+      default:
+        break;
+    }
+  }
 
   stopCuttingModel() {
     this.btnIsInAction = false;
-    this.sceneService.removePlanes();
+    this.sceneService.removePlane();
   }
 
   moveYZ(value: number) {
@@ -421,8 +443,11 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case VIEWER_BUTTONS.Cut:
         if (!this.btnIsInAction) {
+          this.currentPlane = null;
+          this.constantSectionYZ = SECTION_DEFAULT_CONSTANT;
+          this.constantSectionXZ = SECTION_DEFAULT_CONSTANT;
+          this.constantSectionXY = SECTION_DEFAULT_CONSTANT;
           this.btnIsInAction = true;
-          this.sceneService.createPlanes();
         } else this.stopCuttingModel();
         break;
       default:

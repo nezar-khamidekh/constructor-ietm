@@ -7,32 +7,43 @@ import {
   SECTION_DEFAULT_CONSTANT,
 } from 'src/app/shared/models/viewerConstants';
 
+export enum SectionPlanes {
+  YZ,
+  XZ,
+  XY,
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class SectionService {
-  private crossSectionObject: THREE.Object3D = new THREE.Object3D();
   private boundBox: THREE.Box3 = new THREE.Box3();
-  private planes: THREE.Plane[] = [];
-  private planeObjects: any[] = [];
+  private plane: THREE.Plane;
+  private planeGroup: any;
+  private planeHelper: THREE.Group = new THREE.Group();
   private size: THREE.Vector3 = new THREE.Vector3();
-  private planeXYHelper: THREE.Group = new THREE.Group();
-  private planeYZHelper: THREE.Group = new THREE.Group();
-  private planeXZHelper: THREE.Group = new THREE.Group();
 
   constructor() {}
 
-  createSection(model: any, scene: any): THREE.Object3D {
-    this.crossSectionObject.name = '__CrossSection';
+  createSection(model: any, scene: THREE.Scene, indexPlane: number, constantSection: number) {
+    this.clearPreviousSection(scene);
     this.boundBox.setFromObject(model);
     this.boundBox.getSize(this.size);
     const longestSide = Math.max(this.size.y, this.size.x, this.size.z);
 
-    this.planes = [
-      new THREE.Plane(new THREE.Vector3(-1, 0, 0), this.boundBox.min.x),
-      new THREE.Plane(new THREE.Vector3(0, -1, 0), this.boundBox.min.y),
-      new THREE.Plane(new THREE.Vector3(0, 0, -1), this.boundBox.min.z),
-    ];
+    switch (indexPlane) {
+      case SectionPlanes.YZ:
+        this.plane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), this.boundBox.min.x);
+        break;
+      case SectionPlanes.XZ:
+        this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), this.boundBox.min.y);
+        break;
+      case SectionPlanes.XY:
+        this.plane = new THREE.Plane(new THREE.Vector3(0, 0, -1), this.boundBox.min.z);
+        break;
+      default:
+        break;
+    }
 
     const bufferGeometries: any = [];
     model.traverse((node: any) => {
@@ -40,7 +51,7 @@ export class SectionService {
         const bufferGeometry = node.geometry.clone();
         node.updateWorldMatrix(true, true);
         node.renderOrder = 6;
-        node.material.clippingPlanes = this.planes;
+        node.material.clippingPlanes = [this.plane];
         bufferGeometry.applyMatrix4(node.matrixWorld);
         bufferGeometries.push(bufferGeometry);
       }
@@ -52,19 +63,32 @@ export class SectionService {
     scene.add(stencilGroups);
 
     const planeGeometry = new THREE.PlaneBufferGeometry(longestSide * 2, longestSide * 2);
-    for (let i = 0; i < 3; i++) {
-      this.createClippingPlane(solidGeometry, i, planeGeometry, stencilGroups);
-    }
+    this.createClippingPlane(solidGeometry, indexPlane, planeGeometry, stencilGroups, scene);
 
-    this.updatePlanes();
-    this.buildHelpers();
+    //move
+
+    this.updatePlane();
+    this.buildHelper(indexPlane);
+    this.movePlane(indexPlane, constantSection);
     const helpers = new THREE.Group();
-    helpers.add(this.planeXYHelper, this.planeXZHelper, this.planeYZHelper);
+    helpers.add(this.planeHelper);
+    helpers.name = '__Helpers';
     helpers.position.copy(this.boundBox.min);
-    this.crossSectionObject.add(helpers);
-    this.crossSectionObject.visible = true;
 
-    return this.crossSectionObject;
+    scene.add(helpers);
+  }
+
+  clearPreviousSection(scene: THREE.Scene) {
+    const stencilGroups = scene.getObjectByName('__StencilGroups');
+    const helpers = scene.getObjectByName('__Helpers');
+    const planeGroup = scene.getObjectByName('__PlaneGroup');
+    if (stencilGroups) scene.remove(stencilGroups);
+    if (helpers) scene.remove(helpers);
+    if (planeGroup) scene.remove(planeGroup);
+
+    for (var i = this.planeHelper.children.length - 1; i >= 0; i--) {
+      this.planeHelper.remove(this.planeHelper.children[i]);
+    }
   }
 
   createClippingPlane(
@@ -72,15 +96,15 @@ export class SectionService {
     index: number,
     planeGeometry: THREE.PlaneBufferGeometry,
     stencilGroups: THREE.Group,
+    scene: THREE.Scene,
   ) {
     const planeGroup = new THREE.Group();
-    const plane = this.planes[index];
-    const stencilGroup = this.createPlaneStencilGroup(solidGeometry, plane, index + 1);
+    const stencilGroup = this.createPlaneStencilGroup(solidGeometry, this.plane, index + 1);
     stencilGroup.name = '__StencilGroup' + index;
 
     const planeMaterial = new THREE.MeshStandardMaterial({
       color: PLANE_INTERSECTION_COLOR,
-      clippingPlanes: this.planes.filter((p) => p !== plane),
+      // clippingPlanes: this.planes.filter((p) => p !== plane),
       stencilWrite: true,
       stencilRef: 0,
       stencilFunc: THREE.NotEqualStencilFunc,
@@ -96,71 +120,73 @@ export class SectionService {
     planeMesh.renderOrder = index + 1.1;
     stencilGroups.add(stencilGroup);
     planeGroup.add(planeMesh);
-    planeGroup.name = '__Caps' + index;
-    this.planeObjects.push(planeGroup);
-    this.crossSectionObject.add(planeGroup);
+    planeGroup.name = '__PlaneGroup';
+    this.planeGroup = planeGroup.clone();
+    scene.add(this.planeGroup);
   }
 
-  buildHelpers() {
-    const planeYZGeometry = new THREE.PlaneBufferGeometry(this.size.z, this.size.y);
-    planeYZGeometry.translate(this.size.z / 2, this.size.y / 2, 0);
-    planeYZGeometry.rotateY(-Math.PI / 2);
-    const planeYZMesh = new THREE.Mesh(planeYZGeometry, PLANE_HELPER_MATERIAL);
-    this.planeYZHelper.add(planeYZMesh);
-
-    const planeXZGeometry = new THREE.PlaneBufferGeometry(this.size.x, this.size.z);
-    planeXZGeometry.translate(this.size.x / 2, this.size.z / 2, 0);
-    planeXZGeometry.rotateX(Math.PI / 2);
-    const planeXZMesh = new THREE.Mesh(planeXZGeometry, PLANE_HELPER_MATERIAL);
-    this.planeXZHelper.add(planeXZMesh);
-
-    const planeXYGeometry = new THREE.PlaneBufferGeometry(this.size.x, this.size.y);
-    planeXYGeometry.translate(this.size.x / 2, this.size.y / 2, 0);
-    const planeXYMesh = new THREE.Mesh(planeXYGeometry, PLANE_HELPER_MATERIAL);
-    this.planeXYHelper.add(planeXYMesh);
-
-    this.moveHelpersToDefault();
-    this.drawHelpersBorder();
-  }
-
-  drawHelpersBorder() {
+  buildHelper(indexPlane: number) {
     const helperLineMat = new THREE.LineBasicMaterial({ color: 'black' });
-
-    this.drawHelperBorder(
-      helperLineMat,
-      [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, this.size.z),
-        new THREE.Vector3(0, this.size.y, this.size.z),
-        new THREE.Vector3(0, this.size.y, 0),
-        new THREE.Vector3(0, 0, 0),
-      ],
-      this.planeYZHelper,
-    );
-
-    this.drawHelperBorder(
-      helperLineMat,
-      [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(0, 0, this.size.z),
-        new THREE.Vector3(this.size.x, 0, this.size.z),
-        new THREE.Vector3(this.size.x, 0, 0),
-        new THREE.Vector3(0, 0, 0),
-      ],
-      this.planeXZHelper,
-    );
-
-    this.drawHelperBorder(
-      helperLineMat,
-      [
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(this.size.x, 0, 0),
-        new THREE.Vector3(this.size.x, this.size.y, 0),
-        new THREE.Vector3(0, this.size.y, 0),
-        new THREE.Vector3(0, 0, 0),
-      ],
-      this.planeXYHelper,
-    );
+    switch (indexPlane) {
+      case SectionPlanes.YZ:
+        const planeYZGeometry = new THREE.PlaneBufferGeometry(this.size.z, this.size.y);
+        planeYZGeometry.translate(this.size.z / 2, this.size.y / 2, 0);
+        planeYZGeometry.rotateY(-Math.PI / 2);
+        const planeYZMesh = new THREE.Mesh(planeYZGeometry, PLANE_HELPER_MATERIAL);
+        this.planeHelper.position.set(0, 0, 0);
+        this.planeHelper.add(planeYZMesh);
+        this.drawHelperBorder(
+          helperLineMat,
+          [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, this.size.z),
+            new THREE.Vector3(0, this.size.y, this.size.z),
+            new THREE.Vector3(0, this.size.y, 0),
+            new THREE.Vector3(0, 0, 0),
+          ],
+          this.planeHelper,
+        );
+        break;
+      case SectionPlanes.XZ:
+        const planeXZGeometry = new THREE.PlaneBufferGeometry(this.size.x, this.size.z);
+        planeXZGeometry.translate(this.size.x / 2, this.size.z / 2, 0);
+        planeXZGeometry.rotateX(Math.PI / 2);
+        const planeXZMesh = new THREE.Mesh(planeXZGeometry, PLANE_HELPER_MATERIAL);
+        this.planeHelper.position.set(0, 0, 0);
+        this.planeHelper.add(planeXZMesh);
+        this.drawHelperBorder(
+          helperLineMat,
+          [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, this.size.z),
+            new THREE.Vector3(this.size.x, 0, this.size.z),
+            new THREE.Vector3(this.size.x, 0, 0),
+            new THREE.Vector3(0, 0, 0),
+          ],
+          this.planeHelper,
+        );
+        break;
+      case SectionPlanes.XY:
+        const planeXYGeometry = new THREE.PlaneBufferGeometry(this.size.x, this.size.y);
+        planeXYGeometry.translate(this.size.x / 2, this.size.y / 2, 0);
+        const planeXYMesh = new THREE.Mesh(planeXYGeometry, PLANE_HELPER_MATERIAL);
+        this.planeHelper.position.set(0, 0, 0);
+        this.planeHelper.add(planeXYMesh);
+        this.drawHelperBorder(
+          helperLineMat,
+          [
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(this.size.x, 0, 0),
+            new THREE.Vector3(this.size.x, this.size.y, 0),
+            new THREE.Vector3(0, this.size.y, 0),
+            new THREE.Vector3(0, 0, 0),
+          ],
+          this.planeHelper,
+        );
+        break;
+      default:
+        break;
+    }
   }
 
   drawHelperBorder(
@@ -171,12 +197,6 @@ export class SectionService {
     const lineGeometry = new THREE.BufferGeometry().setFromPoints(vertices);
     const line = new THREE.Line(lineGeometry, borderMaterial);
     helper.add(line);
-  }
-
-  moveHelpersToDefault() {
-    this.moveYZ(SECTION_DEFAULT_CONSTANT);
-    this.moveXZ(SECTION_DEFAULT_CONSTANT);
-    this.moveXY(SECTION_DEFAULT_CONSTANT);
   }
 
   createPlaneStencilGroup(geometry: any, plane: any, renderOrder: any) {
@@ -214,52 +234,39 @@ export class SectionService {
     return stencilGroup;
   }
 
-  updatePlanes() {
-    for (let i = 0; i < this.planeObjects.length; i++) {
-      const plane = this.planes[i];
-      const planeObject = this.planeObjects[i];
-      plane.coplanarPoint(planeObject.position);
-      planeObject.lookAt(
-        planeObject.position.x - plane.normal.x,
-        planeObject.position.y - plane.normal.y,
-        planeObject.position.z - plane.normal.z,
-      );
+  updatePlane() {
+    this.plane.coplanarPoint(this.planeGroup.position);
+    this.planeGroup.lookAt(
+      this.planeGroup.position.x - this.plane.normal.x,
+      this.planeGroup.position.y - this.plane.normal.y,
+      this.planeGroup.position.z - this.plane.normal.z,
+    );
+  }
+
+  movePlane(index: number, scale: number) {
+    switch (index) {
+      case SectionPlanes.YZ:
+        if (scale > 1) scale = 1;
+        if (scale < 0) scale = 0;
+        this.plane.constant = scale * this.size.x + this.boundBox.min.x;
+        this.planeHelper.position.x = this.size.x * scale;
+        break;
+      case SectionPlanes.XZ:
+        if (scale > 1) scale = 1;
+        if (scale < 0) scale = 0;
+        this.plane.constant = scale * this.size.y + this.boundBox.min.y;
+        this.planeHelper.position.y = this.size.y * scale;
+        break;
+      case SectionPlanes.XY:
+        if (scale > 1) scale = 1;
+        if (scale < 0) scale = 0;
+        this.plane.constant = scale * this.size.z + this.boundBox.min.z;
+        this.planeHelper.position.z = this.size.z * scale;
+        break;
+
+      default:
+        break;
     }
-  }
-
-  moveYZ(scale: number) {
-    if (scale > 1) scale = 1;
-    if (scale < 0) scale = 0;
-    this.planes[0].constant = scale * this.size.x + this.boundBox.min.x;
-    this.moveHelperYZ(scale);
-    this.updatePlanes();
-  }
-
-  moveXZ(scale: number) {
-    if (scale > 1) scale = 1;
-    if (scale < 0) scale = 0;
-    this.planes[1].constant = scale * this.size.y + this.boundBox.min.y;
-    this.moveHelperXZ(scale);
-    this.updatePlanes();
-  }
-
-  moveXY(scale: number) {
-    if (scale > 1) scale = 1;
-    if (scale < 0) scale = 0;
-    this.planes[2].constant = scale * this.size.z + this.boundBox.min.z;
-    this.moveHelperXY(scale);
-    this.updatePlanes();
-  }
-
-  moveHelperYZ(scale: number) {
-    this.planeYZHelper.position.x = this.size.x * scale;
-  }
-
-  moveHelperXZ(scale: number) {
-    this.planeXZHelper.position.y = this.size.y * scale;
-  }
-
-  moveHelperXY(scale: number) {
-    this.planeXYHelper.position.z = this.size.z * scale;
+    this.updatePlane();
   }
 }

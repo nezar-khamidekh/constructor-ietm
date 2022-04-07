@@ -4,12 +4,18 @@
       [activeBtnIndex]="activeBtnIndex"
       [rotateAnimationSliderValue]="rotateSpeedValue"
       [explodeSliderValue]="explodePowerValue"
+      [constantSectionYZ]="constantSectionYZ"
+      [constantSectionXZ]="constantSectionXZ"
+      [constantSectionXY]="constantSectionXY"
+      [currentPlane]="currentPlane"
       (viewerBtnClicked)="onViewerBtnClicked($event)"
       (rotateCameraSpeedChanged)="onRotateCameraSpeedChanged($event)"
       (explodePowerChanged)="onExplodePowerChanged($event)"
       (moveSectionYZ)="moveYZ($event)"
       (moveSectionXZ)="moveXZ($event)"
       (moveSectionXY)="moveXY($event)"
+      (createPlane)="createSectionPlane($event)"
+      (changeConstantSection)="changeConstantSection($event)"
     ></app-viewer-toolbar>
   </ng-container>
   <canvas

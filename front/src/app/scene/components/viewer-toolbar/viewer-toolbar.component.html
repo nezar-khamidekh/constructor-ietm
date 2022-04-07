@@ -76,39 +76,48 @@
         (btnClicked)="cutModel()"
       ></app-viewer-button>
       <div class="toolbar__panel" [hidden]="!cutModelBtnIsActive()">
-        <mat-radio-group>
+        <mat-radio-group [ngModel]="currentPlane" (ngModelChange)="changePlane($event)">
           <div class="toolbar__row-plane">
-            <span class="toolbar__text">YZ</span>
+            <mat-radio-button color="primary" [value]="0">YZ</mat-radio-button>
             <div class="toolbar__wrapper-slider">
               <mat-slider
+                color="primary"
                 [min]="0"
                 [max]="1"
                 [step]="0.01"
-                [(ngModel)]="constantSectionYZ"
+                [disabled]="currentPlane !== 0"
+                [ngModel]="constantSectionYZ"
+                (ngModelChange)="changeConstantSection.emit({ value: $event, index: 0 })"
                 (input)="moveSectionYZ.emit($event.value!)"
               ></mat-slider>
             </div>
           </div>
           <div class="toolbar__row-plane">
-            <span class="toolbar__text">XZ</span>
+            <mat-radio-button color="primary" [value]="1">XZ</mat-radio-button>
             <div class="toolbar__wrapper-slider">
               <mat-slider
+                color="primary"
                 [min]="0"
                 [max]="1"
                 [step]="0.01"
-                [(ngModel)]="constantSectionXZ"
+                [disabled]="currentPlane !== 1"
+                [ngModel]="constantSectionXZ"
+                (ngModelChange)="changeConstantSection.emit({ value: $event, index: 1 })"
                 (input)="moveSectionXZ.emit($event.value!)"
               ></mat-slider>
             </div>
           </div>
           <div class="toolbar__row-plane">
-            <span class="toolbar__text">XY</span>
+            <mat-radio-button color="primary" [value]="2">XY</mat-radio-button>
             <div class="toolbar__wrapper-slider">
               <mat-slider
+                color="primary"
                 [min]="0"
                 [max]="1"
                 [step]="0.01"
-                [(ngModel)]="constantSectionXY"
+                [disabled]="currentPlane !== 2"
+                [ngModel]="constantSectionXY"
+                (ngModelChange)="changeConstantSection.emit({ value: $event, index: 2 })"
                 (input)="moveSectionXY.emit($event.value!)"
               ></mat-slider>
             </div>

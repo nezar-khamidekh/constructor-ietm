@@ -12,6 +12,7 @@ import {
   EXPLODE_POWER,
 } from 'src/app/shared/models/viewerConstants';
 import { VIEWER_BUTTONS } from '../../scene.component';
+import { SectionPlanes } from '../../services/section.service';
 
 @Component({
   selector: 'app-viewer-toolbar',
@@ -23,12 +24,18 @@ export class ViewerToolbarComponent implements OnInit {
   @Input() activeBtnIndex!: number;
   @Input() rotateAnimationSliderValue = CAMERA_ROTATE_SPEED;
   @Input() explodeSliderValue = EXPLODE_POWER;
+  @Input() constantSectionYZ = SECTION_DEFAULT_CONSTANT;
+  @Input() constantSectionXZ = SECTION_DEFAULT_CONSTANT;
+  @Input() constantSectionXY = SECTION_DEFAULT_CONSTANT;
+  @Input() currentPlane: number | null = null;
   @Output() viewerBtnClicked = new EventEmitter<number>();
   @Output() rotateCameraSpeedChanged = new EventEmitter<number>();
   @Output() explodePowerChanged = new EventEmitter<number>();
   @Output() moveSectionYZ = new EventEmitter();
   @Output() moveSectionXZ = new EventEmitter();
   @Output() moveSectionXY = new EventEmitter();
+  @Output() createPlane = new EventEmitter();
+  @Output() changeConstantSection = new EventEmitter();
 
   rotateAnimationSliderMinValue = CAMERA_ROTATE_SPEED;
   rotateAnimationSliderMaxValue = 20;
@@ -36,10 +43,6 @@ export class ViewerToolbarComponent implements OnInit {
   explodeSliderMinValue = EXPLODE_POWER;
   explodeSliderMaxValue = 1.5;
   explodeSliderStep = 0.1;
-
-  constantSectionYZ = SECTION_DEFAULT_CONSTANT;
-  constantSectionXZ = SECTION_DEFAULT_CONSTANT;
-  constantSectionXY = SECTION_DEFAULT_CONSTANT;
 
   constructor() {}
 
@@ -87,5 +90,30 @@ export class ViewerToolbarComponent implements OnInit {
 
   cutModelBtnIsActive() {
     return this.activeBtnIndex === VIEWER_BUTTONS.Cut;
+  }
+
+  changePlane(index: any) {
+    switch (index) {
+      case SectionPlanes.YZ:
+        this.createPlane.emit({
+          indexPlane: index,
+          constantSection: this.constantSectionYZ,
+        });
+        break;
+      case SectionPlanes.XZ:
+        this.createPlane.emit({
+          indexPlane: index,
+          constantSection: this.constantSectionXZ,
+        });
+        break;
+      case SectionPlanes.XY:
+        this.createPlane.emit({
+          indexPlane: index,
+          constantSection: this.constantSectionXY,
+        });
+        break;
+      default:
+        break;
+    }
   }
 }

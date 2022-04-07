@@ -32,7 +32,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
 import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
-import { SectionService } from './section.service';
+import { SectionPlanes, SectionService } from './section.service';
 
 @Injectable({
   providedIn: 'root',
@@ -657,12 +657,16 @@ export class SceneService {
     }
   }
 
-  createPlanes() {
-    this.viewer.scene.add(this.sectionService.createSection(this.viewer.model, this.viewer.scene));
+  createSectionPlane(data: { indexPlane: number; constantSection: number }) {
+    this.sectionService.createSection(
+      this.viewer.model,
+      this.viewer.scene,
+      data.indexPlane,
+      data.constantSection,
+    );
   }
 
-  removePlanes() {
-    this.viewer.scene.remove(this.viewer.scene.getObjectByName('__CrossSection')!);
+  removePlane() {
     this.viewer.model.traverse((n: any) => {
       if (n.type === 'Mesh' && n.material !== undefined) {
         n.material.clippingPlanes = [];
@@ -670,19 +674,18 @@ export class SceneService {
         n.material.clippingPlanes = [];
       }
     });
+    this.sectionService.clearPreviousSection(this.viewer.scene);
   }
 
   moveYZ(value: number) {
-    this.sectionService.moveYZ(value);
+    this.sectionService.movePlane(SectionPlanes.YZ, value);
   }
 
   moveXZ(value: number) {
-    this.sectionService.moveXZ(value);
+    this.sectionService.movePlane(SectionPlanes.XZ, value);
   }
 
   moveXY(value: number) {
-    this.sectionService.moveXY(value);
+    this.sectionService.movePlane(SectionPlanes.XY, value);
   }
-
-  createPlaneStencilGroup() {}
 }
