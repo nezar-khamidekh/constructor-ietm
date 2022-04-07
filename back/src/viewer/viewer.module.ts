@@ -5,5 +5,6 @@ import { ViewerService } from './service/viewer.service';
 @Module({
   controllers: [ViewerController],
   providers: [ViewerService],
+  exports: [ViewerService],
 })
 export class ViewerModule {}
