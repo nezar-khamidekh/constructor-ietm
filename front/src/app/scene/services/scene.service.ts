@@ -99,11 +99,9 @@ export class SceneService {
       modelBoundingBox: {},
       raycaster: new THREE.Raycaster(),
       clock: new THREE.Clock(),
-      actions: [],
       time: 0,
       isPlaying: false,
       model: new THREE.Object3D(),
-      plant: new THREE.Vector3(),
       state: VIEWER_STATE.Default,
     };
   }

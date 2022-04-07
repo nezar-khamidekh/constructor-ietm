@@ -12,11 +12,9 @@ export interface ViewerI {
   raycaster: THREE.Raycaster;
   mixer?: THREE.AnimationMixer;
   clock: THREE.Clock;
-  actions: any;
   time: number;
   isPlaying: boolean;
   model: THREE.Object3D;
-  plant: THREE.Vector3;
   state: VIEWER_STATE;
 }
 
