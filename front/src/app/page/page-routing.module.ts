@@ -31,10 +31,10 @@ const routes: Routes = [
         path: 'editor',
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
-        canActivate: [AuthGuard],
+        /* canActivate: [AuthGuard],
         data: {
           checkUser: true,
-        },
+        }, */
       },
       {
         path: 'editor/:model',

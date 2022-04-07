@@ -13,12 +13,12 @@ import { RepositoryModule } from './repository/repository.module';
 
 const modules = [
   ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', './.env'] }),
-  MongooseModule.forRoot(process.env.DATABASE_URL),
-  UserModule,
-  AuthModule,
+  // MongooseModule.forRoot(process.env.DATABASE_URL),
+  // UserModule,
+  // AuthModule,
   ViewerModule,
-  TeamModule,
-  RepositoryModule,
+  // TeamModule,
+  // RepositoryModule,
 ];
 
 if (process.env.NODE_ENV !== 'development') {
