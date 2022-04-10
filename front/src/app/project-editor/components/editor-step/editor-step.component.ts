@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { LoadingService } from 'src/app/shared/services/loading.service';
 
 @Component({
   selector: 'app-editor-step',
@@ -10,7 +11,7 @@ export class EditorStepComponent implements OnInit {
   @Input() title = '';
   @Input() subtitle = '';
 
-  constructor() {}
+  constructor(public loadingService: LoadingService) {}
 
   ngOnInit(): void {}
 }

@@ -1,7 +1,4 @@
 <div class="editor-viewer">
-  <div class="loading" *ngIf="!model">
-    <mat-spinner></mat-spinner>
-  </div>
   <div class="editor-viewer__viewer">
     <app-scene
       [viewerMouseMode]="viewerMouseMode"
@@ -27,7 +24,6 @@
               (applyAnnotation)="onApplyAnnotation($event)"
               (deleteAnnotation)="onDeleteAnnotation($event)"
               (hideAnnotation)="onHideAnnotation($event)"
-              (changedStep)="changedStep.emit($event)"
             ></app-editor-annotations>
           </div>
         </mat-tab>
@@ -42,6 +38,9 @@
           </div>
         </mat-tab>
       </mat-tab-group>
+      <div class="toolbar__wrapper-step-buttons">
+        <app-step-buttons [step]="step" (changedStep)="changeStep.emit($event)"></app-step-buttons>
+      </div>
     </div>
   </div>
 </div>

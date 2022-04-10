@@ -8,19 +8,19 @@
 >
   <ng-container [ngSwitch]="step">
     <app-init-repository
-      [step]="1"
-      (changedStep)="onChangeStep($event)"
       *ngSwitchCase="1"
+      [step]="1"
+      (changeStep)="onChangeStep($event)"
     ></app-init-repository>
     <app-upload-model
-      [step]="2"
-      (changedStep)="onChangeStep($event)"
       *ngSwitchCase="2"
+      [step]="2"
+      (changeStep)="onChangeStep($event)"
     ></app-upload-model>
     <app-editor-viewer
-      [step]="3"
-      (changedStep)="onChangeStep($event)"
       *ngSwitchCase="3"
+      [step]="3"
+      (changeStep)="onChangeStep($event)"
     ></app-editor-viewer>
   </ng-container>
 </app-editor-step>

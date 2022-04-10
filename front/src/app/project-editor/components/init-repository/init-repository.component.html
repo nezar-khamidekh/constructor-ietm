@@ -1,15 +1,24 @@
 <div class="init-repository">
-  <form class="init-repository__form form">
+  <form class="init-repository__form form" [formGroup]="repositoryGroup">
     <div class="form__field">
       <label class="form__label" for="name">Название</label>
       <div class="form__control-wrapper form__control-wrapper_w-60">
-        <input class="form__input" placeholder="Название репозитория" id="name" />
+        <input
+          class="form__input"
+          placeholder="Название репозитория"
+          id="name"
+          formControlName="title"
+        />
       </div>
     </div>
     <div class="form__field">
       <label class="form__label" for="author">Автор</label>
       <div class="form__control-wrapper form__control-wrapper_w-60">
-        <select class="init-repository__form-select form__select" id="author">
+        <select
+          class="init-repository__form-select form__select"
+          id="author"
+          formControlName="author"
+        >
           <option value="">
             {{ dataStore.getUserValue()?.login }}
           </option>
@@ -19,6 +28,7 @@
         </select>
       </div>
     </div>
+    <!--  preview -->
     <div class="form__field">
       <label class="form__label" for="description">Описание</label>
       <div class="form__control-wrapper">
@@ -26,13 +36,14 @@
           class="form__textarea"
           placeholder="Описание репозитория"
           id="description"
+          formControlName="description"
         ></textarea>
       </div>
     </div>
     <div class="form__field">
       <div class="init-repository__type">
         <div class="init-repository__type-input-wrapper">
-          <input type="radio" id="public" value="public" />
+          <input type="radio" id="public" value="public" formControlName="type" />
           <label class="init-repository__type-label" for="public">
             <img
               class="init-repository__type-img"
@@ -50,7 +61,7 @@
       </div>
       <div class="init-repository__type">
         <div class="init-repository__type-input-wrapper">
-          <input type="radio" id="private" value="private" />
+          <input type="radio" id="private" value="private" formControlName="type" />
           <label class="init-repository__type-label" for="private">
             <img
               class="init-repository__type-img"
@@ -67,6 +78,6 @@
         </div>
       </div>
     </div>
-    <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
+    <app-step-buttons [step]="step" (changeStep)="createRepository($event)"></app-step-buttons>
   </form>
 </div>

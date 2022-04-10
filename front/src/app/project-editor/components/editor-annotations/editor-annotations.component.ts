@@ -26,7 +26,6 @@ export class EditorAnnotationsComponent implements OnInit {
   @Output() saveAnnotation = new EventEmitter();
   @Output() deleteAnnotation = new EventEmitter();
   @Output() hideAnnotation = new EventEmitter();
-  @Output() changedStep = new EventEmitter();
 
   editedAnnotation = null;
 

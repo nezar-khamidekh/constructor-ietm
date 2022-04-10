@@ -6,7 +6,9 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
+import { LoadingService } from 'src/app/shared/services/loading.service';
 
 @Component({
   selector: 'app-init-repository',
@@ -16,9 +18,31 @@ import { DataStoreService } from 'src/app/shared/services/data-store.service';
 })
 export class InitRepositoryComponent implements OnInit {
   @Input() step: number;
-  @Output() changedStep = new EventEmitter();
+  @Output() changeStep = new EventEmitter();
 
-  constructor(public dataStore: DataStoreService) {}
+  repositoryGroup: FormGroup;
 
-  ngOnInit(): void {}
+  constructor(
+    public dataStore: DataStoreService,
+    private fb: FormBuilder,
+    private loadingService: LoadingService,
+  ) {}
+
+  ngOnInit(): void {
+    this.repositoryGroup = this.fb.group({
+      author: new FormControl('', [Validators.required]),
+      team: new FormControl('', [Validators.required]),
+      title: new FormControl('', [Validators.required]),
+      type: new FormControl('', [Validators.required]),
+      description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
+      preview: new FormControl('', [Validators.required]),
+      //participants,
+      //models
+    });
+  }
+
+  createRepository(step: number) {
+    this.loadingService.setIsLoading(true);
+    this.changeStep.emit(step);
+  }
 }

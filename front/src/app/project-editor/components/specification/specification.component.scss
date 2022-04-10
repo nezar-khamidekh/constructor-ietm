@@ -1,4 +1,4 @@
-@import "_variables";
+@import '_variables';
 
 :host {
   height: 100%;
@@ -21,7 +21,6 @@
   }
 
   &__table-wrapper {
-    margin-top: 15px;
     overflow: auto;
   }
 

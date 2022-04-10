@@ -22,6 +22,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UploadModelComponent } from './components/upload-model/upload-model.component';
 import { StepButtonsComponent } from './components/step-buttons/step-buttons.component';
 import { InitRepositoryComponent } from './components/init-repository/init-repository.component';
+import { LoaderModule } from '../shared/loader/loader.module';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { InitRepositoryComponent } from './components/init-repository/init-repos
     MatTooltipModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    LoaderModule,
   ],
 })
 export class ProjectEditorModule {}

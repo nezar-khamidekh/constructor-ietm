@@ -3,5 +3,5 @@
     <img class="upload-model__drop-img" src="assets/svg/uploadModel.svg" alt="" />
     <p class="upload-model__selection-text">Выберете файл или перетащите</p>
   </ul>
-  <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
+  <app-step-buttons [step]="step" (changeStep)="changeStep.emit($event)"></app-step-buttons>
 </div>

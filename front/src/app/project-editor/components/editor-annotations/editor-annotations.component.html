@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-  <div class="annotations-editor__table-block">
+  <div class="annotations-editor__table-block" *ngIf="annotations.length">
     <p class="new-annotation-panel__title">Список аннотаций</p>
     <div class="annotations-editor__table-wrapper">
       <table class="annotations-editor__table">
@@ -94,8 +94,5 @@
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="annotations-editor__wrapper-step-buttons">
-    <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
   </div>
 </div>

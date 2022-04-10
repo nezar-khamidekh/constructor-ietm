@@ -1,7 +1,11 @@
 .change-step {
   display: flex;
   justify-content: space-between;
-  padding-top: 20px;
+  padding-top: 30px;
+
+  &_align-end {
+    justify-content: flex-end;
+  }
 
   &__btn {
     &_back {
