@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { RepositoryI } from '../shared/models/repository.interface';
 import { UserI } from '../shared/models/user.interface';
 import { DataStoreService } from '../shared/services/data-store.service';
 
@@ -14,8 +16,13 @@ export class MainComponent implements OnInit {
   private subs = new SubSink();
 
   user: UserI;
+  accountRepositories: RepositoryI[] = [];
 
-  constructor(private dataStore: DataStoreService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private dataStore: DataStoreService,
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   ngOnInit(): void {
     this.subs.add(
@@ -27,5 +34,7 @@ export class MainComponent implements OnInit {
           this.cdr.detectChanges();
         }),
     );
+
+    this.accountRepositories = this.route.snapshot.data.repositories;
   }
 }

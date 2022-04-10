@@ -12,6 +12,15 @@
   &__horizontal-line {
     margin-top: 15px;
   }
+
+  &__text {
+    margin-top: 10px;
+    font-size: 16px;
+
+    &_italic {
+      font-style: italic;
+    }
+  }
 }
 
 .account {
@@ -35,7 +44,7 @@
   }
 }
 
-.projects {
+.repositories {
   display: flex;
   flex-direction: column;
   margin-top: 15px;

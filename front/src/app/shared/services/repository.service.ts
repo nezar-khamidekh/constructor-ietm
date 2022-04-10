@@ -18,4 +18,10 @@ export class RepositoryService {
       withCredentials: true,
     });
   }
+
+  getByUser(userId: string): Observable<RepositoryI[]> {
+    return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/user/${userId}`, {
+      withCredentials: true,
+    });
+  }
 }

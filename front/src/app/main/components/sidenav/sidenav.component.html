@@ -13,28 +13,36 @@
     </button>
   </div>
   <div class="horizontal-line sidebar__horizontal-line"></div>
-  <div class="projects">
-    <p class="projects__title">Репозитории</p>
-    <input class="projects__input" type="text" placeholder="Поиск по репозиториям" />
-    <ul class="projects__list">
-      <li class="projects__list-item">
-        <img
-          class="projects__list-item-image"
-          src="assets/svg/privateRepository.svg"
-          alt="приватный репозиторий"
-        />
-        <a class="projects__list-item-title" routerLink="#"
-          >Adetil/Ролик РГ18x856 013АВСВ324 Adetil/Ролик РГ18x856 013АВСВ324</a
-        >
-      </li>
-      <li class="projects__list-item">
-        <img
-          class="projects__list-item-image"
-          src="assets/svg/publicRepository.svg"
-          alt="публичный репозиторий"
-        />
-        <a class="projects__list-item-title" routerLink="#">Trizo/Двигатель CK34</a>
-      </li>
-    </ul>
-  </div>
+  <ng-container *ngIf="repositories.length; else noRepositories">
+    <div class="repositories">
+      <p class="repositories__title">Репозитории</p>
+      <input class="repositories__input" type="text" placeholder="Поиск по репозиториям" />
+      <ul class="repositories__list">
+        <li class="repositories__list-item" *ngFor="let repository of repositories">
+          <ng-container [ngSwitch]="repository.type">
+            <img
+              class="repositories__list-item-image"
+              src="assets/svg/publicRepository.svg"
+              alt="Публичный репозиторий"
+              *ngSwitchCase="getRepositoryType().Public"
+            />
+            <img
+              class="repositories__list-item-image"
+              src="assets/svg/privateRepository.svg"
+              alt="приватный репозиторий"
+              *ngSwitchCase="getRepositoryType().Private"
+            />
+          </ng-container>
+          <a class="repositories__list-item-title" [routerLink]="repository._id">{{
+            repository.title
+          }}</a>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+  <ng-template #noRepositories>
+    <span class="sidebar__text sidebar__text_italic"
+      >Выбранный пользователь или команда не имеет репозиториев</span
+    >
+  </ng-template>
 </div>
