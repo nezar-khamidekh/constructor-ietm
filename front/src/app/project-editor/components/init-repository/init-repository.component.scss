@@ -1,5 +1,6 @@
 @import '_variables';
 @import 'form';
+@import 'edit-avatar';
 
 :host {
   width: 40%;
@@ -9,7 +10,29 @@
   width: 100%;
   height: 100%;
 
-  &__avatar {
+  &__header {
+    display: flex;
+  }
+
+  &__header-left-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header-right-column {
+  }
+
+  &__avatar,
+  &__pfp-button {
+    width: 128px;
+    height: 128px;
+    border-radius: 0;
+  }
+
+  &__select-avatar {
+    width: 64px;
+    height: 64px;
   }
 
   &__form-select {

@@ -3,6 +3,7 @@
     class="change-step__btn change-step__btn"
     mat-raised-button
     color="warn"
+    type="button"
     (click)="navigateToMain()"
     *ngIf="step === 1"
   >
@@ -12,6 +13,7 @@
     class="change-step__btn"
     mat-raised-button
     color="primary"
+    type="button"
     (click)="changeStep.emit(step + 1)"
   >
     Далее

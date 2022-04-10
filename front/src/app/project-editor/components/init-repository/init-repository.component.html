@@ -1,34 +1,54 @@
 <div class="init-repository">
   <form class="init-repository__form form" [formGroup]="repositoryGroup">
-    <div class="form__field">
-      <label class="form__label" for="name">Название</label>
-      <div class="form__control-wrapper form__control-wrapper_w-60">
-        <input
-          class="form__input"
-          placeholder="Название репозитория"
-          id="name"
-          formControlName="title"
-        />
+    <div class="init-repository__header">
+      <div class="init-repository__header-left-column">
+        <div class="form__field">
+          <label class="form__label" for="name">Название</label>
+          <div class="form__control-wrapper form__control-wrapper_w-60">
+            <input
+              class="form__input"
+              placeholder="Название репозитория"
+              id="name"
+              formControlName="title"
+            />
+          </div>
+        </div>
+        <div class="form__field">
+          <label class="form__label" for="author">Автор</label>
+          <div class="form__control-wrapper form__control-wrapper_w-60">
+            <select
+              class="init-repository__form-select form__select"
+              id="author"
+              formControlName="author"
+            >
+              <option [value]="dataStore.getUserValue()?._id">
+                {{ dataStore.getUserValue()?.login }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="init-repository__header-right-column">
+        <div class="init-repository__avatar-container edit-avatar">
+          <img
+            class="init-repository__avatar edit-avatar__img"
+            [src]="repositoryPreview || 'assets/svg/repository.svg'"
+            alt="аватар"
+          />
+          <button
+            class="init-repository__pfp-button edit-avatar__pfp-button"
+            type="button"
+            (click)="openDialogChooseImage()"
+          >
+            <img
+              class="init-repository__select-avatar edit-avatar__select-avatar"
+              src="assets/svg/edit_white.svg"
+              alt="изменить аватар"
+            />
+          </button>
+        </div>
       </div>
     </div>
-    <div class="form__field">
-      <label class="form__label" for="author">Автор</label>
-      <div class="form__control-wrapper form__control-wrapper_w-60">
-        <select
-          class="init-repository__form-select form__select"
-          id="author"
-          formControlName="author"
-        >
-          <option value="">
-            {{ dataStore.getUserValue()?.login }}
-          </option>
-          <option value="">Команда 1</option>
-          <option value="">Команда 2</option>
-          <option value="">Команда 3</option>
-        </select>
-      </div>
-    </div>
-    <!--  preview -->
     <div class="form__field">
       <label class="form__label" for="description">Описание</label>
       <div class="form__control-wrapper">
@@ -43,7 +63,7 @@
     <div class="form__field">
       <div class="init-repository__type">
         <div class="init-repository__type-input-wrapper">
-          <input type="radio" id="public" value="public" formControlName="type" />
+          <input type="radio" id="public" [value]="getType().Public" formControlName="type" />
           <label class="init-repository__type-label" for="public">
             <img
               class="init-repository__type-img"
@@ -61,7 +81,7 @@
       </div>
       <div class="init-repository__type">
         <div class="init-repository__type-input-wrapper">
-          <input type="radio" id="private" value="private" formControlName="type" />
+          <input type="radio" id="private" [value]="getType().Private" formControlName="type" />
           <label class="init-repository__type-label" for="private">
             <img
               class="init-repository__type-img"
@@ -78,6 +98,6 @@
         </div>
       </div>
     </div>
-    <app-step-buttons [step]="step" (changeStep)="createRepository($event)"></app-step-buttons>
+    <app-step-buttons [step]="step" (changeStep)="create($event)"></app-step-buttons>
   </form>
 </div>

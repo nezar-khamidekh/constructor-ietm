@@ -13,7 +13,7 @@ export class RepositoryService {
 
   constructor(private http: HttpClient) {}
 
-  createRepository(createRepositoryDto: CreateRepositoryDto): Observable<RepositoryI> {
+  create(createRepositoryDto: CreateRepositoryDto): Observable<RepositoryI> {
     return this.http.post<RepositoryI>(`${this.apiUrl}/repository/create`, createRepositoryDto, {
       withCredentials: true,
     });

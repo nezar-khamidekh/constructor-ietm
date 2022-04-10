@@ -23,6 +23,7 @@ import { UploadModelComponent } from './components/upload-model/upload-model.com
 import { StepButtonsComponent } from './components/step-buttons/step-buttons.component';
 import { InitRepositoryComponent } from './components/init-repository/init-repository.component';
 import { LoaderModule } from '../shared/loader/loader.module';
+import { DialogChooseImageModule } from '../dialogs/dialog-choose-image/dialog-choose-image.module';
 
 @NgModule({
   declarations: [
@@ -46,12 +47,13 @@ import { LoaderModule } from '../shared/loader/loader.module';
     MatSliderModule,
     MatRippleModule,
     MatButtonModule,
-    FormsModule,
     MatTreeModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    FormsModule,
     LoaderModule,
+    DialogChooseImageModule,
   ],
 })
 export class ProjectEditorModule {}
