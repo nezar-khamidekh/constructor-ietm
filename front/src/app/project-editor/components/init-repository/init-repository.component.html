@@ -24,6 +24,9 @@
               <option [value]="dataStore.getUserValue()?._id">
                 {{ dataStore.getUserValue()?.login }}
               </option>
+              <option [value]="team._id" *ngFor="let team of userTeams">
+                {{ team.title }}
+              </option>
             </select>
           </div>
         </div>
