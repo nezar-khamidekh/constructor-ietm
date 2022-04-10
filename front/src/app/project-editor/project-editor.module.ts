@@ -15,7 +15,7 @@ import { EditorAnnotationsComponent } from './components/editor-annotations/edit
 import { SpecificationComponent } from './components/specification/specification.component';
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -49,6 +49,7 @@ import { InitRepositoryComponent } from './components/init-repository/init-repos
     MatTreeModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
+    ReactiveFormsModule,
   ],
 })
 export class ProjectEditorModule {}

@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
+import { DataStoreService } from 'src/app/shared/services/data-store.service';
 
 @Component({
   selector: 'app-init-repository',
@@ -16,7 +17,8 @@ import {
 export class InitRepositoryComponent implements OnInit {
   @Input() step: number;
   @Output() changedStep = new EventEmitter();
-  constructor() {}
+
+  constructor(public dataStore: DataStoreService) {}
 
   ngOnInit(): void {}
 }

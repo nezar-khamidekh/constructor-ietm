@@ -1,52 +1,72 @@
 <div class="init-repository">
-  <div class="init-repository__name-repository">
-    <div class="init-repository__name-group">
-      <p class="init-repository__text">Название</p>
-      <input class="init-repository__input" type="text" placeholder="Название репозитория" />
+  <form class="init-repository__form form">
+    <div class="form__field">
+      <label class="form__label" for="name">Название</label>
+      <div class="form__control-wrapper form__control-wrapper_w-60">
+        <input class="form__input" placeholder="Название репозитория" id="name" />
+      </div>
     </div>
-    <div class="init-repository__name-group">
-      <p class="init-repository__text">Заголовок</p>
-      <input class="init-repository__input" type="text" placeholder="Заголовок репозитория" />
+    <div class="form__field">
+      <label class="form__label" for="author">Автор</label>
+      <div class="form__control-wrapper form__control-wrapper_w-60">
+        <select class="init-repository__form-select form__select" id="author">
+          <option value="">
+            {{ dataStore.getUserValue()?.login }}
+          </option>
+          <option value="">Команда 1</option>
+          <option value="">Команда 2</option>
+          <option value="">Команда 3</option>
+        </select>
+      </div>
     </div>
-  </div>
-  <div class="init-repository__author">
-    <p class="init-repository__text">Автор (пользователь/команда)</p>
-    <select class="init-repository__select" name="" id="">
-      <img class="init-repository__avatar" src="../../../../assets/png/avatar.png" alt="" />
-      <option value="">1</option>
-    </select>
-  </div>
-  <div class="init-repository__description">
-    <p class="init-repository__text">Описание</p>
-    <textarea class="init-repository__textarea" placeholder="Описание проекта"></textarea>
-  </div>
-  <div class="init-repository__access-repository">
-    <form>
-      <div class="init-repository__type-repository">
-        <div class="init-repository__chosen-type">
-          <input type="radio" id="public" name="fav_language" value="public" />
-          <label class="init-repository__label" for="public">
-            <img class="init-repository__img" src="assets/svg/publicRepository.svg" alt="" />
+    <div class="form__field">
+      <label class="form__label" for="description">Описание</label>
+      <div class="form__control-wrapper">
+        <textarea
+          class="form__textarea"
+          placeholder="Описание репозитория"
+          id="description"
+        ></textarea>
+      </div>
+    </div>
+    <div class="form__field">
+      <div class="init-repository__type">
+        <div class="init-repository__type-input-wrapper">
+          <input type="radio" id="public" value="public" />
+          <label class="init-repository__type-label" for="public">
+            <img
+              class="init-repository__type-img"
+              src="assets/svg/publicRepository.svg"
+              alt="Публичный"
+            />
           </label>
         </div>
-        <div class="init-repository__text-type">
-          <p class="init-repository__text">Публичный</p>
-          <p>Репозиторий будет доступен всем пользователям для просмотра.</p>
+        <div class="init-repository__type-description">
+          <p class="init-repository__type-title">Публичный</p>
+          <p class="init-repository__type-text">
+            Репозиторий будет доступен всем пользователям для просмотра.
+          </p>
         </div>
       </div>
-      <div class="init-repository__type-repository">
-        <div class="init-repository__chosen-type">
-          <input type="radio" id="private" name="fav_language" value="private" />
-          <label class="init-repository__label" for="private">
-            <img class="init-repository__img" src="assets/svg/privateRepository.svg" alt="" />
+      <div class="init-repository__type">
+        <div class="init-repository__type-input-wrapper">
+          <input type="radio" id="private" value="private" />
+          <label class="init-repository__type-label" for="private">
+            <img
+              class="init-repository__type-img"
+              src="assets/svg/privateRepository.svg"
+              alt="Приватный"
+            />
           </label>
         </div>
-        <div class="init-repository__text-type">
-          <p class="init-repository__text">Приватный</p>
-          <p>Репозиторий будет доступен только автору и участникам проекта.</p>
+        <div class="init-repository__type-description">
+          <p class="init-repository__type-title">Приватный</p>
+          <p class="init-repository__type-text">
+            Репозиторий будет доступен только автору и участникам репозитория.
+          </p>
         </div>
       </div>
-    </form>
-  </div>
-  <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
+    </div>
+    <app-step-buttons [step]="step" (changedStep)="changedStep.emit($event)"></app-step-buttons>
+  </form>
 </div>
