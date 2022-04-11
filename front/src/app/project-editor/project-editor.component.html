@@ -10,11 +10,12 @@
     <app-init-repository
       *ngSwitchCase="1"
       [step]="1"
-      (changeStep)="onChangeStep($event)"
+      (changeStep)="onRepositoryCreated($event)"
     ></app-init-repository>
     <app-upload-model
       *ngSwitchCase="2"
       [step]="2"
+      [repositoryId]="repositoryId"
       (changeStep)="onChangeStep($event)"
     ></app-upload-model>
     <app-editor-viewer

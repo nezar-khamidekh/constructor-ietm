@@ -1,3 +1,5 @@
+@import '_variables';
+
 :host {
   width: 45%;
   height: 75%;
@@ -7,7 +9,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  border: 1px solid #d3d3d3;
+  border: 1px solid $primaryBlueGreyColor;
   border-radius: 12px;
   padding: 15px 20px 20px 20px;
 
@@ -16,18 +18,30 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: relative;
+    height: 100%;
     border: 1px dashed #d3d3d3;
     border-radius: 12px;
+  }
+
+  &__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
+    opacity: 0;
+    z-index: 2;
     cursor: pointer;
   }
 
-  &__drop-img {
+  &__image {
     width: 114px;
     height: 114px;
   }
 
-  &__selection-text {
-    margin-top: 15px;
+  &__label {
+    font-weight: 700;
+    margin-top: 25px;
   }
 }

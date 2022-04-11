@@ -17,6 +17,7 @@ import { Router } from '@angular/router';
 export class StepButtonsComponent implements OnInit {
   @Input() step: number;
   @Output() changeStep = new EventEmitter();
+
   constructor(private router: Router) {}
 
   ngOnInit(): void {}

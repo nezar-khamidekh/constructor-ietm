@@ -24,6 +24,7 @@ import { StepButtonsComponent } from './components/step-buttons/step-buttons.com
 import { InitRepositoryComponent } from './components/init-repository/init-repository.component';
 import { LoaderModule } from '../shared/loader/loader.module';
 import { DialogChooseImageModule } from '../dialogs/dialog-choose-image/dialog-choose-image.module';
+import { DndDirective } from './directives/dnd.directive';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { DialogChooseImageModule } from '../dialogs/dialog-choose-image/dialog-c
     UploadModelComponent,
     StepButtonsComponent,
     InitRepositoryComponent,
+    DndDirective,
   ],
   imports: [
     CommonModule,

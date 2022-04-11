@@ -35,6 +35,5 @@ export class MainComponent implements OnInit {
     );
 
     this.accountRepositories = this.route.snapshot.data.repositories;
-    console.log(this.accountRepositories);
   }
 }

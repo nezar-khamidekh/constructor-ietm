@@ -87,7 +87,7 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
     );
   }
 
-  create(step: number) {
+  create(nextStep: number) {
     this.loadingService.setIsLoading(true);
     const newRepository: RepositoryI = {
       ...this.repositoryGroup.value,
@@ -101,7 +101,7 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
 
     this.subs.add(
       this.repositoryService.create(newRepository).subscribe((res) => {
-        this.changeStep.emit(step);
+        this.changeStep.emit({ nextStep: nextStep, repositoryId: res._id });
         this.loadingService.setIsLoading(false);
       }),
     );
