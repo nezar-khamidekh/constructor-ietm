@@ -30,6 +30,7 @@ import {
 } from '../shared/models/viewerConstants';
 import { ActivatedRoute } from '@angular/router';
 import { SectionPlanes } from './services/section.service';
+import { LoadingService } from '../shared/services/loading.service';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -52,7 +53,9 @@ export enum VIEWER_BUTTONS {
 })
 export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   private subs = new SubSink();
+
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
+  @Input() modelName: string;
   @Output() coordsAnnotation = new EventEmitter();
   @Output() viewerIsReady = new EventEmitter();
 
@@ -103,12 +106,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public sceneService: SceneService,
-    private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
     private route: ActivatedRoute,
+    private loadingService: LoadingService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
+    this.loadingService.setIsLoading(false);
+
     this.subs.add(
       this.matMenuTrigger.menuClosed.subscribe((v) => {
         if (!this.contextMenuClickedOutside) {
@@ -132,10 +138,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    const modelName = this.route.snapshot.params.model;
+    const modelName = this.route.snapshot.params.model || this.modelName;
     if (modelName)
       this.subs.add(
-        this.sceneService.loadModel(this.route.snapshot.params.model).subscribe((file) => {
+        this.sceneService.loadModel(modelName).subscribe((file) => {
           this.setUpViewer(file);
         }),
       );

@@ -35,7 +35,9 @@ interface CurrentAnnotationI {
 })
 export class EditorViewerComponent implements OnInit {
   private subs = new SubSink();
+
   @Input() step: number;
+  @Input() modelName: string;
   @Output() changeStep = new EventEmitter();
 
   model: any = null;

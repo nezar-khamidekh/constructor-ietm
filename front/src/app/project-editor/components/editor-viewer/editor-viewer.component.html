@@ -2,6 +2,7 @@
   <div class="editor-viewer__viewer">
     <app-scene
       [viewerMouseMode]="viewerMouseMode"
+      [modelName]="modelName"
       (coordsAnnotation)="onCoordsAnnotation($event)"
       (viewerIsReady)="onViewerIsReady()"
     ></app-scene>

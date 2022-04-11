@@ -1,5 +1,6 @@
 import { RepositoryType } from './repositoryTypeEnum';
 import { ParticipantI } from './participant.interface';
+import { ModelI } from './model.interface';
 
 export interface RepositoryI {
   _id: string;
@@ -10,5 +11,5 @@ export interface RepositoryI {
   description: string;
   preview?: string;
   participants: ParticipantI[];
-  // models: Model[];
+  models: ModelI[];
 }
