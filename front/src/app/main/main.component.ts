@@ -10,7 +10,6 @@ import { DataStoreService } from '../shared/services/data-store.service';
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainComponent implements OnInit {
   private subs = new SubSink();
@@ -36,5 +35,6 @@ export class MainComponent implements OnInit {
     );
 
     this.accountRepositories = this.route.snapshot.data.repositories;
+    console.log(this.accountRepositories);
   }
 }

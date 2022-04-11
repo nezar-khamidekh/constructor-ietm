@@ -4,7 +4,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-team',
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TeamComponent implements OnInit {
   constructor() {}

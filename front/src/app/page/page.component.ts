@@ -7,7 +7,6 @@ import { DataStoreService } from '../shared/services/data-store.service';
   selector: 'app-page',
   templateUrl: './page.component.html',
   styleUrls: ['./page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PageComponent implements OnInit {
   private subs = new SubSink();

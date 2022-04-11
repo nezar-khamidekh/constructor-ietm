@@ -96,6 +96,8 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
       newRepository.team = newRepository.author;
       newRepository.author = this.dataStore.getUserValue()!._id;
     }
+    if (!newRepository.team) delete newRepository.team;
+    if (!newRepository.preview) delete newRepository.preview;
 
     this.subs.add(
       this.repositoryService.create(newRepository).subscribe((res) => {

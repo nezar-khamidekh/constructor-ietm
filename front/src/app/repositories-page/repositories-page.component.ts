@@ -4,13 +4,9 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   selector: 'app-repositories-page',
   templateUrl: './repositories-page.component.html',
   styleUrls: ['./repositories-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RepositoriesPageComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }
