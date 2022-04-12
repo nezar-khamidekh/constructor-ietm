@@ -39,7 +39,7 @@ export class SigninComponent implements OnInit, OnDestroy {
         this.authService.login(this.loginFormGroup.value).subscribe(
           (user: any) => {
             // this.dataStore.setUser(user);
-            this.router.navigate(['main']);
+            this.router.navigate(['editor']);
           },
           (err: any) => {
             console.log(err);

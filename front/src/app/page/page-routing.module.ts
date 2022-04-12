@@ -16,13 +16,13 @@ const routes: Routes = [
         },
         canActivate: [AuthGuard],
       },
-      {
+      /*  {
         path: 'repositories',
         loadChildren: () =>
           import('../repositories-page/repositories-page.module').then(
             (m) => m.RepositoriesPageModule,
           ),
-      },
+      }, */
       {
         path: 'team',
         loadChildren: () => import('../team/team.module').then((m) => m.TeamModule),
@@ -43,7 +43,7 @@ const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'repositories',
+        redirectTo: 'editor',
       },
     ],
   },
