@@ -104,6 +104,8 @@ export class SectionService {
 
     const planeMaterial = new THREE.MeshStandardMaterial({
       color: PLANE_INTERSECTION_COLOR,
+      roughness: 0.8,
+      metalness: 0.3,
       // clippingPlanes: this.planes.filter((p) => p !== plane),
       stencilWrite: true,
       stencilRef: 0,

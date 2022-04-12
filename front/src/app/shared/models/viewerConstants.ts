@@ -34,7 +34,7 @@ export const TRANSPARENT_OBJ_MATERIAL = new THREE.MeshStandardMaterial({
   opacity: 0.3,
   transparent: true,
 });
-export const PLANE_INTERSECTION_COLOR = '#e91e63';
+export const PLANE_INTERSECTION_COLOR = '#fcfcfc';
 export const PLANE_HELPER_MATERIAL = new THREE.MeshBasicMaterial({
   transparent: true,
   opacity: 0,
