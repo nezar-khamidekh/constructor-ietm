@@ -2,15 +2,20 @@ import { Injectable } from '@nestjs/common';
 import * as nrc from 'node-run-cmd';
 import * as fs from 'fs';
 import { from } from 'rxjs';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ViewerService {
-  converterPath = 'C:\\gltf-conventer';
+  CONVERTER_PATH: string;
+
+  constructor(private configService: ConfigService) {
+    this.CONVERTER_PATH = this.configService.get('CONVERTER_PATH');
+  }
 
   convertModelAndSave(inputPath: string, outputPath: string) {
     return from(
       nrc.run([`gltf-converter ${inputPath} ${outputPath}`], {
-        cwd: this.converterPath,
+        cwd: this.CONVERTER_PATH,
       }),
     );
   }
