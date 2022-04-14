@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import { loadGLTF } from './parser.js';
-import {} from 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
