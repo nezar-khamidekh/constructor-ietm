@@ -8,9 +8,6 @@ export class User {
   @Prop({ unique: true, length: 50 })
   login: string;
 
-  @Prop({ length: 125 })
-  username: string;
-
   @Prop({ unique: true, length: 100 })
   email: string;
 

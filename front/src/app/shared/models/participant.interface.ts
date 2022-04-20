@@ -6,7 +6,6 @@ export interface ParticipantI {
     email: string;
     firstName: string;
     lastName: string;
-    username: string;
     _id: string;
   };
 }

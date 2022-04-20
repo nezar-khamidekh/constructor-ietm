@@ -118,7 +118,6 @@ export class ManageTeamComponent implements OnInit {
                   email: addedParticipant.email,
                   firstName: addedParticipant.firstName,
                   lastName: addedParticipant.lastName,
-                  username: addedParticipant.username,
                   _id: addedParticipant._id,
                 },
               },

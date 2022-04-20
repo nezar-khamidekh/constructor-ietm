@@ -5,50 +5,6 @@
   flex-direction: column;
   width: 100%;
 
-  &__switcher {
-    align-self: flex-end;
-    border-radius: 8px;
-    border: 1px solid $primaryGreyBorderColor;
-    margin-top: 20px;
-  }
-
-  &__switcher-btn {
-    padding: 4px 0;
-    width: 50px;
-    height: 30px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-color: $primaryGreyBgColor;
-
-    &:first-child {
-      border-radius: 8px 0 0 8px;
-    }
-
-    &:last-child {
-      border-radius: 0 8px 8px 0;
-    }
-
-    &_active {
-      background-color: $primaryBlueColor;
-    }
-
-    &_card-view {
-      background-image: url('../../assets/svg/switchViewCardGrey.svg');
-
-      &.repositories__switcher-btn_active {
-        background-image: url('../../assets/svg/switchViewCardWhite.svg');
-      }
-    }
-
-    &_table-view {
-      background-image: url('../../assets/svg/switchViewTableGrey.svg');
-
-      &.repositories__switcher-btn_active {
-        background-image: url('../../assets/svg/switchViewTableWhite.svg');
-      }
-    }
-  }
-
   &__list {
     display: grid;
     grid-template: 1fr / repeat(auto-fit, minmax(500px, 1fr));
@@ -76,6 +32,7 @@
   &__content {
     display: flex;
     flex-direction: column;
+    flex: 1;
     padding: 10px 15px;
     max-width: calc(100% - 220px);
   }

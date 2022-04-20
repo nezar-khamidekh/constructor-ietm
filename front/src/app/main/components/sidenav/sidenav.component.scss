@@ -26,6 +26,7 @@
 .account {
   display: flex;
   align-items: center;
+  cursor: pointer;
 
   &__image {
     width: 36px;
@@ -98,4 +99,27 @@
       text-decoration: underline;
     }
   }
+}
+
+.user-account-menu {
+  &__button {
+    display: flex;
+    align-items: center;
+  }
+
+  &__image {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+  }
+
+  &__text {
+    margin-left: 5px;
+  }
+}
+
+::ng-deep .user-account-menu {
+  max-width: 290px !important;
+  min-width: 290px !important;
 }

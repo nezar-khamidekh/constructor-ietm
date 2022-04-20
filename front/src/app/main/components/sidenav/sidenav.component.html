@@ -1,13 +1,15 @@
 <div class="sidebar">
-  <div class="account">
+  <div class="account" [matMenuTriggerFor]="userAccountMenu">
     <img
       class="account__image"
       appImageSanitized
-      [imagePath]="user.avatar || ''"
-      [defaultImage]="'assets/svg/avatar.svg'"
+      [imagePath]="selectedAccount.avatar || ''"
+      [defaultImage]="isSelectedAccountUser() ? 'assets/svg/avatar.svg' : 'assets/svg/team.svg'"
       alt="аккаунт"
     />
-    <span class="account__nickname">{{ user.username }}</span>
+    <span class="account__nickname">{{
+      isSelectedAccountUser() ? selectedAccount.login : selectedAccount.title
+    }}</span>
     <button class="account__switch-btn" mat-icon-button>
       <img src="assets/svg/switchAccount.svg" alt="переключить аккаунт" />
     </button>
@@ -16,9 +18,17 @@
   <ng-container *ngIf="repositories.length; else noRepositories">
     <div class="repositories">
       <p class="repositories__title">Репозитории</p>
-      <input class="repositories__input" type="text" placeholder="Поиск по репозиториям" />
+      <input
+        class="repositories__input"
+        [(ngModel)]="searchRepositoryValue"
+        type="text"
+        placeholder="Поиск по репозиториям"
+      />
       <ul class="repositories__list">
-        <li class="repositories__list-item" *ngFor="let repository of repositories">
+        <li
+          class="repositories__list-item"
+          *ngFor="let repository of repositories | repositoryByTitle: searchRepositoryValue"
+        >
           <ng-container [ngSwitch]="repository.type">
             <img
               class="repositories__list-item-image"
@@ -46,3 +56,30 @@
     >
   </ng-template>
 </div>
+<mat-menu class="user-account-menu" #userAccountMenu="matMenu">
+  <button class="user-account-menu__button" mat-menu-item (click)="selecAccount.emit(user)">
+    <img
+      class="user-account-menu__image"
+      appImageSanitized
+      [imagePath]="user.avatar || ''"
+      [defaultImage]="'assets/svg/avatar.svg'"
+      alt="аккаунт"
+    />
+    <span class="user-account-menu__text">{{ user.login }}</span>
+  </button>
+  <button
+    class="user-account-menu__button"
+    mat-menu-item
+    *ngFor="let team of userTeams"
+    (click)="selecAccount.emit(team)"
+  >
+    <img
+      class="user-account-menu__image"
+      appImageSanitized
+      [imagePath]="team.avatar || ''"
+      [defaultImage]="'assets/svg/team.svg'"
+      alt="аккаунт"
+    />
+    <span class="user-account-menu__text">{{ team.title }}</span>
+  </button>
+</mat-menu>
