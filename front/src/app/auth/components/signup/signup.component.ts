@@ -41,14 +41,12 @@ export class SignupComponent implements OnInit {
       const user: UserCreateI = {
         email: String(this.registrationFormGroup.get('email')?.value).toLowerCase(),
         login: String(this.registrationFormGroup.get('login')?.value).toLowerCase(),
-        username: String(this.registrationFormGroup.get('login')?.value),
         password: String(this.registrationFormGroup.get('password')?.value),
         firstName: String(this.registrationFormGroup.get('firstName')?.value),
         lastName: String(this.registrationFormGroup.get('lastName')?.value),
       };
       this.authService.register(user).subscribe(
         (user: any) => {
-          // this.dataStore.setUser(user);
           this.router.navigate(['main']);
         },
         (err: any) => {
@@ -72,10 +70,6 @@ export class SignupComponent implements OnInit {
           Validators.minLength(6),
           Validators.maxLength(20),
         ],
-      ],
-      username: [
-        '',
-        [Validators.required, Validators.pattern('[a-zA-Z]+[a-zA-Z\\d]*'), Validators.minLength(6)],
       ],
       password: [
         '',

@@ -66,7 +66,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
       const user: UserUpdateI = {
         _id: this.data.user._id!,
         email: String(this.userFormGroup.get('email')?.value).toLowerCase(),
-        username: String(this.userFormGroup.get('username')?.value),
         password: String(this.userFormGroup.get('password')?.value),
         firstName: String(this.userFormGroup.get('firstName')?.value),
         lastName: String(this.userFormGroup.get('lastName')?.value),
@@ -100,10 +99,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
           Validators.minLength(6),
           Validators.maxLength(20),
         ],
-      ],
-      username: [
-        this.data.user.username,
-        [Validators.required, Validators.pattern('[a-zA-Z]+[a-zA-Z\\d]*'), Validators.minLength(6)],
       ],
       password: [
         '',

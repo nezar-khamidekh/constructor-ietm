@@ -94,23 +94,6 @@
               >
             </mat-form-field>
             <mat-form-field class="user-form__field" appearance="standard">
-              <mat-label class="user-form__label">Никнейм</mat-label>
-              <input
-                class="user-form__input"
-                matInput
-                formControlName="username"
-                autocomplete="off"
-              />
-              <mat-error *ngIf="userFormGroup.get('username')?.invalid">
-                {{
-                  getErrorMessage(
-                    userFormGroup.get('username'),
-                    'Только латинские символы длиной от 6 символов'
-                  )
-                }}</mat-error
-              >
-            </mat-form-field>
-            <mat-form-field class="user-form__field" appearance="standard">
               <mat-label class="user-form__label">Новый пароль</mat-label>
               <input
                 class="user-form__input"

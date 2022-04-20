@@ -1,28 +1,28 @@
 <div class="repositories">
-  <div class="repositories__switcher">
-    <button
-      class="
-        repositories__switcher-btn
-        repositories__switcher-btn_card-view
-        repositories__switcher-btn_active
-      "
-      mat-icon-button
-    ></button>
-    <button
-      class="repositories__switcher-btn repositories__switcher-btn_table-view"
-      mat-icon-button
-    ></button>
-  </div>
   <div class="repositories__list">
-    <a class="repository" *ngFor="let item of [0, 1, 2, 3, 4, 5, 6]" routerLink="#">
-      <img class="repository__image" src="assets/png/repositoryImage.png" alt="репозиторий" />
+    <a
+      class="repository"
+      *ngFor="let repository of repositories"
+      [routerLink]="'/repository/' + repository._id"
+    >
+      <img
+        class="repository__image"
+        src="assets/png/repositoryImage.png"
+        [alt]="'Репозиторий ' + repository.title"
+      />
       <div class="repository__content">
         <div class="repository__header">
           <div class="repository__header-column">
-            <h2 class="repository__title">Вентиль запорный</h2>
-            <a class="repository__author" routerLink="#">
-              <img class="repository__author-avatar" src="assets/svg/avatar.svg" alt="аватар" />
-              <span class="repository__author-username">Trizo1</span>
+            <h2 class="repository__title">{{ repository.title }}</h2>
+            <a class="repository__author" [routerLink]="'/user/' + repository.author.login">
+              <img
+                class="repository__author-avatar"
+                appImageSanitized
+                [imagePath]="repository.author.avatar || ''"
+                [defaultImage]="'assets/svg/avatar.svg'"
+                [alt]="'аватар ' + repository.author.login"
+              />
+              <span class="repository__author-username">{{ repository.author.login }}</span>
             </a>
           </div>
           <div class="repository__header-column">
@@ -32,7 +32,9 @@
                 src="assets/svg/dateEdit.svg"
                 alt="дата изменения"
               />
-              <span class="repository__date-text">10.03.2022</span>
+              <span class="repository__date-text">{{
+                repository.updatedAt | date: 'dd.MM.yyyy'
+              }}</span>
             </div>
             <div class="repository__date">
               <img
@@ -40,17 +42,14 @@
                 src="assets/svg/dateCreate.svg"
                 alt="дата создания"
               />
-              <span class="repository__date-text">09.03.2022</span>
+              <span class="repository__date-text">{{
+                repository.createdAt | date: 'dd.MM.yyyy'
+              }}</span>
             </div>
           </div>
         </div>
         <div class="repository__description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur
-          sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
+          {{ repository.description }}
         </div>
       </div>
     </a>

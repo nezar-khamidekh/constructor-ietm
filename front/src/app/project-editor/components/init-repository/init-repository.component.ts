@@ -12,6 +12,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
+import { CreateRepositoryDto } from 'src/app/shared/models/createRepositoryDto.interface';
 import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { RepositoryType } from 'src/app/shared/models/repositoryTypeEnum';
 import { TeamI } from 'src/app/shared/models/team.interface';
@@ -89,7 +90,7 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
 
   create(nextStep: number) {
     this.loadingService.setIsLoading(true);
-    const newRepository: RepositoryI = {
+    const newRepository: CreateRepositoryDto = {
       ...this.repositoryGroup.value,
     };
     if (newRepository.author !== this.dataStore.getUserValue()?._id) {

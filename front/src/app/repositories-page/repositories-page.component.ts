@@ -1,4 +1,6 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { RepositoryI } from '../shared/models/repository.interface';
 
 @Component({
   selector: 'app-repositories-page',
@@ -6,7 +8,11 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styleUrls: ['./repositories-page.component.scss'],
 })
 export class RepositoriesPageComponent implements OnInit {
-  constructor() {}
+  repositories: RepositoryI[] = [];
 
-  ngOnInit(): void {}
+  constructor(private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.repositories = this.route.snapshot.data.repositories;
+  }
 }
