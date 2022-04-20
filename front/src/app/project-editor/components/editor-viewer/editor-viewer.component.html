@@ -3,7 +3,7 @@
     <app-scene
       [viewerMouseMode]="viewerMouseMode"
       [modelName]="modelName"
-      (coordsAnnotation)="onCoordsAnnotation($event)"
+      (applyAnnotationPosition)="onApplyAnnotationPosition($event)"
       (viewerIsReady)="onViewerIsReady()"
     ></app-scene>
   </div>
@@ -28,7 +28,7 @@
             ></app-editor-annotations>
           </div>
         </mat-tab>
-        <mat-tab class="toolbar__tab" label="Спецификация">
+        <mat-tab class="toolbar__tab" label="Таблица элементов">
           <div class="toolbar__content">
             <app-specification [model]="model"></app-specification>
           </div>

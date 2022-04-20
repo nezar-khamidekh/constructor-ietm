@@ -26,12 +26,12 @@
         ></mat-slider>
       </div>
     </div>
-    <div class="toolbar__btn" matTooltip="Разнос модели">
+    <div class="toolbar__btn" matTooltip="Разнесение модели">
       <app-viewer-button
         [isActive]="explodeBtnIsActive()"
         [iconPath]="'assets/svg/explode.svg'"
         [iconActivePath]="'assets/svg/explodeActive.svg'"
-        [buttonName]="'Разнос модели'"
+        [buttonName]="'Разнесение модели'"
         (btnClicked)="explode()"
       ></app-viewer-button>
       <div class="toolbar__panel" [hidden]="!explodeBtnIsActive()">

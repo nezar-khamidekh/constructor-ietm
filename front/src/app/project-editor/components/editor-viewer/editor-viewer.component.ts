@@ -25,6 +25,7 @@ interface CurrentAnnotationI {
     y: number;
     z: number;
   };
+  attachedObject: THREE.Object3D | null;
 }
 
 @Component({
@@ -48,6 +49,7 @@ export class EditorViewerComponent implements OnInit {
     title: '',
     text: '',
     position: null,
+    attachedObject: null,
   };
 
   viewerMouseMode = VIEWER_MOUSE_MODE.Default;
@@ -95,28 +97,14 @@ export class EditorViewerComponent implements OnInit {
 
   onSaveAnnotation(dataAnnotation?: any) {
     if (dataAnnotation) {
-      this.annotations.find(
+      const annotation = this.annotations.find(
         (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
-      )!.description = dataAnnotation.text;
-      this.annotations.find(
-        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
-      )!.descriptionDomElement!.innerText = dataAnnotation.text;
-
-      this.annotations.find(
-        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
-      )!.title = dataAnnotation.title;
-
-      this.annotations.find(
-        (annotation) => annotation.id === dataAnnotation.editedAnnotation.id,
-      )!.labelDomElement!.innerText = dataAnnotation.title;
-
-      this.renderer.appendChild(
-        this.annotations.find((annotation) => annotation.id === dataAnnotation.editedAnnotation.id)!
-          .labelDomElement,
-        this.annotations.find((annotation) => annotation.id === dataAnnotation.editedAnnotation.id)!
-          .descriptionDomElement,
       );
-
+      annotation!.description = dataAnnotation.text;
+      annotation!.descriptionDomElement!.innerText = dataAnnotation.text;
+      annotation!.title = dataAnnotation.title;
+      annotation!.labelDomElement!.innerText = dataAnnotation.title;
+      this.renderer.appendChild(annotation!.labelDomElement, annotation!.descriptionDomElement);
       this.sceneService.setAnnotations(this.annotations);
     } else {
       this.sceneService.setAnnotations([
@@ -130,6 +118,7 @@ export class EditorViewerComponent implements OnInit {
             y: this.currentAnnotation.position!.y,
             z: this.currentAnnotation.position!.z,
           },
+          attachedObject: this.currentAnnotation.attachedObject,
         },
       ]);
     }
@@ -137,6 +126,7 @@ export class EditorViewerComponent implements OnInit {
       title: '',
       text: '',
       position: null,
+      attachedObject: null,
     };
   }
 
@@ -151,11 +141,12 @@ export class EditorViewerComponent implements OnInit {
     this.sceneService.refreshAnnotationsInViewer(hideAnnotation.id);
   }
 
-  onCoordsAnnotation(coords: any) {
+  onApplyAnnotationPosition(value: any) {
     this.currentAnnotation = {
       title: this.currentAnnotation.title,
       text: this.currentAnnotation.text,
-      position: coords,
+      position: value.coords,
+      attachedObject: value.attachedObject,
     };
   }
 

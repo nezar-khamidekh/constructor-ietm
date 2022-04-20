@@ -10,4 +10,5 @@ export interface AnnotationI {
   descriptionDomElement?: HTMLElement;
   labelDomElement?: HTMLElement;
   rendered?: boolean;
+  attachedObject: THREE.Object3D;
 }

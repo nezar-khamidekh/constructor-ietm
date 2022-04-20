@@ -380,7 +380,9 @@ export class SceneService {
   setHoveredObj(isolateIsActive: boolean, mouseCoords: any) {
     if (isolateIsActive || this.viewer.state === VIEWER_STATE.Isolated) return;
     this.viewer.raycaster.setFromCamera(mouseCoords, this.viewer.camera);
-    const intersects = this.viewer.raycaster.intersectObjects(this.viewer.model.children, true);
+    const intersects = this.viewer.raycaster
+      .intersectObjects(this.viewer.model.children, true)
+      .filter((intersection) => intersection.object.type !== 'Sprite');
     if (intersects.length > 0) {
       const filteredIntersects = intersects.filter(
         (intersection: any) => !this.objectByIdIsHidden(intersection.object.id),
@@ -624,7 +626,7 @@ export class SceneService {
     this.viewer.mixer?.stopAllAction();
   }
 
-  setAnnotationMarkers(annotationMarkers: THREE.Sprite[]) {
+  setAnnotationMarkers(annotationMarkers: any[]) {
     this.annotationMarkers = [...this.annotationMarkers, ...annotationMarkers];
   }
 

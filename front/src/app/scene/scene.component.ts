@@ -56,7 +56,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
   @Input() modelName: string;
-  @Output() coordsAnnotation = new EventEmitter();
+  @Output() applyAnnotationPosition = new EventEmitter();
   @Output() viewerIsReady = new EventEmitter();
 
   @ViewChild('canvas') canvas: ElementRef;
@@ -238,7 +238,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       if (filteredIntersects.length > 0) {
         switch (this.viewerMouseMode) {
           case VIEWER_MOUSE_MODE.ApplyAnnotation:
-            this.coordsAnnotation.emit(filteredIntersects[0].point);
+            this.applyAnnotationPosition.emit({
+              coords: filteredIntersects[0].point,
+              attachedObject: filteredIntersects[0].object,
+            });
             break;
           default:
             break;
@@ -275,6 +278,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       annotationSprite.userData.id = annotation.id;
       annotationSprite.name = 'annotationSprite_' + annotation.id;
       this.viewer.scene.add(annotationSprite);
+      annotation.attachedObject.attach(annotationSprite);
       annotationMarkers.push(annotationSprite);
 
       const annotationDiv = this.renderer.createElement('div');
@@ -287,6 +291,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       annotationLabel.name = 'annotationLabel_' + annotation.id;
       annotation.labelDomElement = annotationDiv;
       this.viewer.scene.add(annotationLabel);
+      annotationSprite.attach(annotationLabel);
 
       annotation.rendered = true;
 
