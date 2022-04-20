@@ -103,7 +103,6 @@ export class UserService {
                 lastName: user.lastName,
                 firstName: user.firstName,
                 email: user.email,
-                username: user.username,
                 login: user.login,
                 avatar: user.avatar,
               },
@@ -135,7 +134,6 @@ export class UserService {
         'lastName',
         'firstName',
         'email',
-        'username',
         'password',
         'avatar',
       ]),
@@ -157,7 +155,7 @@ export class UserService {
         {
           $or: filter,
         },
-        ['login', 'lastName', 'firstName', 'email', 'username', 'avatar'],
+        ['login', 'lastName', 'firstName', 'email', 'avatar'],
       ),
     ).pipe(
       map((user) => {

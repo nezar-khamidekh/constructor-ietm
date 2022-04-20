@@ -29,7 +29,7 @@ export class TeamService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     ).pipe(
       map((team) => {
@@ -56,7 +56,7 @@ export class TeamService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     ).pipe(
       map((teams) => {
@@ -230,7 +230,7 @@ export class TeamService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     );
   }
@@ -254,7 +254,7 @@ export class TeamService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     ).pipe(
       map((team) => {

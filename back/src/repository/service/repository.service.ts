@@ -75,7 +75,7 @@ export class RepositoryService {
           select: ['title', 'avatar', 'description', 'participants'],
           populate: {
             path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'username'],
+            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
           },
         })
         .populate('author', [
@@ -83,14 +83,14 @@ export class RepositoryService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ])
         .populate('participants.user', [
           'avatar',
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     ).pipe(
       map((repo) => {
@@ -113,7 +113,7 @@ export class RepositoryService {
           select: ['title', 'avatar', 'description', 'participants'],
           populate: {
             path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'username'],
+            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
           },
         })
         .populate('author', [
@@ -121,14 +121,14 @@ export class RepositoryService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ])
         .populate('participants.user', [
           'avatar',
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     );
   }
@@ -148,14 +148,14 @@ export class RepositoryService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ])
         .populate('participants.user', [
           'avatar',
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     ).pipe(
       map((repos) => {
@@ -173,7 +173,7 @@ export class RepositoryService {
           select: ['title', 'avatar', 'description', 'participants'],
           populate: {
             path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'username'],
+            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
           },
         })
         .populate('author', [
@@ -181,7 +181,7 @@ export class RepositoryService {
           'lastName',
           'firstName',
           'email',
-          'username',
+          'login',
         ]),
     );
   }
