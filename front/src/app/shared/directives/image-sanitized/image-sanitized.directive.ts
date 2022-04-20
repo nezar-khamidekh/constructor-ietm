@@ -28,7 +28,12 @@ export class ImageSanitizedDirective implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.imagePath && !changes.imagePath.firstChange) this.setImageFromImagePath();
+    if (changes.imagePath && !changes.imagePath.firstChange) {
+      this.setImageFromImagePath();
+    }
+    if (changes.defaultImage && !changes.defaultImage.firstChange && !this.imagePath) {
+      this.setImageFromImagePath();
+    }
   }
 
   setImageFromImagePath() {

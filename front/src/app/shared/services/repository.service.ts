@@ -24,4 +24,10 @@ export class RepositoryService {
       withCredentials: true,
     });
   }
+
+  getByTeam(teamId: string): Observable<RepositoryI[]> {
+    return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/team/${teamId}`, {
+      withCredentials: true,
+    });
+  }
 }
