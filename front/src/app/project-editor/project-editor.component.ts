@@ -6,9 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./project-editor.component.scss'],
 })
 export class ProjectEditorComponent implements OnInit {
-  step: number = 3;
+  step: number = 1;
   repositoryId = '';
-  modelName = '';
+  filename = '';
 
   constructor() {}
 
@@ -19,9 +19,9 @@ export class ProjectEditorComponent implements OnInit {
     this.repositoryId = data.repositoryId;
   }
 
-  onModelLoaded(data: { nextStep: number; modelName: string }) {
+  onModelLoaded(data: { nextStep: number; filename: string }) {
     this.changeStep(data.nextStep);
-    this.modelName = data.modelName;
+    this.filename = data.filename;
   }
 
   onChangeStep(step: number) {

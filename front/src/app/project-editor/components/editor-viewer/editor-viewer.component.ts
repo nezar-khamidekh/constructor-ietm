@@ -38,7 +38,8 @@ export class EditorViewerComponent implements OnInit {
   private subs = new SubSink();
 
   @Input() step: number;
-  @Input() modelName: string;
+  @Input() repositoryId: string;
+  @Input() filename: string;
   @Output() changeStep = new EventEmitter();
 
   model: any = null;

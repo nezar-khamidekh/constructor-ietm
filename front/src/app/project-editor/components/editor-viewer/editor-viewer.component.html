@@ -2,7 +2,8 @@
   <div class="editor-viewer__viewer">
     <app-scene
       [viewerMouseMode]="viewerMouseMode"
-      [modelName]="modelName"
+      [repositoryId]="repositoryId"
+      [filename]="filename"
       (applyAnnotationPosition)="onApplyAnnotationPosition($event)"
       (viewerIsReady)="onViewerIsReady()"
     ></app-scene>

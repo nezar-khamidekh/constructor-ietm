@@ -33,6 +33,7 @@ import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { SectionPlanes, SectionService } from './section.service';
+import { RepositoryModelDto } from 'src/app/shared/models/repositoryModelDto.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -61,8 +62,12 @@ export class SceneService {
     return this.http.get(`${this.apiUrl}/viewer/default`, { withCredentials: true });
   }
 
-  loadModel(modelName: string): Observable<any> {
+  /*   loadModel(modelName: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/viewer/${modelName}`, { withCredentials: true });
+  } */
+
+  getRepositoryModel(data: RepositoryModelDto): Observable<any> {
+    return this.http.post(`${this.apiUrl}/repository/model/take`, data, { withCredentials: true });
   }
 
   shadeColor(hexadecimalColor: number, percent: number) {

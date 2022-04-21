@@ -109,7 +109,7 @@ export class RepositoryController {
     @UploadedFile() file: Express.Multer.File,
     @Body() registerModelDto: RegisterModelDto,
   ) {
-    return this.repositoryService.reisterModel(file, registerModelDto.repoId);
+    return this.repositoryService.registerModel(file, registerModelDto.repoId);
   }
 
   @Post('model/remove')

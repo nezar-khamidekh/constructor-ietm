@@ -290,7 +290,7 @@ export class RepositoryService {
     );
   }
 
-  reisterModel(file: Express.Multer.File, repoId: string) {
+  registerModel(file: Express.Multer.File, repoId: string) {
     return this.getOneById(repoId).pipe(
       switchMap((repo) => {
         return this.viewerService.checkIfRepoDirectoryExists(repo._id).pipe(

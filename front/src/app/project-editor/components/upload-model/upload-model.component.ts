@@ -52,7 +52,7 @@ export class UploadModelComponent implements OnInit, OnDestroy {
       this.fileModelService.upload(uploadData).subscribe((repository) => {
         this.changeStep.emit({
           nextStep: this.step + 1,
-          modelName: repository.models[repository.models.length - 1].name,
+          filename: repository.models[repository.models.length - 1].filename,
         });
       }),
     );
