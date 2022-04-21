@@ -8,7 +8,7 @@ import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
 import { FindParticipantDto } from '../models/dto/findParticipant.dto';
-import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
+import { RemoveParticipantDto } from '../models/dto/removeParticipant.dto';
 import { UpdateParticipantDto } from '../models/dto/updateParticipant.dto';
 import { ParticipantRole } from '../models/schemas/participant.schema';
 import { Team, TeamDocument } from '../models/schemas/team.schema';

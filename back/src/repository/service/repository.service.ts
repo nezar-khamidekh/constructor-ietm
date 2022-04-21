@@ -10,7 +10,7 @@ import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
 import { from, map, Observable, switchMap } from 'rxjs';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
-import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipamt.dto';
+import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
 import { ParticipantRole } from 'src/team/models/schemas/participant.schema';
 import { UserDocument } from 'src/user/models/schemas/user.schema';

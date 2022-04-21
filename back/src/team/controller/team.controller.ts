@@ -4,7 +4,7 @@ import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { AddParticipantDto } from '../models/dto/addParticipant.dto';
 import { CreateTeamDto } from '../models/dto/CreateTeam.dto';
-import { RemoveParticipantDto } from '../models/dto/removeParticipamt.dto';
+import { RemoveParticipantDto } from '../models/dto/removeParticipant.dto';
 import { UpdateParticipantDto } from '../models/dto/updateParticipant.dto';
 import { TeamDocument } from '../models/schemas/team.schema';
 import { TeamService } from '../service/team.service';

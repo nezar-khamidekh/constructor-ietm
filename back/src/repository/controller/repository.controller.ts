@@ -15,7 +15,7 @@ import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { map, Observable } from 'rxjs';
 import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
-import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipamt.dto';
+import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
