@@ -281,6 +281,7 @@ export class SceneService {
       })
       .onComplete(onCompleteCallback)
       .start();
+    this.viewer.controls.reset();
   }
 
   explodeModel(node: any, power = 0, plant = new THREE.Vector3(), level = 0) {
