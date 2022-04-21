@@ -440,7 +440,11 @@ export class SceneService {
   }
 
   highlightElement(typeEvent: string, node: any) {
-    if (node.uuid !== this.selectedObj?.uuid) {
+    if (
+      node.uuid !== this.selectedObj?.uuid &&
+      node.parent.type !== 'Sprite' &&
+      node.type !== 'Sprite'
+    ) {
       switch (typeEvent) {
         case 'mouseenter':
           node.material.color.setHex(HIGHLIGHT_COLOR);
