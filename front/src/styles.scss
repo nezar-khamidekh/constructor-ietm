@@ -112,7 +112,7 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
-  color: #24292f;
+  color: $primaryTextColor;
 }
 
 ::-webkit-scrollbar {
@@ -121,11 +121,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #fff;
+  background: $whiteColor;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #007ef2;
+  background: $scrollThumbBgColor;
 }
 
 .mat-list-base {

@@ -1,3 +1,5 @@
+@import '_variables';
+
 :host {
   display: flex;
   flex-direction: column;
@@ -15,14 +17,14 @@ canvas {
 }
 
 .annotation-label {
-  color: #ffffff;
+  color: $whiteColor;
   font-family: monospace;
   pointer-events: none;
   font-size: 17px;
 }
 
 .annotation-description {
-  color: #ffffff;
+  color: $whiteColor;
   font-family: monospace;
   pointer-events: none;
   font-size: 14px;
@@ -30,7 +32,7 @@ canvas {
   left: 25px;
   padding: 1em;
   width: 200px;
-  background: rgba(0, 0, 0, 0.66);
+  background: $blockDescriptionAnnotationBgColor;
   border-radius: 0.5em;
   transition: opacity 0.5s;
   display: none;

@@ -32,7 +32,7 @@
 
     &:hover {
       .nav-list__link {
-        color: #fff;
+        color: $whiteColor;
       }
     }
   }
@@ -44,7 +44,7 @@
     align-items: center;
 
     &_active {
-      color: #fff;
+      color: $whiteColor;
     }
 
     &_fs-24 {
@@ -115,7 +115,7 @@
 }
 
 input.search-bar__input::placeholder {
-  color: #24292f;
+  color: $primaryTextColor;
 }
 
 .create-new-menu {

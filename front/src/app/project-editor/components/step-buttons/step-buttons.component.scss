@@ -1,3 +1,5 @@
+@import '_variables';
+
 .change-step {
   display: flex;
   justify-content: space-between;
@@ -10,7 +12,7 @@
   &__btn {
     &_back {
       border: none;
-      color: #007ef2;
+      color: $btnBackStepBgColor;
     }
   }
 }

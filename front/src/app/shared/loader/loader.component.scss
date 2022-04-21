@@ -1,3 +1,5 @@
+@import '_variables';
+
 .loader {
   position: absolute;
   width: 100%;
@@ -9,5 +11,5 @@
   align-items: center;
   flex-direction: column;
   z-index: 100;
-  background-color: #ffffff;
+  background-color: $whiteColor;
 }

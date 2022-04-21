@@ -47,7 +47,7 @@
     border-radius: 50%;
     background-color: $primaryBlueColor;
     text-align: center;
-    color: #fff;
+    color: $whiteColor;
     width: 100px;
     height: 100px;
     transform: translateX(-50%);
@@ -75,7 +75,7 @@
     margin-top: 5px;
 
     &_error {
-      color: #fc7978;
+      color: $textErrorColor;
     }
   }
 }
