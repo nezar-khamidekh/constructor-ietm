@@ -160,13 +160,19 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setUpViewer(file: any) {
+    console.log(file);
+
     this.sceneService.createViewer();
     this.viewer = this.sceneService.getViewer();
     const loader = new GLTFLoader();
 
     this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
 
-    loader.setDRACOLoader(new DRACOLoader().setDecoderPath('/draco/'));
+    loader.setDRACOLoader(
+      new DRACOLoader().setDecoderPath(
+        'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/',
+      ),
+    );
 
     this.sceneService.setCamera(
       this.viewerWrapper.nativeElement.clientWidth / this.viewerWrapper.nativeElement.clientHeight,
@@ -188,6 +194,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sceneService.setControls();
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
+      console.log(gltf);
       this.sceneService.setModel(gltf);
       this.sceneService.setMixer(gltf);
       this.sceneService.setMeshesDefaultMaterial();
