@@ -277,7 +277,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       );
       annotationSprite.userData.id = annotation.id;
       annotationSprite.name = 'annotationSprite_' + annotation.id;
-      this.viewer.scene.add(annotationSprite);
       annotation.attachedObject.attach(annotationSprite);
       annotationMarkers.push(annotationSprite);
 
@@ -290,7 +289,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       );
       annotationLabel.name = 'annotationLabel_' + annotation.id;
       annotation.labelDomElement = annotationDiv;
-      this.viewer.scene.add(annotationLabel);
       annotationSprite.attach(annotationLabel);
 
       annotation.rendered = true;

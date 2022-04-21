@@ -79,12 +79,12 @@ export class EditorViewerComponent implements OnInit {
     if (this.annotations.length) {
       if (currentTab.index === 0) {
         for (let i = 0; i < this.annotations.length; i++) {
-          this.sceneService.refreshAnnotationsInViewer(this.annotations[i].id, true);
+          this.sceneService.toggleAnnotationsVisibility(this.annotations[i].id, true);
         }
       }
       if ((currentTab.index === 1 || currentTab.index === 2) && this.previousTabIndex === 0) {
         for (let i = 0; i < this.annotations.length; i++) {
-          this.sceneService.refreshAnnotationsInViewer(this.annotations[i].id, false);
+          this.sceneService.toggleAnnotationsVisibility(this.annotations[i].id, false);
         }
       }
       this.previousTabIndex = currentTab.index;
@@ -131,14 +131,14 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onDeleteAnnotation(deletedAnnotation: AnnotationI) {
+    this.sceneService.deleteAnnotation(deletedAnnotation);
     this.sceneService.setAnnotations(
       this.annotations.filter((annotation) => annotation.id !== deletedAnnotation.id),
     );
-    this.sceneService.refreshAnnotationsInViewer(deletedAnnotation.id);
   }
 
   onHideAnnotation(hideAnnotation: AnnotationI) {
-    this.sceneService.refreshAnnotationsInViewer(hideAnnotation.id);
+    this.sceneService.toggleAnnotationsVisibility(hideAnnotation.id);
   }
 
   onApplyAnnotationPosition(value: any) {

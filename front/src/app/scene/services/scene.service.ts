@@ -634,7 +634,7 @@ export class SceneService {
     this.annotationMarkers = [...this.annotationMarkers, ...annotationMarkers];
   }
 
-  refreshAnnotationsInViewer(lastModifiedAnnotationId: number, visibleAnnotation?: boolean) {
+  toggleAnnotationsVisibility(lastModifiedAnnotationId: number, visibleAnnotation?: boolean) {
     const annotationMarker = this.annotationMarkers.find(
       (marker) => marker.userData.id === lastModifiedAnnotationId,
     );
@@ -652,13 +652,21 @@ export class SceneService {
           annotationLabel!.visible = true;
         }
       }
-    } else {
-      this.viewer.scene.remove(annotationMarker!);
-      this.viewer.scene.remove(annotationLabel!);
-      this.annotationMarkers = this.annotationMarkers.filter(
-        (marker) => marker.userData.id !== lastModifiedAnnotationId,
-      );
     }
+  }
+
+  deleteAnnotation(deletedAnnotation: AnnotationI) {
+    const annotationMarker = this.annotationMarkers.find(
+      (marker) => marker.userData.id === deletedAnnotation.id,
+    )!;
+    const annotationLabel = this.viewer.scene.getObjectByName(
+      'annotationLabel_' + deletedAnnotation.id,
+    )!;
+    annotationMarker.remove(annotationLabel);
+    deletedAnnotation.attachedObject.remove(annotationMarker);
+    this.annotationMarkers = this.annotationMarkers.filter(
+      (marker) => marker.userData.id !== deletedAnnotation.id,
+    );
   }
 
   createSectionPlane(data: { indexPlane: number; constantSection: number }) {
