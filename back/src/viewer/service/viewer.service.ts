@@ -12,9 +12,19 @@ export class ViewerService {
     this.CONVERTER_PATH = this.configService.get('CONVERTER_PATH');
   }
 
-  convertModelAndSave(inputPath: string, outputPath: string) {
+  convertModelAndSave(
+    inputPath: string,
+    outputPath: string,
+    compression?: number,
+  ) {
+    let command = '';
+    if (typeof compression == 'number' && compression >= 0 && compression <= 10)
+      command = `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
+        10 - compression
+      }`;
+    else command = `gltf-converter ${inputPath} ${outputPath}`;
     return from(
-      nrc.run([`gltf-converter ${inputPath} ${outputPath}`], {
+      nrc.run([command], {
         cwd: this.CONVERTER_PATH,
       }),
     );
