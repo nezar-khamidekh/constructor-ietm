@@ -533,7 +533,7 @@ export class SceneService {
     if (this.viewer.state === VIEWER_STATE.Isolated) this.resetObjectIsolation();
   }
 
-  fitToView(id: number) {
+  fitToView(id: number, onCompleteCallback: () => void) {
     const obj = this.viewer.model.getObjectById(id)!;
     this.resetObjectIsolation();
     this.isolateObject(obj);
@@ -550,12 +550,20 @@ export class SceneService {
     let cameraZ = Math.max(dx, dy);
     cameraZ *= offset;
 
-    this.viewer.camera.updateProjectionMatrix();
-
     if (this.viewer.controls !== undefined) {
       const center = boundingBox.getCenter(vector);
       this.viewer.controls.target = new THREE.Vector3(center.x, center.y, center.z);
-      this.viewer.camera.position.set(cameraZ, center.y, cameraZ);
+      const oldCameraPos = this.viewer.camera.position.clone();
+      const tween = new TWEEN.Tween(oldCameraPos)
+        .to(new THREE.Vector3(cameraZ, center.y, cameraZ), CAMERA_ANIM_DUR)
+        .easing(TWEEN.Easing.Linear.None)
+        .onUpdate(() => {
+          this.viewer.camera.position.set(oldCameraPos.x, oldCameraPos.y, oldCameraPos.z);
+          this.viewer.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        })
+        .onComplete(onCompleteCallback)
+        .start();
+      this.viewer.camera.updateProjectionMatrix();
       this.viewer.controls.update();
     }
   }

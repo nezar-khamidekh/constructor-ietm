@@ -44,6 +44,6 @@ export class TreeElementsComponent implements OnInit, OnChanges {
   }
 
   fitToObject(node: any) {
-    this.sceneService.fitToView(node.id);
+    this.sceneService.fitToView(node.id, () => {});
   }
 }
