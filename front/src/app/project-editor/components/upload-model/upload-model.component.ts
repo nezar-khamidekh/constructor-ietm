@@ -8,11 +8,15 @@ import {
   ViewChild,
   ElementRef,
   OnDestroy,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { FileModelService } from 'src/app/shared/services/file-model.service';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { SubSink } from 'subsink';
+
+enum MODEL_FORMAT {
+  gltf,
+  step,
+}
 
 @Component({
   selector: 'app-upload-model',
@@ -31,11 +35,7 @@ export class UploadModelComponent implements OnInit, OnDestroy {
 
   @ViewChild('fileDropRef', { static: false }) fileDropEl: ElementRef;
 
-  constructor(
-    private fileModelService: FileModelService,
-    private loadingService: LoadingService,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  constructor(private fileModelService: FileModelService, private loadingService: LoadingService) {}
 
   ngOnInit(): void {}
 
@@ -48,6 +48,12 @@ export class UploadModelComponent implements OnInit, OnDestroy {
     const uploadData = new FormData();
     uploadData.append('model', file, file.name);
     uploadData.append('repoId', this.repositoryId);
+    uploadData.append(
+      'format',
+      file.name.slice(file.name.lastIndexOf('.') + 1) === 'gltf'
+        ? MODEL_FORMAT.gltf.toString()
+        : MODEL_FORMAT.step.toString(),
+    );
     this.subs.add(
       this.fileModelService.upload(uploadData).subscribe((repository) => {
         this.changeStep.emit({
