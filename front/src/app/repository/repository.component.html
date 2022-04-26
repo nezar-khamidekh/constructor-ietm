@@ -1,0 +1,6 @@
+<div class="viewer" *ngIf="repository">
+  <app-scene
+    [repositoryId]="repository._id"
+    [filename]="repository.models[repository.models.length - 1].filename"
+  ></app-scene>
+</div>

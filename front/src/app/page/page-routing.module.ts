@@ -42,6 +42,11 @@ const routes: Routes = [
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
       },
       {
+        path: 'repository/:repoId',
+        loadChildren: () =>
+          import('../repository/repository.module').then((m) => m.RepositoryModule),
+      },
+      {
         path: '**',
         redirectTo: 'repositories',
       },
