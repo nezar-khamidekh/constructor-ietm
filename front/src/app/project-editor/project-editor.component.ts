@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./project-editor.component.scss'],
 })
 export class ProjectEditorComponent implements OnInit {
-  step: number = 3;
+  step: number = 1;
   repositoryId = '';
   filename = '';
 
