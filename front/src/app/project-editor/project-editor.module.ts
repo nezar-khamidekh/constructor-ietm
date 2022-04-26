@@ -12,7 +12,6 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatRippleModule } from '@angular/material/core';
 import { EditorAnimationsComponent } from './components/editor-animations/editor-animations.component';
 import { EditorAnnotationsComponent } from './components/editor-annotations/editor-annotations.component';
-import { SpecificationComponent } from './components/specification/specification.component';
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,7 +32,6 @@ import { DndDirective } from './directives/dnd.directive';
     EditorViewerComponent,
     EditorAnimationsComponent,
     EditorAnnotationsComponent,
-    SpecificationComponent,
     TreeElementsComponent,
     UploadModelComponent,
     StepButtonsComponent,

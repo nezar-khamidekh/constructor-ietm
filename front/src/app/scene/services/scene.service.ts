@@ -411,13 +411,6 @@ export class SceneService {
     }
   }
 
-  setHighlightObjByIds(meshesIds: number[], typeEvent: string) {
-    meshesIds.forEach((meshId) => {
-      const mesh = this.viewer.scene.getObjectById(meshId)!;
-      this.setHighLightObj(mesh, typeEvent);
-    });
-  }
-
   setHighLightObj(node: any, typeEvent: string) {
     switch (typeEvent) {
       case 'mouseenter':
@@ -566,54 +559,6 @@ export class SceneService {
       this.viewer.camera.updateProjectionMatrix();
       this.viewer.controls.update();
     }
-  }
-
-  setItemStructureLevels(nodes: any[], level = 0) {
-    nodes.forEach((node: any) => {
-      node._specLevel = level;
-      if (node.children?.length) this.setItemStructureLevels(node.children, level + 1);
-    });
-  }
-
-  getItemStructureTabular(nodes: any) {
-    const structure: any = [];
-    structure.push({ ...nodes[0], specificationCount: 1, meshes: [nodes[0].id] });
-    this.getStructureByNodes(nodes[0].children, structure);
-    this.showRootStructureNode(structure);
-    return structure;
-  }
-
-  getStructureByNodes(nodes: any, structure: any) {
-    nodes.forEach((node: any) => {
-      if (node instanceof THREE.Mesh || node instanceof THREE.Group) {
-        const obj = structure.find(
-          (el: any) => el.userData.name === node.userData.name.split('.')[0],
-        );
-        if (obj) {
-          ++obj.specificationCount;
-          obj.meshes.push(node.id);
-        } else
-          structure.push({
-            ...node,
-            userData: { name: node.userData.name.split('.')[0].replace('_', ' ') },
-            specificationCount: 1,
-            meshes: [node.id],
-          });
-      } else if (node.children?.length) {
-        this.getStructureByNodes(node.children, structure);
-      }
-    });
-  }
-
-  showRootStructureNode(structure: any[]) {
-    structure[0].isVisibleInSpec = true;
-    structure[0].isExpanded = true;
-    structure
-      .filter((node: any) => node.parent.id === structure[0].id)
-      .forEach((node: any) => {
-        node.isVisibleInSpec = true;
-        node.isExpanded = false;
-      });
   }
 
   playAnimation() {
