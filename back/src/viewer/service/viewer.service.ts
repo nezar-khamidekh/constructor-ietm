@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nrc from 'node-run-cmd';
 import * as fs from 'fs';
-import { from } from 'rxjs';
+import { from, map, switchMap } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -15,17 +15,50 @@ export class ViewerService {
   convertModelAndSave(
     inputPath: string,
     outputPath: string,
-    compression?: number,
+    straightPath: string,
+    compression: number,
   ) {
-    let command = '';
-    if (typeof compression == 'number' && compression >= 0 && compression <= 10)
-      command = `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
-        10 - compression
-      }`;
-    else command = `gltf-converter ${inputPath} ${outputPath}`;
     return from(
-      nrc.run([command], {
-        cwd: this.CONVERTER_PATH,
+      nrc.run(
+        [
+          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
+            10 - compression
+          }`,
+        ],
+        {
+          cwd: this.CONVERTER_PATH,
+        },
+      ),
+    ).pipe(
+      map(() => {
+        return this.saveModel(inputPath, straightPath);
+      }),
+    );
+  }
+
+  saveModel(inputPath: string, outputPath: string) {
+    return from(
+      fs.promises
+        .rename(inputPath, outputPath)
+        .then(() => true)
+        .catch(() => false),
+    );
+  }
+
+  saveCompressedModel(originalPath, outputPath: string) {
+    const gltfPipeline = require('gltf-pipeline');
+    const fsExtra = require('fs-extra');
+    const processGltf = gltfPipeline.processGltf;
+    const gltf = fsExtra.readJsonSync(originalPath);
+    const options = {
+      dracoOptions: {
+        compressionLevel: 10,
+      },
+    };
+    return from(processGltf(gltf, options)).pipe(
+      map((results: any) => {
+        fsExtra.writeJsonSync(outputPath, results.gltf);
+        return true;
       }),
     );
   }

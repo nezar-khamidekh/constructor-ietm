@@ -7,7 +7,7 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { TeamService } from 'src/team/service/team.service';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
-import { from, map, Observable, switchMap } from 'rxjs';
+import { forkJoin, from, map, Observable, switchMap } from 'rxjs';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
 import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
@@ -18,6 +18,7 @@ import { ViewerService } from 'src/viewer/service/viewer.service';
 import { extname } from 'path';
 import { RemoveModelDto } from '../models/dto/removeModel.dto';
 import { TakeModelDto } from '../models/dto/takeModel.dto';
+import { ModelFormat, RegisterModelDto } from '../models/dto/registerModel.dto';
 
 @Injectable()
 export class RepositoryService {
@@ -290,21 +291,59 @@ export class RepositoryService {
     );
   }
 
-  registerModel(file: Express.Multer.File, repoId: string) {
-    return this.getOneById(repoId).pipe(
+  deleteAll(): Observable<boolean> {
+    return from(this.repositoryModel.deleteMany()).pipe(
+      map((result: any) => {
+        return result.deletedCount ? true : false;
+      }),
+    );
+  }
+
+  registerModel(file: Express.Multer.File, registerModelDto: RegisterModelDto) {
+    return this.getOneById(registerModelDto.repoId).pipe(
       switchMap((repo) => {
         return this.viewerService.checkIfRepoDirectoryExists(repo._id).pipe(
           switchMap((check) => {
             if (check)
+              return this.saveModel(
+                file,
+                repo,
+                Number(registerModelDto.format),
+              );
+            else
+              return this.viewerService.writeRepoDirectoryById(repo._id).pipe(
+                switchMap(() => {
+                  return this.saveModel(
+                    file,
+                    repo,
+                    Number(registerModelDto.format),
+                  );
+                }),
+              );
+          }),
+        );
+      }),
+    );
+  }
+
+  saveModel(file: any, repo: RepositoryDocument, format: number) {
+    const modelPath =
+      process.cwd() +
+      '\\repositories\\' +
+      repo._id +
+      '\\' +
+      file.filename.replace(extname(file.filename), '.gltf');
+
+    const straightPath =
+      process.cwd() + '\\repositories\\' + repo._id + '\\' + file.originalname;
+    switch (format) {
+      case ModelFormat.gltf:
+        return this.viewerService
+          .saveModel(process.cwd() + '\\' + file.path, straightPath)
+          .pipe(
+            switchMap(() => {
               return this.viewerService
-                .convertModelAndSave(
-                  process.cwd() + '\\' + file.path,
-                  process.cwd() +
-                    '\\repositories\\' +
-                    repo._id +
-                    '\\' +
-                    file.filename.replace(extname(file.filename), '.gltf'),
-                )
+                .saveCompressedModel(straightPath, modelPath)
                 .pipe(
                   switchMap(() => {
                     repo.models.push({
@@ -321,55 +360,42 @@ export class RepositoryService {
                     return from(
                       this.updateOne({ _id: repo._id, models: repo.models }),
                     ).pipe(
-                      map((result) => {
+                      map(() => {
                         return repo;
                       }),
                     );
                   }),
                 );
-            else
-              return this.viewerService.writeRepoDirectoryById(repo._id).pipe(
-                switchMap(() => {
-                  return this.viewerService
-                    .convertModelAndSave(
-                      process.cwd() + '\\' + file.path,
-                      process.cwd() +
-                        '\\repositories\\' +
-                        repo._id +
-                        '\\' +
-                        file.filename.replace(extname(file.filename), '.gltf'),
-                    )
-                    .pipe(
-                      switchMap(() => {
-                        repo.models.push({
-                          name: file.originalname.slice(
-                            0,
-                            file.originalname.lastIndexOf('.'),
-                          ),
-                          filename: file.originalname,
-                          path: file.filename.replace(
-                            extname(file.filename),
-                            '.gltf',
-                          ),
-                        });
-                        return from(
-                          this.updateOne({
-                            _id: repo._id,
-                            models: repo.models,
-                          }),
-                        ).pipe(
-                          map((result) => {
-                            return repo;
-                          }),
-                        );
-                      }),
-                    );
+            }),
+          );
+      case ModelFormat.step:
+        return this.viewerService
+          .convertModelAndSave(
+            process.cwd() + '\\' + file.path,
+            modelPath,
+            straightPath,
+            10,
+          )
+          .pipe(
+            switchMap(() => {
+              repo.models.push({
+                name: file.originalname.slice(
+                  0,
+                  file.originalname.lastIndexOf('.'),
+                ),
+                filename: file.originalname,
+                path: file.filename.replace(extname(file.filename), '.gltf'),
+              });
+              return from(
+                this.updateOne({ _id: repo._id, models: repo.models }),
+              ).pipe(
+                map(() => {
+                  return repo;
                 }),
               );
-          }),
-        );
-      }),
-    );
+            }),
+          );
+    }
   }
 
   removeModel(removeModelDto: RemoveModelDto) {

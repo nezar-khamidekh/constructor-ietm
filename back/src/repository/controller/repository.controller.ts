@@ -84,6 +84,11 @@ export class RepositoryController {
     return this.repositoryService.updateParticipant(updateParticipantDto);
   }
 
+  @Get('delete-all')
+  deleteAll(): Observable<boolean> {
+    return this.repositoryService.deleteAll();
+  }
+
   @Get('delete/:id')
   deleteOne(@Param('id') id: string): Observable<boolean> {
     return this.repositoryService.deleteOne(id);
@@ -109,7 +114,7 @@ export class RepositoryController {
     @UploadedFile() file: Express.Multer.File,
     @Body() registerModelDto: RegisterModelDto,
   ) {
-    return this.repositoryService.registerModel(file, registerModelDto.repoId);
+    return this.repositoryService.registerModel(file, registerModelDto);
   }
 
   @Post('model/remove')
