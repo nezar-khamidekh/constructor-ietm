@@ -538,10 +538,9 @@ export class SceneService {
     this.resetObjectIsolation();
     this.isolateObject(obj);
 
-    /*  const boundingBox = new THREE.Box3();
-    boundingBox.setFromObject(obj);
-    const size = new THREE.Vector3();
-    boundingBox.getSize(size);
+    const boundingBox = new THREE.Box3().setFromObject(obj);
+    const vector = new THREE.Vector3();
+    const size = boundingBox.getSize(vector);
     const offset = 1.5;
 
     const fov = this.viewer.camera.fov * (Math.PI / 180);
@@ -551,17 +550,14 @@ export class SceneService {
     let cameraZ = Math.max(dx, dy);
     cameraZ *= offset;
 
-    this.viewer.camera.position.set(0, 0, cameraZ);
-    const minZ = boundingBox.min.z;
-    const cameraToFarEdge = minZ < 0 ? -minZ + cameraZ : cameraZ - minZ;
-
-    this.viewer.camera.far = cameraToFarEdge * 3;
     this.viewer.camera.updateProjectionMatrix();
 
     if (this.viewer.controls !== undefined) {
-      this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
-      this.viewer.controls.maxDistance = cameraToFarEdge * 2;
-    } */
+      const center = boundingBox.getCenter(vector);
+      this.viewer.controls.target = new THREE.Vector3(center.x, center.y, center.z);
+      this.viewer.camera.position.set(cameraZ, center.y, cameraZ);
+      this.viewer.controls.update();
+    }
   }
 
   setItemStructureLevels(nodes: any[], level = 0) {
