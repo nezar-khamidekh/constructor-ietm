@@ -34,6 +34,10 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { SectionPlanes, SectionService } from './section.service';
 import { RepositoryModelDto } from 'src/app/shared/models/repositoryModelDto.interface';
+import {
+  AxisAngleOrientationI,
+  OffsetFactorOrientationI,
+} from '../components/view-cube/view-cube.component';
 
 @Injectable({
   providedIn: 'root',
@@ -294,6 +298,38 @@ export class SceneService {
       ${this.epsilon(matrix.elements[14])},
       ${this.epsilon(matrix.elements[15])}
     )`;
+  }
+
+  rotationCameraByClickOnSideOfCube(
+    offsetFactor: OffsetFactorOrientationI,
+    axisAngle: AxisAngleOrientationI,
+  ) {
+    const offsetUnit = this.viewer.camera.position.length();
+    const offset = new THREE.Vector3(
+      offsetUnit * offsetFactor.x,
+      offsetUnit * offsetFactor.y,
+      offsetUnit * offsetFactor.z,
+    );
+
+    const center = new THREE.Vector3();
+    const finishPosition = center.add(offset);
+
+    const positionTween = new TWEEN.Tween(this.viewer.camera.position)
+      .to(finishPosition, 300)
+      .easing(TWEEN.Easing.Linear.None);
+
+    const euler = new THREE.Euler(axisAngle.x, axisAngle.y, axisAngle.z);
+
+    const finishQuaternion = new THREE.Quaternion()
+      .copy(this.viewer.camera.quaternion)
+      .setFromEuler(euler);
+
+    const quaternionTween = new TWEEN.Tween(this.viewer.camera.quaternion)
+      .to(finishQuaternion, 300)
+      .easing(TWEEN.Easing.Linear.None);
+
+    positionTween.start();
+    quaternionTween.start();
   }
 
   moveCameraWithAnimation(onCompleteCallback: () => void) {

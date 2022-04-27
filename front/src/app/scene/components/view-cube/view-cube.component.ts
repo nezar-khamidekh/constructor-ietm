@@ -9,6 +9,18 @@ import {
 import * as THREE from 'three';
 import { SceneService } from '../../services/scene.service';
 
+export interface OffsetFactorOrientationI {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface AxisAngleOrientationI {
+  x: number;
+  y: number;
+  z: number;
+}
+
 @Component({
   selector: 'app-view-cube',
   templateUrl: './view-cube.component.html',
@@ -16,9 +28,13 @@ import { SceneService } from '../../services/scene.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewCubeComponent implements OnInit {
+  Math: any;
+
   @ViewChild('cube') cube!: ElementRef;
 
-  constructor(private renderer: Renderer2, private sceneService: SceneService) {}
+  constructor(private renderer: Renderer2, public sceneService: SceneService) {
+    this.Math = Math;
+  }
 
   ngOnInit(): void {}
 

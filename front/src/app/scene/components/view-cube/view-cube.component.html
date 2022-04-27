@@ -1,10 +1,75 @@
 <div class="view-cube-container">
   <div class="cube" #cube>
-    <div class="cube__face cube__face_front">Спереди</div>
-    <div class="cube__face cube__face_back">Сзади</div>
-    <div class="cube__face cube__face_right">Справа</div>
-    <div class="cube__face cube__face_left">Слева</div>
-    <div class="cube__face cube__face_top">Сверху</div>
-    <div class="cube__face cube__face_bottom">Снизу</div>
+    <div
+      class="cube__face cube__face_front"
+      (click)="
+        sceneService.rotationCameraByClickOnSideOfCube({ x: 0, y: 0, z: 1 }, { x: 0, y: 0, z: 0 })
+      "
+    >
+      Спереди
+    </div>
+    <div
+      class="cube__face cube__face_back"
+      (click)="
+        sceneService.rotationCameraByClickOnSideOfCube(
+          { x: 0, y: 0, z: -1 },
+          { x: Math.PI, y: 0, z: 0 }
+        )
+      "
+    >
+      Сзади
+    </div>
+    <div
+      class="cube__face cube__face_right"
+      (click)="
+        sceneService.rotationCameraByClickOnSideOfCube(
+          { x: 1, y: 0, z: 0 },
+          { x: Math.PI, y: Math.PI, z: 0 }
+        )
+      "
+    >
+      Справа
+    </div>
+    <div
+      class="cube__face cube__face_left"
+      (click)="
+        sceneService.rotationCameraByClickOnSideOfCube(
+          { x: -1, y: 0, z: 0 },
+          { x: Math.PI / 2, y: -(Math.PI / 2), z: 0 }
+        )
+      "
+    >
+      Слева
+    </div>
+    <div
+      class="cube__face cube__face_top"
+      (click)="
+        sceneService.rotationCameraByClickOnSideOfCube(
+          { x: 0, y: 1, z: 0 },
+          { x: -(Math.PI / 2), y: 0, z: Math.PI }
+        )
+      "
+    >
+      Сверху
+    </div>
+    <div
+      class="cube__face cube__face_bottom"
+      (click)="
+        sceneService.rotationCameraByClickOnSideOfCube(
+          {
+            x: 0,
+            y: -1,
+            z: 0
+          },
+          {
+            x: Math.PI / 2,
+            y: 0,
+            z: 0
+          }
+        )
+      "
+    >
+      Снизу
+    </div>
   </div>
 </div>
