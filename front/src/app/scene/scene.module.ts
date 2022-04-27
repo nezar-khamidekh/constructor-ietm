@@ -10,9 +10,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
+import { ViewCubeComponent } from './components/view-cube/view-cube.component';
 
 @NgModule({
-  declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent],
+  declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent, ViewCubeComponent],
   imports: [
     CommonModule,
     SceneRoutingModule,

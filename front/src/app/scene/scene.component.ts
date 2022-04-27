@@ -31,6 +31,7 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { SectionPlanes } from './services/section.service';
 import { LoadingService } from '../shared/services/loading.service';
+import { ViewCubeComponent } from './components/view-cube/view-cube.component';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -64,6 +65,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('viewerWrapper') viewerWrapper: ElementRef;
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
   @ViewChild('viewerContextMenuInner') viewerContextMenuInnerRef: ElementRef;
+  @ViewChild(ViewCubeComponent) cube: ViewCubeComponent;
 
   @HostListener('window:resize', ['$event']) onResize($event: any) {
     this.sceneService.resizeCanvas(
@@ -231,6 +233,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     window.requestAnimationFrame(() => this.animate());
     this.setHoveredObj();
     this.sceneService.animateScene();
+    if (this.cube) this.cube.positionSettingsCube();
   }
 
   setMouseCoords(e: MouseEvent) {

@@ -269,6 +269,33 @@ export class SceneService {
       this.viewer.labelRenderer.render(this.viewer.scene, this.viewer.camera);
   }
 
+  epsilon(value: number) {
+    return Math.abs(value) < 1e-10 ? 0 : value;
+  }
+
+  getCameraCSSMatrix() {
+    const matrix = new THREE.Matrix4();
+    matrix.extractRotation(this.viewer.camera.matrixWorldInverse);
+    return `matrix3d(
+      ${this.epsilon(matrix.elements[0])},
+      ${this.epsilon(-matrix.elements[1])},
+      ${this.epsilon(matrix.elements[2])},
+      ${this.epsilon(matrix.elements[3])},
+      ${this.epsilon(matrix.elements[4])},
+      ${this.epsilon(-matrix.elements[5])},
+      ${this.epsilon(matrix.elements[6])},
+      ${this.epsilon(matrix.elements[7])},
+      ${this.epsilon(matrix.elements[8])},
+      ${this.epsilon(-matrix.elements[9])},
+      ${this.epsilon(matrix.elements[10])},
+      ${this.epsilon(matrix.elements[11])},
+      ${this.epsilon(matrix.elements[12])},
+      ${this.epsilon(-matrix.elements[13])},
+      ${this.epsilon(matrix.elements[14])},
+      ${this.epsilon(matrix.elements[15])}
+    )`;
+  }
+
   moveCameraWithAnimation(onCompleteCallback: () => void) {
     this.viewer.controls.enabled = false;
     const oldCameraPos = this.viewer.camera.position.clone();
