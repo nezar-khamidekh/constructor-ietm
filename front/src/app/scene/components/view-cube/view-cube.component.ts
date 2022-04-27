@@ -26,7 +26,7 @@ export class ViewCubeComponent implements OnInit {
     this.renderer.setStyle(
       this.cube.nativeElement,
       'transform',
-      'translateZ(-600px)' + ' ' + `${this.sceneService.getCameraCSSMatrix()}`,
+      'translateZ(-500px)' + ' ' + `${this.sceneService.getCameraCSSMatrix()}`,
     );
   }
 }
