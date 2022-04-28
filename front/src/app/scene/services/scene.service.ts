@@ -304,6 +304,7 @@ export class SceneService {
     offsetFactor: OffsetFactorOrientationI,
     axisAngle: AxisAngleOrientationI,
   ) {
+    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
     const offsetUnit = this.viewer.camera.position.length();
     const offset = new THREE.Vector3(
       offsetUnit * offsetFactor.x,
