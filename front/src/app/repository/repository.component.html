@@ -1,6 +1,40 @@
-<div class="viewer" *ngIf="repository">
-  <app-scene
-    [repositoryId]="repository._id"
-    [filename]="repository.models[repository.models.length - 1].filename"
-  ></app-scene>
+<div class="repository">
+  <div class="repository__header">
+    <p class="repository__title">{{ repository.title }}</p>
+    <div class="repository__author">
+      <img
+        class="repository__author-avatar"
+        appImageSanitized
+        [imagePath]="repository.author.avatar || ''"
+        [defaultImage]="'assets/svg/avatar.svg'"
+        [alt]="'аватар ' + repository.author.login"
+      />
+      <span class="repository__author-username">{{ repository.author.login }}</span>
+    </div>
+    <div class="repository__dates">
+      <div class="repository__date">
+        <img class="repository__date-img" src="assets/svg/dateEdit.svg" alt="дата изменения" />
+        <span class="repository__date-text">{{ repository.updatedAt | date: 'dd.MM.yyyy' }}</span>
+      </div>
+      <div class="repository__date">
+        <img class="repository__date-img" src="assets/svg/dateCreate.svg" alt="дата создания" />
+        <span class="repository__date-text">{{ repository.createdAt | date: 'dd.MM.yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="repository__tabs">
+    <span class="repository__tab repository__tab_active">Описание</span>
+    <span class="repository__tab">Руководства</span>
+    <span class="repository__tab">Дерево</span>
+    <span class="repository__tab">Файлы</span>
+  </div>
+  <div class="repository__content">
+    <div class="viewer" *ngIf="repository">
+      <app-scene
+        [repositoryId]="repository._id"
+        [filename]="repository.models[repository.models.length - 1].filename"
+      ></app-scene>
+    </div>
+    <div class="content"></div>
+  </div>
 </div>

@@ -1,5 +1,114 @@
-.viewer {
-  width: 100%;
+@import '_variables';
+
+.repository {
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  padding: 50px 250px;
+  overflow: hidden;
+  padding: 40px 50px;
+
+  &__header {
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  &__author-avatar {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+  }
+
+  &__author-username {
+    opacity: 0.7;
+    margin-left: 4px;
+  }
+
+  &__dates {
+    display: flex;
+    margin-top: 10px;
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+
+    &:not(:first-child) {
+      margin-left: 8px;
+    }
+  }
+
+  &__date-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  &__date-text {
+    opacity: 0.7;
+    margin-left: 2px;
+    line-height: 18px;
+  }
+
+  &__tabs {
+    display: flex;
+    margin-top: 25px;
+    border-bottom: 1px solid $repositoryTabsBorderColor;
+  }
+
+  &__tab {
+    padding: 10px 25px;
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    &_active {
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: $primaryBlueColor;
+        display: block;
+      }
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+    gap: 60px;
+    margin-top: 35px;
+  }
+}
+
+.viewer {
+  flex: 1;
+  height: 100%;
+  border: 1px solid #d3d3d3;
+  border-radius: 12px;
+}
+
+.content {
+  flex: 1;
+  height: 100%;
+  border: 1px solid #d3d3d3;
+  border-radius: 12px;
 }
