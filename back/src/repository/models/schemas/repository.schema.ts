@@ -44,8 +44,10 @@ export class Repository {
 
   @Prop({ type: [AnnotationGroupSchema], default: [] })
   annotationGroups: AnnotationGroup[];
-}
 
+  @Prop({ type: Object, default: null })
+  modelTree: any;
+}
 export const RepositorySchema = SchemaFactory.createForClass(Repository);
 
 export enum RepositoryType {

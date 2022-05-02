@@ -385,10 +385,7 @@ export class RepositoryService {
                         file.originalname.lastIndexOf('.'),
                       ),
                       filename: file.originalname,
-                      path: file.filename.replace(
-                        extname(file.filename),
-                        '.gltf',
-                      ),
+                      path: fileId,
                       type: type,
                     });
                     return from(
