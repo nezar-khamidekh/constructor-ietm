@@ -18,6 +18,11 @@ enum MODEL_FORMAT {
   step,
 }
 
+enum MODEL_TYPE {
+  primary,
+  animation,
+}
+
 @Component({
   selector: 'app-upload-model',
   templateUrl: './upload-model.component.html',
@@ -54,11 +59,12 @@ export class UploadModelComponent implements OnInit, OnDestroy {
         ? MODEL_FORMAT.gltf.toString()
         : MODEL_FORMAT.step.toString(),
     );
+    uploadData.append('type', MODEL_TYPE.primary.toString());
     this.subs.add(
       this.fileModelService.upload(uploadData).subscribe((repository) => {
         this.changeStep.emit({
           nextStep: this.step + 1,
-          filename: repository.models[repository.models.length - 1].filename,
+          modelId: repository.models[repository.models.length - 1]._id,
         });
       }),
     );

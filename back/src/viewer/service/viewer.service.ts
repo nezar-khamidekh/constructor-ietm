@@ -82,13 +82,27 @@ export class ViewerService {
   }
 
   writeRepoDirectoryById(repoId: string) {
-    return from(fs.mkdirSync('./repositories/' + repoId, { recursive: true }));
+    return from(
+      fs.promises
+        .mkdir('./repositories/' + repoId, { recursive: true })
+        .then(() => true)
+        .catch(() => false),
+    );
+  }
+
+  writeModelDirectoryById(repoId: string, modelId: string) {
+    return from(
+      fs.promises
+        .mkdir('./repositories/' + repoId + '/' + modelId, { recursive: true })
+        .then(() => true)
+        .catch(() => false),
+    );
   }
 
   deleteModel(path: string) {
     return from(
       fs.promises
-        .unlink(path)
+        .rm(path, { force: true, recursive: true })
         .then(() => true)
         .catch(() => false),
     );

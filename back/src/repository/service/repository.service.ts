@@ -305,19 +305,39 @@ export class RepositoryService {
         return this.viewerService.checkIfRepoDirectoryExists(repo._id).pipe(
           switchMap((check) => {
             if (check)
-              return this.saveModel(
-                file,
-                repo,
-                Number(registerModelDto.format),
-              );
+              return this.viewerService
+                .writeModelDirectoryById(
+                  repo._id,
+                  file.filename.replace(extname(file.filename), ''),
+                )
+                .pipe(
+                  switchMap(() => {
+                    return this.saveModel(
+                      file,
+                      repo,
+                      Number(registerModelDto.format),
+                      Number(registerModelDto.type),
+                    );
+                  }),
+                );
             else
               return this.viewerService.writeRepoDirectoryById(repo._id).pipe(
                 switchMap(() => {
-                  return this.saveModel(
-                    file,
-                    repo,
-                    Number(registerModelDto.format),
-                  );
+                  return this.viewerService
+                    .writeModelDirectoryById(
+                      repo._id,
+                      file.filename.replace(extname(file.filename), ''),
+                    )
+                    .pipe(
+                      switchMap(() => {
+                        return this.saveModel(
+                          file,
+                          repo,
+                          Number(registerModelDto.format),
+                          Number(registerModelDto.type),
+                        );
+                      }),
+                    );
                 }),
               );
           }),
@@ -326,16 +346,29 @@ export class RepositoryService {
     );
   }
 
-  saveModel(file: any, repo: RepositoryDocument, format: number) {
+  private saveModel(
+    file: any,
+    repo: RepositoryDocument,
+    format: number,
+    type: number,
+  ) {
+    const fileId = file.filename.replace(extname(file.filename), '');
     const modelPath =
       process.cwd() +
       '\\repositories\\' +
       repo._id +
       '\\' +
+      fileId +
+      '\\' +
       file.filename.replace(extname(file.filename), '.gltf');
-
     const straightPath =
-      process.cwd() + '\\repositories\\' + repo._id + '\\' + file.originalname;
+      process.cwd() +
+      '\\repositories\\' +
+      repo._id +
+      '\\' +
+      fileId +
+      '\\' +
+      file.originalname;
     switch (format) {
       case ModelFormat.gltf:
         return this.viewerService
@@ -352,16 +385,14 @@ export class RepositoryService {
                         file.originalname.lastIndexOf('.'),
                       ),
                       filename: file.originalname,
-                      path: file.filename.replace(
-                        extname(file.filename),
-                        '.gltf',
-                      ),
+                      path: fileId,
+                      type: type,
                     });
                     return from(
                       this.updateOne({ _id: repo._id, models: repo.models }),
                     ).pipe(
-                      map(() => {
-                        return repo;
+                      switchMap(() => {
+                        return this.getOneById(repo._id);
                       }),
                     );
                   }),
@@ -384,13 +415,14 @@ export class RepositoryService {
                   file.originalname.lastIndexOf('.'),
                 ),
                 filename: file.originalname,
-                path: file.filename.replace(extname(file.filename), '.gltf'),
+                path: fileId,
+                type: type,
               });
               return from(
                 this.updateOne({ _id: repo._id, models: repo.models }),
               ).pipe(
-                map(() => {
-                  return repo;
+                switchMap(() => {
+                  return this.getOneById(repo._id);
                 }),
               );
             }),
@@ -402,22 +434,16 @@ export class RepositoryService {
     return this.getOneById(removeModelDto.repoId).pipe(
       switchMap((repo) => {
         const filteredModels = repo.models.filter(
-          (model) => model.filename !== removeModelDto.filename,
+          (model: any) => model._id.toString() !== removeModelDto.modelId,
         );
         return this.updateOne({ _id: repo._id, models: filteredModels }).pipe(
-          switchMap((result) => {
-            const modelPath =
-              './repositories/' +
-              repo._id +
-              '/' +
-              repo.models.filter(
-                (model) => model.filename === removeModelDto.filename,
-              )[0].path;
-            return this.viewerService.checkIfModelExists(modelPath).pipe(
-              switchMap((check) => {
-                return this.viewerService.deleteModel(modelPath);
-              }),
-            );
+          switchMap(() => {
+            const fileDirectory = repo.models.find(
+              (model: any) => model._id.toString() === removeModelDto.modelId,
+            ).path;
+            const modelDirectoryPath =
+              './repositories/' + repo._id + '/' + fileDirectory;
+            return this.viewerService.deleteModel(modelDirectoryPath);
           }),
         );
       }),
@@ -427,9 +453,9 @@ export class RepositoryService {
   takeModel(takeModelDto: TakeModelDto) {
     return this.getOneById(takeModelDto.repoId).pipe(
       map((repo) => {
-        return repo.models.filter(
-          (model) => model.filename === takeModelDto.filename,
-        )[0];
+        return repo.models.find(
+          (model: any) => model._id.toString() === takeModelDto.modelId,
+        );
       }),
     );
   }

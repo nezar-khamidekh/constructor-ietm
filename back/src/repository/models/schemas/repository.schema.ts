@@ -4,6 +4,11 @@ import {
   Participant,
   ParticipantSchema,
 } from 'src/team/models/schemas/participant.schema';
+import {
+  AnnotationGroup,
+  AnnotationGroupSchema,
+} from './annotation-group.schema';
+import { Guideline, GuidelineSchema } from './guideline.schema';
 import { Model, ModelSchema } from './model.schema';
 
 export type RepositoryDocument = Repository & Document;
@@ -33,8 +38,16 @@ export class Repository {
 
   @Prop({ type: [ModelSchema], default: [] })
   models: Model[];
-}
 
+  @Prop({ type: [GuidelineSchema], default: [] })
+  guidelines: Guideline[];
+
+  @Prop({ type: [AnnotationGroupSchema], default: [] })
+  annotationGroups: AnnotationGroup[];
+
+  @Prop({ type: Object, default: null })
+  modelTree: any;
+}
 export const RepositorySchema = SchemaFactory.createForClass(Repository);
 
 export enum RepositoryType {

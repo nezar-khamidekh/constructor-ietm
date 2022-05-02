@@ -1,4 +1,5 @@
 {
+  "exclude": ["testmodels", "repositories"],
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,

@@ -39,7 +39,7 @@ export class EditorViewerComponent implements OnInit {
 
   @Input() step: number;
   @Input() repositoryId: string;
-  @Input() filename: string;
+  @Input() modelId: string;
   @Output() changeStep = new EventEmitter();
 
   model: any = null;

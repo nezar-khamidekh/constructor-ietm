@@ -58,7 +58,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
   @Input() repositoryId: string;
-  @Input() filename: string;
+  @Input() modelId: string;
   @Output() applyAnnotationPosition = new EventEmitter();
   @Output() viewerIsReady = new EventEmitter();
 
@@ -142,10 +142,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.filename)
+    if (this.modelId)
       this.subs.add(
         this.sceneService
-          .getRepositoryModel({ repoId: this.repositoryId, filename: this.filename })
+          .getRepositoryModel({ repoId: this.repositoryId, modelId: this.modelId })
           .subscribe((file) => {
             this.setUpViewer(file);
           }),
