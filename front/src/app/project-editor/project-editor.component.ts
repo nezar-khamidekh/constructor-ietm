@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 export class ProjectEditorComponent implements OnInit {
   step: number = 1;
   repositoryId = '';
-  filename = '';
+  newModelId = '';
 
   constructor() {}
 
@@ -19,9 +19,9 @@ export class ProjectEditorComponent implements OnInit {
     this.repositoryId = data.repositoryId;
   }
 
-  onModelLoaded(data: { nextStep: number; filename: string }) {
+  onModelLoaded(data: { nextStep: number; modelId: string }) {
     this.changeStep(data.nextStep);
-    this.filename = data.filename;
+    this.newModelId = data.modelId;
   }
 
   onChangeStep(step: number) {

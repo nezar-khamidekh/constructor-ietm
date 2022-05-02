@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 export type ModelDocument = Model & Document;
 
@@ -8,7 +8,7 @@ export class Model {
   @Prop({ length: 200 })
   name: string;
 
-  @Prop({ default: 0 })
+  @Prop()
   type: ModelType;
 
   @Prop()

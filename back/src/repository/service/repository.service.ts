@@ -394,8 +394,8 @@ export class RepositoryService {
                     return from(
                       this.updateOne({ _id: repo._id, models: repo.models }),
                     ).pipe(
-                      map(() => {
-                        return repo;
+                      switchMap(() => {
+                        return this.getOneById(repo._id);
                       }),
                     );
                   }),
@@ -424,8 +424,8 @@ export class RepositoryService {
               return from(
                 this.updateOne({ _id: repo._id, models: repo.models }),
               ).pipe(
-                map(() => {
-                  return repo;
+                switchMap(() => {
+                  return this.getOneById(repo._id);
                 }),
               );
             }),
