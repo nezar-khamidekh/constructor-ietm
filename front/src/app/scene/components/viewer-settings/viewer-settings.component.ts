@@ -71,7 +71,11 @@ export class ViewerSettingsComponent implements OnInit {
   ngAfterViewInit(): void {
     let colorIndicator = this.pickerRef.nativeElement;
     const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
-    this.renderer.setStyle(colorIndicator, 'background-color', backgroundColorScene);
+    this.renderer.setStyle(
+      colorIndicator,
+      'background-color',
+      backgroundColorScene ? backgroundColorScene : '#ffffff',
+    );
     const colorPicker = iro.ColorPicker('#color-picker', {
       width: 150,
       color: backgroundColorScene ? backgroundColorScene : '#ffffff',
