@@ -204,6 +204,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sceneService.setGridHelper(gltf);
       this.sceneService.setLight();
       this.sceneService.setCameraPosition();
+      this.sceneService.setBackgroundColorScene();
       if (this.annotations.length) this.renderAnnotations(this.annotations);
       this.viewerInitialized = true;
       this.viewerIsReady.emit();

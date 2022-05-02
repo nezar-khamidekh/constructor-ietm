@@ -302,6 +302,12 @@ export class SceneService {
     this.viewer.controls.update();
   }
 
+  setBackgroundColorScene() {
+    const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
+    if (backgroundColorScene) this.viewer.scene.background = new THREE.Color(backgroundColorScene);
+    else this.viewer.scene.background = new THREE.Color('#ffffff');
+  }
+
   resizeCanvas(box: any, canvas: any) {
     this.viewer.renderer.setSize(box.width, box.height);
     const pixelRatio = this.viewer.renderer.getPixelRatio();

@@ -8,3 +8,21 @@
     margin-top: 10px;
   }
 }
+
+.color-picker {
+}
+
+.color-indicator {
+  display: inline-block;
+  width: 100px;
+  height: 100px;
+  border: 1px solid #000000;
+  border-radius: 20px;
+  vertical-align: middle;
+}
+
+#color-picker {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 40px;
+}

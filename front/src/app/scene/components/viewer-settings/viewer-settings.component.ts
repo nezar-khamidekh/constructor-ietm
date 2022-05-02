@@ -1,5 +1,13 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Renderer2,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { SceneService } from '../../services/scene.service';
+import iro from '@jaames/iro';
 
 export enum ModeVisibleGridHelper {
   SwitchedOn,
@@ -43,7 +51,9 @@ export class ViewerSettingsComponent implements OnInit {
   ];
   selectedModeDefualtPositionCamera = this.modesDefualtPositionCamera[0].value;
 
-  constructor(private sceneService: SceneService) {}
+  @ViewChild('picker') pickerRef: ElementRef;
+
+  constructor(private sceneService: SceneService, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     const modeVisible = localStorage.getItem('visibleGridHelper') || '';
@@ -56,6 +66,21 @@ export class ViewerSettingsComponent implements OnInit {
       this.selectedModeDefualtPositionCamera =
         this.modesDefualtPositionCamera[Number(modeDefualtPos)].value;
     }
+  }
+
+  ngAfterViewInit(): void {
+    let colorIndicator = this.pickerRef.nativeElement;
+    const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
+    this.renderer.setStyle(colorIndicator, 'background-color', backgroundColorScene);
+    const colorPicker = iro.ColorPicker('#color-picker', {
+      width: 150,
+      color: backgroundColorScene ? backgroundColorScene : '#ffffff',
+    });
+    colorPicker.on('color:change', (color: any) => {
+      colorIndicator.style.backgroundColor = color.hexString;
+      localStorage.setItem('backgroundColorScene', color.hexString);
+      this.sceneService.setBackgroundColorScene();
+    });
   }
 
   getModeVisibleGridHelper() {
