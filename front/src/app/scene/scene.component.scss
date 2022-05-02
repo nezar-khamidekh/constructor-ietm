@@ -51,3 +51,17 @@ canvas {
   &__btn-text {
   }
 }
+
+.viewer-settings {
+  &__btn {
+    position: absolute;
+    z-index: 11;
+    left: 15px;
+    top: 15px;
+  }
+
+  &__img {
+    width: 24px;
+    height: 24px;
+  }
+}

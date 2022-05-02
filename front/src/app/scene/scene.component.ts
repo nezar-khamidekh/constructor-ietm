@@ -28,10 +28,11 @@ import {
   SECTION_DEFAULT_CONSTANT,
   EXPLODE_POWER,
 } from '../shared/models/viewerConstants';
-import { ActivatedRoute } from '@angular/router';
 import { SectionPlanes } from './services/section.service';
 import { LoadingService } from '../shared/services/loading.service';
 import { ViewCubeComponent } from './components/view-cube/view-cube.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ViewerSettingsComponent } from './components/viewer-settings/viewer-settings.component';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -110,9 +111,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public sceneService: SceneService,
     private renderer: Renderer2,
-    private route: ActivatedRoute,
     private loadingService: LoadingService,
     private cdr: ChangeDetectorRef,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -516,5 +517,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contextMenuFirstOpen = false;
       this.matMenuTrigger.openMenu();
     }
+  }
+
+  openViewerSettings() {
+    this.dialog.open(ViewerSettingsComponent);
   }
 }

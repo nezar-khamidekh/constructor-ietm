@@ -1,0 +1,49 @@
+<div class="viewer-settings">
+  <p class="viewer-settings__title">Настройка сцены</p>
+  <div class="viewer-settings__section">
+    <p>Сетка</p>
+    <mat-radio-group (change)="changeVisibleGridHelper($event)">
+      <mat-radio-button
+        color="primary"
+        [value]="0"
+        [checked]="modeVisibleGridHelper === getModeVisibleGridHelper().SwitchedOn"
+        >Включен</mat-radio-button
+      >
+      <mat-radio-button
+        color="primary"
+        [value]="1"
+        [checked]="modeVisibleGridHelper === getModeVisibleGridHelper().SwitchedOff"
+        >Выключен</mat-radio-button
+      >
+    </mat-radio-group>
+  </div>
+  <div class="viewer-settings__section">
+    <p>Позиция камеры по умолчанию</p>
+    <mat-radio-group (change)="changeDefualtPositionCamera($event)">
+      <mat-radio-button
+        color="primary"
+        [value]="0"
+        [checked]="modeDefualtPositionCamera === getModeDefualtPositionCamera().FrontRight"
+        >Между спереди и справа</mat-radio-button
+      >
+      <mat-radio-button
+        color="primary"
+        [value]="1"
+        [checked]="modeDefualtPositionCamera === getModeDefualtPositionCamera().RightBack"
+        >Между справа и сзади</mat-radio-button
+      >
+      <mat-radio-button
+        color="primary"
+        [value]="2"
+        [checked]="modeDefualtPositionCamera === getModeDefualtPositionCamera().BackLeft"
+        >Между сзади и слева</mat-radio-button
+      >
+      <mat-radio-button
+        color="primary"
+        [value]="3"
+        [checked]="modeDefualtPositionCamera === getModeDefualtPositionCamera().LeftFront"
+        >Между слева и спереди</mat-radio-button
+      >
+    </mat-radio-group>
+  </div>
+</div>

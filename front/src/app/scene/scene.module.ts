@@ -11,6 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
 import { ViewCubeComponent } from './components/view-cube/view-cube.component';
+import { ViewerSettingsModule } from './components/viewer-settings/viewer-settings.module';
 
 @NgModule({
   declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent, ViewCubeComponent],
@@ -23,6 +24,7 @@ import { ViewCubeComponent } from './components/view-cube/view-cube.component';
     MatTooltipModule,
     MatRadioModule,
     FormsModule,
+    ViewerSettingsModule,
   ],
   exports: [SceneComponent],
 })
