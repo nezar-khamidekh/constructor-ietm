@@ -132,7 +132,13 @@ export class RepositoryController {
         const valve = createReadStream(
           join(
             process.cwd(),
-            '/repositories/' + takeModelDto.repoId + '/' + model.path,
+            '/repositories/' +
+              takeModelDto.repoId +
+              '/' +
+              model.path +
+              '/' +
+              model.path +
+              '.gltf',
           ),
         );
         return new StreamableFile(valve);

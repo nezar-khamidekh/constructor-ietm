@@ -1,4 +1,5 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { ModelType } from '../schemas/model.schema';
 
 export class RegisterModelDto {
   @IsString()
@@ -6,6 +7,10 @@ export class RegisterModelDto {
 
   @IsString()
   format: ModelFormat;
+
+  @IsOptional()
+  @IsNumber()
+  type: ModelType;
 }
 
 export enum ModelFormat {

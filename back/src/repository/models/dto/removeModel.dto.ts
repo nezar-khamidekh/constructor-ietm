@@ -5,5 +5,5 @@ export class RemoveModelDto {
   repoId: string;
 
   @IsString()
-  filename: string;
+  modelId: string;
 }
