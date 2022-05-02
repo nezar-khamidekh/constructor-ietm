@@ -32,7 +32,7 @@
     <div class="viewer" *ngIf="repository">
       <app-scene
         [repositoryId]="repository._id"
-        [filename]="repository.models[repository.models.length - 1].filename"
+        [modelId]="repository.models[repository.models.length - 1]._id"
       ></app-scene>
     </div>
     <div class="content"></div>
