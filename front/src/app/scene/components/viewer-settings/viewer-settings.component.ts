@@ -13,6 +13,16 @@ export enum DefualtPositionCamera {
   LeftFront,
 }
 
+interface ModeVisibleGridHelperI {
+  value: number;
+  viewValue: string;
+}
+
+interface ModeDefualtPositionCameraI {
+  value: number;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-viewer-settings',
   templateUrl: './viewer-settings.component.html',
@@ -20,8 +30,18 @@ export enum DefualtPositionCamera {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewerSettingsComponent implements OnInit {
-  modeVisibleGridHelper = 0;
-  modeDefualtPositionCamera = 0;
+  modesVisibleGridHelper: ModeVisibleGridHelperI[] = [
+    { value: 0, viewValue: 'Включен' },
+    { value: 1, viewValue: 'Выключен' },
+  ];
+  selectedModeVisibleGridHelper = this.modesVisibleGridHelper[0].value;
+  modesDefualtPositionCamera: ModeDefualtPositionCameraI[] = [
+    { value: 0, viewValue: 'Между спереди и справа' },
+    { value: 1, viewValue: 'Между справа и сзади' },
+    { value: 2, viewValue: 'Между сзади и слева' },
+    { value: 3, viewValue: 'Между слева и спереди' },
+  ];
+  selectedModeDefualtPositionCamera = this.modesDefualtPositionCamera[0].value;
 
   constructor(private sceneService: SceneService) {}
 
@@ -29,30 +49,12 @@ export class ViewerSettingsComponent implements OnInit {
     const modeVisible = localStorage.getItem('visibleGridHelper') || '';
     const modeDefualtPos = localStorage.getItem('defualtPositionCamera') || '';
     if (modeVisible) {
-      if (Number(modeVisible) === this.getModeVisibleGridHelper().SwitchedOn) {
-        this.modeVisibleGridHelper = Number(modeVisible);
-      } else {
-        this.modeVisibleGridHelper = Number(modeVisible);
-      }
+      this.selectedModeVisibleGridHelper = this.modesVisibleGridHelper[Number(modeVisible)].value;
     }
 
     if (modeDefualtPos) {
-      switch (Number(modeDefualtPos)) {
-        case this.getModeDefualtPositionCamera().FrontRight:
-          this.modeDefualtPositionCamera = 0;
-          break;
-        case this.getModeDefualtPositionCamera().RightBack:
-          this.modeDefualtPositionCamera = 1;
-          break;
-        case this.getModeDefualtPositionCamera().BackLeft:
-          this.modeDefualtPositionCamera = 2;
-          break;
-        case this.getModeDefualtPositionCamera().LeftFront:
-          this.modeDefualtPositionCamera = 3;
-          break;
-        default:
-          break;
-      }
+      this.selectedModeDefualtPositionCamera =
+        this.modesDefualtPositionCamera[Number(modeDefualtPos)].value;
     }
   }
 
@@ -64,13 +66,13 @@ export class ViewerSettingsComponent implements OnInit {
     return DefualtPositionCamera;
   }
 
-  changeVisibleGridHelper(e: any) {
-    localStorage.setItem('visibleGridHelper', e.value);
+  changeVisibleGridHelper(value: any) {
+    localStorage.setItem('visibleGridHelper', value);
     this.sceneService.setVisibleGridHelper();
   }
 
-  changeDefualtPositionCamera(e: any) {
-    localStorage.setItem('defualtPositionCamera', e.value);
+  changeDefualtPositionCamera(value: any) {
+    localStorage.setItem('defualtPositionCamera', value);
     this.sceneService.setCameraPosition();
   }
 }
