@@ -23,10 +23,30 @@
     </div>
   </div>
   <div class="repository__tabs">
-    <span class="repository__tab repository__tab_active">Описание</span>
-    <span class="repository__tab">Руководства</span>
-    <span class="repository__tab">Дерево</span>
-    <span class="repository__tab">Файлы</span>
+    <a
+      class="repository__tab"
+      [routerLink]="'/repository/' + repository._id"
+      routerLinkActive="repository__tab_active"
+      >Описание</a
+    >
+    <a
+      class="repository__tab"
+      [routerLink]="'/repository/' + repository._id + '/manuals'"
+      routerLinkActive="repository__tab_active"
+      >Руководства</a
+    >
+    <a
+      class="repository__tab"
+      [routerLink]="'/repository/' + repository._id + '/tree'"
+      routerLinkActive="repository__tab_active"
+      >Дерево</a
+    >
+    <a
+      class="repository__tab"
+      [routerLink]="'/repository/' + repository._id + '/files'"
+      routerLinkActive="repository__tab_active"
+      >Файлы</a
+    >
   </div>
   <div class="repository__content">
     <div class="viewer" *ngIf="repository">
@@ -35,6 +55,8 @@
         [modelId]="repository.models[repository.models.length - 1]._id"
       ></app-scene>
     </div>
-    <div class="content"></div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>
