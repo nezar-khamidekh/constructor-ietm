@@ -545,6 +545,7 @@ export class SceneService {
     const intersects = this.viewer.raycaster
       .intersectObjects(this.viewer.model.children, true)
       .filter((intersection) => intersection.object.type !== 'Sprite');
+    if (!intersects.length) this.hoveredObj = null;
     if (intersects.length > 0) {
       const filteredIntersects = intersects.filter(
         (intersection: any) => !this.objectByIdIsHidden(intersection.object.id),
