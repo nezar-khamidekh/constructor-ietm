@@ -7,7 +7,9 @@
     >
       <img
         class="repository__image"
-        src="assets/png/repositoryImage.png"
+        appImageSanitized
+        [imagePath]="repository.preview || ''"
+        [defaultImage]="'assets/svg/repositoryPreview.svg'"
         [alt]="'Репозиторий ' + repository.title"
       />
       <div class="repository__content">
