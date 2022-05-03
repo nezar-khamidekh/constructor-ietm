@@ -18,8 +18,10 @@ import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
 import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
+import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
 import { RegisterModelDto } from '../models/dto/registerModel.dto';
+import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
 import { RemoveModelDto } from '../models/dto/removeModel.dto';
 import { TakeModelDto } from '../models/dto/takeModel.dto';
 import { RepositoryDocument } from '../models/schemas/repository.schema';
@@ -144,5 +146,22 @@ export class RepositoryController {
         return new StreamableFile(valve);
       }),
     );
+  }
+
+  @Post('favorite/add')
+  addRepositoryToFavorite(@Body() addToFavoriteDto: AddToFavoriteDto) {
+    return this.repositoryService.addRepoToFavorite(addToFavoriteDto);
+  }
+
+  @Post('favorite/remove')
+  removeRepositoryToFavorite(
+    @Body() removeFromFavoriteDto: RemoveFromFavoriteDto,
+  ) {
+    return this.repositoryService.removeRepoFromFavorite(removeFromFavoriteDto);
+  }
+
+  @Get('favorite/user/:id')
+  getUserFavorites(@Param('id') id: string) {
+    return this.repositoryService.getUserFavoriteReps(id);
   }
 }

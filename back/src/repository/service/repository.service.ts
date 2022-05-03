@@ -19,12 +19,17 @@ import { extname } from 'path';
 import { RemoveModelDto } from '../models/dto/removeModel.dto';
 import { TakeModelDto } from '../models/dto/takeModel.dto';
 import { ModelFormat, RegisterModelDto } from '../models/dto/registerModel.dto';
+import { Favorite, FavoriteDocument } from '../models/schemas/favorite.schema';
+import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
+import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
 
 @Injectable()
 export class RepositoryService {
   constructor(
     @InjectModel(Repository.name)
     private repositoryModel: Model<RepositoryDocument>,
+    @InjectModel(Favorite.name)
+    private favoriteModel: Model<FavoriteDocument>,
     private teamService: TeamService,
     private userService: UserService,
     private viewerService: ViewerService,
@@ -456,6 +461,61 @@ export class RepositoryService {
         return repo.models.find(
           (model: any) => model._id.toString() === takeModelDto.modelId,
         );
+      }),
+    );
+  }
+
+  addRepoToFavorite(addToFavoriteDto: AddToFavoriteDto) {
+    return from(
+      this.favoriteModel.findOne({
+        user: addToFavoriteDto.userId,
+        repository: addToFavoriteDto.repoId,
+      }),
+    ).pipe(
+      switchMap((ticket) => {
+        if (ticket)
+          throw new HttpException(
+            'Этот репозиторий уже добавлен в избранное',
+            HttpStatus.NOT_ACCEPTABLE,
+          );
+        else {
+          const newFavorite = new this.favoriteModel({
+            user: addToFavoriteDto.userId,
+            repository: addToFavoriteDto.repoId,
+          });
+          return from(newFavorite.save()).pipe(
+            map((ticket) => {
+              return ticket ? true : false;
+            }),
+          );
+        }
+      }),
+    );
+  }
+
+  getUserFavoriteReps(userId: string) {
+    return from(
+      this.favoriteModel
+        .find({ user: userId })
+        .populate('repository', [
+          'title',
+          'author',
+          'type',
+          'description',
+          'preview',
+        ]),
+    );
+  }
+
+  removeRepoFromFavorite(removeFromFavoriteDto: RemoveFromFavoriteDto) {
+    return from(
+      this.favoriteModel.deleteOne({
+        user: removeFromFavoriteDto.userId,
+        repository: removeFromFavoriteDto.repoId,
+      }),
+    ).pipe(
+      map((result: any) => {
+        return result.deletedCount ? true : false;
       }),
     );
   }
