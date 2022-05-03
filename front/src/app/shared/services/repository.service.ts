@@ -42,4 +42,10 @@ export class RepositoryService {
       withCredentials: true,
     });
   }
+
+  update(data: any) {
+    return this.http.post(`${this.apiUrl}/repository/update`, data, {
+      withCredentials: true,
+    });
+  }
 }

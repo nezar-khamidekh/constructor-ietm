@@ -11,6 +11,7 @@ import {
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
+import { TreeStructureService } from 'src/app/tree-structure/services/tree-structure.service';
 import { SubSink } from 'subsink';
 export const enum VIEWER_MOUSE_MODE {
   Default,
@@ -40,7 +41,7 @@ export class EditorViewerComponent implements OnInit {
   @Input() step: number;
   @Input() repositoryId: string;
   @Input() modelId: string;
-  @Output() changeStep = new EventEmitter();
+  @Output() saveInstructions = new EventEmitter();
 
   model: any = null;
 
@@ -58,6 +59,7 @@ export class EditorViewerComponent implements OnInit {
 
   constructor(
     private sceneService: SceneService,
+    private treeStructureService: TreeStructureService,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
   ) {}
@@ -152,9 +154,12 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onViewerIsReady() {
-    setTimeout(() => {
-      this.model = this.sceneService.getModel();
-      this.cdr.detectChanges();
-    }, 1000);
+    //generate tree
+    //this.treeStructureService.generate();
+    this.model = this.sceneService.getModel();
+  }
+
+  onSaveInstructions() {
+    this.saveInstructions.emit({ annotations: this.annotations, modelTree: this.model });
   }
 }

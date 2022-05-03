@@ -10,7 +10,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatRippleModule } from '@angular/material/core';
-import { EditorAnimationsComponent } from './components/editor-animations/editor-animations.component';
 import { EditorAnnotationsComponent } from './components/editor-annotations/editor-annotations.component';
 import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,13 +24,13 @@ import { LoaderModule } from '../shared/loader/loader.module';
 import { DialogChooseImageModule } from '../dialogs/dialog-choose-image/dialog-choose-image.module';
 import { DndDirective } from './directives/dnd.directive';
 import { EditorManualComponent } from './components/editor-manual/editor-manual.component';
+import { TreeStructureModule } from '../tree-structure/tree-structure.module';
 
 @NgModule({
   declarations: [
     ProjectEditorComponent,
     EditorStepComponent,
     EditorViewerComponent,
-    EditorAnimationsComponent,
     EditorAnnotationsComponent,
     TreeElementsComponent,
     UploadModelComponent,
@@ -56,6 +55,7 @@ import { EditorManualComponent } from './components/editor-manual/editor-manual.
     FormsModule,
     LoaderModule,
     DialogChooseImageModule,
+    TreeStructureModule,
   ],
 })
 export class ProjectEditorModule {}

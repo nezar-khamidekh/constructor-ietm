@@ -14,8 +14,8 @@
     mat-raised-button
     color="primary"
     type="button"
-    (click)="changeStep.emit(step + 1)"
+    (click)="buttonClick.emit(step + 1)"
   >
-    Далее
+    {{ step !== 3 ? 'Далее' : 'Сохранить' }}
   </button>
 </div>

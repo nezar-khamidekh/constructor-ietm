@@ -11,11 +11,6 @@
   <div class="editor-viewer__toolbar toolbar">
     <div class="toolbar__tabs">
       <mat-tab-group (selectedTabChange)="changeTab($event)">
-        <!--  <mat-tab class="toolbar__tab" label="Анимации">
-          <div class="toolbar__content">
-            <app-editor-animations></app-editor-animations>
-          </div>
-        </mat-tab> -->
         <mat-tab class="toolbar__tab" label="Руководство">
           <div class="toolbar__content">
             <app-editor-manual></app-editor-manual>
@@ -41,7 +36,7 @@
         </mat-tab>
       </mat-tab-group>
       <div class="toolbar__wrapper-step-buttons">
-        <app-step-buttons [step]="step" (changedStep)="changeStep.emit($event)"></app-step-buttons>
+        <app-step-buttons [step]="step" (buttonClick)="onSaveInstructions()"></app-step-buttons>
       </div>
     </div>
   </div>
