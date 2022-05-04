@@ -1,6 +1,7 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RepositoryI } from '../shared/models/repository.interface';
+import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 
 @Component({
   selector: 'app-repository',
@@ -14,5 +15,9 @@ export class RepositoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.repository = this.route.snapshot.data.repository;
+  }
+
+  getRepositoryTypeEnum() {
+    return RepositoryType;
   }
 }

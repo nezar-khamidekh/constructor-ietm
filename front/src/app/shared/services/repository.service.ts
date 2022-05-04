@@ -43,6 +43,12 @@ export class RepositoryService {
     });
   }
 
+  getFavorite(userId: string): Observable<RepositoryI[]> {
+    return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/favorite/user/${userId}`, {
+      withCredentials: true,
+    });
+  }
+
   update(data: any) {
     return this.http.post(`${this.apiUrl}/repository/update`, data, {
       withCredentials: true,

@@ -60,9 +60,8 @@
   }
 
   &__type{
-    width: 26px;
-    height: 26px;
-    margin-right: 5px;
+    width: 24px;
+    height: 24px;
   }
 
   &__title {
@@ -71,6 +70,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-left: 5px;
   }
 
   &__author {
@@ -87,7 +87,7 @@
 
   &__author-username {
     opacity: 0.7;
-    margin-left: 4px;
+    margin-left: 5px;
   }
 
   &__date {

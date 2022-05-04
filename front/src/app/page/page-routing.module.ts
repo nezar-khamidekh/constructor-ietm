@@ -24,6 +24,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'favorite',
+        loadChildren: () =>
+          import('../favorite-repositories/favorite-repositories.module').then(
+            (m) => m.FavoriteRepositoriesModule,
+          ),
+      },
+      {
         path: 'user-repositories',
         loadChildren: () =>
           import('../user-repositories/user-repositories.module').then(
