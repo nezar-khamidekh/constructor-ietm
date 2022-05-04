@@ -125,5 +125,16 @@
         </mat-radio-group>
       </div>
     </div>
+    <div
+      class="toolbar__btn"
+      [matTooltip]="viewMode ? 'Скрыть аннотации' : 'Отобразить аннотации'"
+      *ngIf="router.url.startsWith('/repository')"
+    >
+      <app-viewer-button
+        [iconPath]="'assets/svg/viewMode.svg'"
+        [buttonName]="viewMode ? 'Скрытие аннотаций' : 'Отображение аннотации'"
+        (btnClicked)="hideAnnotation()"
+      ></app-viewer-button>
+    </div>
   </div>
 </div>

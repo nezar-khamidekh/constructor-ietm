@@ -6,6 +6,7 @@ import {
   EventEmitter,
   Input,
 } from '@angular/core';
+import { Router } from '@angular/router';
 import {
   CAMERA_ROTATE_SPEED,
   SECTION_DEFAULT_CONSTANT,
@@ -28,6 +29,7 @@ export class ViewerToolbarComponent implements OnInit {
   @Input() constantSectionXZ = SECTION_DEFAULT_CONSTANT;
   @Input() constantSectionXY = SECTION_DEFAULT_CONSTANT;
   @Input() currentPlane: number | null = null;
+  @Input() viewMode: boolean;
   @Output() viewerBtnClicked = new EventEmitter<number>();
   @Output() rotateCameraSpeedChanged = new EventEmitter<number>();
   @Output() explodePowerChanged = new EventEmitter<number>();
@@ -44,7 +46,7 @@ export class ViewerToolbarComponent implements OnInit {
   explodeSliderMaxValue = 1.5;
   explodeSliderStep = 0.1;
 
-  constructor() {}
+  constructor(public router: Router) {}
 
   ngOnInit(): void {}
 
@@ -86,6 +88,10 @@ export class ViewerToolbarComponent implements OnInit {
 
   cutModel() {
     this.viewerBtnClicked.emit(VIEWER_BUTTONS.Cut);
+  }
+
+  hideAnnotation() {
+    this.viewerBtnClicked.emit(VIEWER_BUTTONS.HideAnnotations);
   }
 
   cutModelBtnIsActive() {

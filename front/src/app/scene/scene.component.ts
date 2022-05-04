@@ -46,6 +46,7 @@ export enum VIEWER_BUTTONS {
   PlayAnimation,
   PauseAnimation,
   Cut,
+  HideAnnotations,
 }
 
 @Component({
@@ -59,6 +60,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() viewerMouseMode = VIEWER_MOUSE_MODE.Default;
   @Input() repositoryId: string;
   @Input() modelId: string;
+  @Input() viewMode: boolean;
   @Output() applyAnnotationPosition = new EventEmitter();
   @Output() viewerIsReady = new EventEmitter();
 
@@ -472,6 +474,17 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
           this.constantSectionXY = SECTION_DEFAULT_CONSTANT;
           this.btnIsInAction = true;
         } else this.stopCuttingModel();
+        break;
+      case VIEWER_BUTTONS.HideAnnotations:
+        if (this.annotations.length) {
+          this.annotations.forEach((annotation) => {
+            this.sceneService.toggleAnnotationsVisibility(
+              annotation.id,
+              this.viewMode ? false : true,
+            );
+          });
+        }
+        this.viewMode = !this.viewMode;
         break;
       default:
         break;

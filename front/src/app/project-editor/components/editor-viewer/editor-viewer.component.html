@@ -4,6 +4,7 @@
       [viewerMouseMode]="viewerMouseMode"
       [repositoryId]="repositoryId"
       [modelId]="modelId"
+      [viewMode]="false"
       (applyAnnotationPosition)="onApplyAnnotationPosition($event)"
       (viewerIsReady)="onViewerIsReady()"
     ></app-scene>
@@ -25,7 +26,6 @@
               (saveAnnotation)="onSaveAnnotation($event)"
               (applyAnnotation)="onApplyAnnotation($event)"
               (deleteAnnotation)="onDeleteAnnotation($event)"
-              (hideAnnotation)="onHideAnnotation($event)"
             ></app-editor-annotations>
           </div>
         </mat-tab>

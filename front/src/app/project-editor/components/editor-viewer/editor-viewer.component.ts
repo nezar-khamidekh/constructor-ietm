@@ -55,7 +55,6 @@ export class EditorViewerComponent implements OnInit {
   };
 
   viewerMouseMode = VIEWER_MOUSE_MODE.Default;
-  previousTabIndex = 0;
 
   constructor(
     private sceneService: SceneService,
@@ -80,17 +79,16 @@ export class EditorViewerComponent implements OnInit {
 
   changeTab(currentTab: MatTabChangeEvent) {
     if (this.annotations.length) {
-      if (currentTab.index === 0) {
+      if (currentTab.index === 1) {
         for (let i = 0; i < this.annotations.length; i++) {
           this.sceneService.toggleAnnotationsVisibility(this.annotations[i].id, true);
         }
       }
-      if ((currentTab.index === 1 || currentTab.index === 2) && this.previousTabIndex === 0) {
+      if (currentTab.index === 0 || currentTab.index === 2) {
         for (let i = 0; i < this.annotations.length; i++) {
           this.sceneService.toggleAnnotationsVisibility(this.annotations[i].id, false);
         }
       }
-      this.previousTabIndex = currentTab.index;
     }
   }
 
@@ -140,9 +138,9 @@ export class EditorViewerComponent implements OnInit {
     );
   }
 
-  onHideAnnotation(hideAnnotation: AnnotationI) {
-    this.sceneService.toggleAnnotationsVisibility(hideAnnotation.id);
-  }
+  // onHideAnnotation(hideAnnotation: AnnotationI) {
+  //   this.sceneService.toggleAnnotationsVisibility(hideAnnotation.id);
+  // }
 
   onApplyAnnotationPosition(value: any) {
     this.currentAnnotation = {
