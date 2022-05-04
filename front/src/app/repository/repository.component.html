@@ -1,6 +1,17 @@
 <div class="repository">
   <div class="repository__header">
-    <p class="repository__title">{{ repository.title }}</p>
+    <div class="repository__title-wrapper">
+      <img
+        class="repository__type"
+        [src]="
+          repository.type === getRepositoryTypeEnum().Public
+            ? 'assets/svg/publicRepository.svg'
+            : 'assets/svg/privateRepository.svg'
+        "
+        [alt]="repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'"
+      />
+      <h2 class="repository__title">{{ repository.title }}</h2>
+    </div>
     <div class="repository__author">
       <img
         class="repository__author-avatar"
