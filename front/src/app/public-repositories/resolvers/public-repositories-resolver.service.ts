@@ -7,7 +7,7 @@ import { RepositoryService } from 'src/app/shared/services/repository.service';
 @Injectable({
   providedIn: 'root',
 })
-export class RepositoriesResolverService implements Resolve<any> {
+export class PublicRepositoriesResolverService implements Resolve<any> {
   constructor(private repositoryService: RepositoryService) {}
 
   resolve(): Observable<RepositoryI[]> {

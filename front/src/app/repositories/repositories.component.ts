@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
 import { RepositoryI } from '../shared/models/repository.interface';
+import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 
 @Component({
   selector: 'app-repositories',
@@ -13,4 +14,8 @@ export class RepositoriesComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {}
+
+  getRepositoryTypeEnum() {
+    return RepositoryType;
+  }
 }

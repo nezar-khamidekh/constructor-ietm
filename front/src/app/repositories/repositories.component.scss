@@ -53,6 +53,18 @@
     }
   }
 
+  &__header-title-wrapper{
+    display: flex;
+    align-items: center;
+
+  }
+
+  &__type{
+    width: 26px;
+    height: 26px;
+    margin-right: 5px;
+  }
+
   &__title {
     font-size: 16px;
     font-weight: 700;

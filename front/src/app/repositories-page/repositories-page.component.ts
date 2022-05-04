@@ -1,5 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, Input } from '@angular/core';
 import { RepositoryI } from '../shared/models/repository.interface';
 
 @Component({
@@ -8,11 +7,12 @@ import { RepositoryI } from '../shared/models/repository.interface';
   styleUrls: ['./repositories-page.component.scss'],
 })
 export class RepositoriesPageComponent implements OnInit {
-  repositories: RepositoryI[] = [];
+  @Input() repositories: RepositoryI[] = [];
+  @Input() title = '';
 
-  constructor(private route: ActivatedRoute) {}
+  constructor() {}
 
   ngOnInit(): void {
-    this.repositories = this.route.snapshot.data.repositories;
+    // this.repositories = this.route.snapshot.data.repositories;
   }
 }
