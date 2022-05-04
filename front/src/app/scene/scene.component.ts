@@ -309,13 +309,11 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
       annotation.rendered = true;
 
-      if (annotation.description) {
-        const annotationDescriptionDiv = this.renderer.createElement('div');
-        this.renderer.addClass(annotationDescriptionDiv, 'annotation-description');
-        this.renderer.setProperty(annotationDescriptionDiv, 'innerHTML', annotation.description);
-        this.renderer.appendChild(annotationDiv, annotationDescriptionDiv);
-        annotation.descriptionDomElement = annotationDescriptionDiv;
-      }
+      const annotationDescriptionDiv = this.renderer.createElement('div');
+      this.renderer.addClass(annotationDescriptionDiv, 'annotation-description');
+      this.renderer.setProperty(annotationDescriptionDiv, 'innerHTML', annotation.description);
+      this.renderer.appendChild(annotationDiv, annotationDescriptionDiv);
+      annotation.descriptionDomElement = annotationDescriptionDiv;
     });
     this.sceneService.setAnnotationMarkers(annotationMarkers);
   }
