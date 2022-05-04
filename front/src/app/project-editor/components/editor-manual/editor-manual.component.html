@@ -23,11 +23,10 @@
       color="primary"
       [min]="0"
       [max]="100"
-      [step]="1"
-      [value]="time"
+      [value]="durationPercent"
       (input)="changeTime($event)"
     ></mat-slider>
-    <span>{{ time }}</span>
+    <span>{{ output }}</span>
   </div>
   <div class="editor-manual__control-time">
     <div class="editor-manual__wrapper-input">
