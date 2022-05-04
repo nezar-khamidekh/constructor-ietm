@@ -15,9 +15,15 @@ export class EditorManualComponent implements OnInit {
   ];
   selectedAnimation = this.animations[0].name;
 
+  time = 0;
+
   constructor() {}
 
   ngOnInit(): void {}
 
   changeAnimation(e: any) {}
+
+  changeTime(e: any) {
+    this.time = e.value;
+  }
 }

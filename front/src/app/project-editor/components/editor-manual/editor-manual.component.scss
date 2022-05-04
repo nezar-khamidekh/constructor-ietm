@@ -3,6 +3,24 @@
   flex-direction: column;
   padding: 0 16px;
 
+  &__timeline-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__wrapper-buttons {
+  }
+
+  &__slider {
+    min-width: 340px;
+  }
+
+  &__btn-icon {
+    width: 24px;
+    height: 24px;
+  }
+
   &__btn {
     margin-top: 15px;
     width: 40%;
@@ -10,11 +28,13 @@
 
   &__select {
     width: 40%;
+    margin-top: 10px;
   }
 
   &__control-time {
     display: flex;
     justify-content: space-between;
+    margin-top: 10px;
   }
 
   &__wrapper-input {

@@ -9,6 +9,26 @@
       }}</mat-option>
     </mat-select>
   </mat-form-field>
+  <div class="editor-manual__timeline-wrapper">
+    <div class="editor-manual__wrapper-buttons">
+      <button mat-icon-button matTooltip="Продолжить">
+        <img class="editor-manual__btn-icon" src="assets/svg/playAnimation.svg" alt="продолжить" />
+      </button>
+      <button mat-icon-button matTooltip="Пауза">
+        <img class="editor-manual__btn-icon" src="assets/svg/pauseAnimation.svg" alt="пауза" />
+      </button>
+    </div>
+    <mat-slider
+      class="editor-manual__slider"
+      color="primary"
+      [min]="0"
+      [max]="100"
+      [step]="1"
+      [value]="time"
+      (input)="changeTime($event)"
+    ></mat-slider>
+    <span>{{ time }}</span>
+  </div>
   <div class="editor-manual__control-time">
     <div class="editor-manual__wrapper-input">
       <p class="editor-manual__title-input">Начало</p>
@@ -35,14 +55,10 @@
           <td class="editor-manual__column editor-manual__column-time">0:05</td>
           <td class="editor-manual__column editor-manual__column-action">
             <button mat-icon-button matTooltip="Редактировать руководство">
-              <img
-                class="annotations-editor__btn-icon"
-                src="assets/svg/edit.svg"
-                alt="редактировать"
-              />
+              <img class="editor-manual__btn-icon" src="assets/svg/edit.svg" alt="редактировать" />
             </button>
             <button mat-icon-button matTooltip="Удалить руководство">
-              <img class="annotations-editor__btn-icon" src="assets/svg/delete.svg" alt="удалить" />
+              <img class="editor-manual__btn-icon" src="assets/svg/delete.svg" alt="удалить" />
             </button>
           </td>
         </tr>
