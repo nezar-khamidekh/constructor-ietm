@@ -22,6 +22,7 @@ import { ModelFormat, RegisterModelDto } from '../models/dto/registerModel.dto';
 import { Favorite, FavoriteDocument } from '../models/schemas/favorite.schema';
 import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
 import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
+import { CheckRepoInFavoriteDto } from '../models/dto/checkRepoInFavorite.dto';
 
 @Injectable()
 export class RepositoryService {
@@ -489,6 +490,19 @@ export class RepositoryService {
             }),
           );
         }
+      }),
+    );
+  }
+
+  checkFavorite(checkRepoInFavoriteDto: CheckRepoInFavoriteDto) {
+    return from(
+      this.favoriteModel.findOne({
+        user: checkRepoInFavoriteDto.userId,
+        repository: checkRepoInFavoriteDto.repoId,
+      }),
+    ).pipe(
+      map((ticket) => {
+        return ticket ? true : false;
       }),
     );
   }

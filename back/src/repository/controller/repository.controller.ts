@@ -19,6 +19,7 @@ import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto'
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
+import { CheckRepoInFavoriteDto } from '../models/dto/checkRepoInFavorite.dto';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
 import { RegisterModelDto } from '../models/dto/registerModel.dto';
 import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
@@ -151,6 +152,13 @@ export class RepositoryController {
   @Post('favorite/add')
   addRepositoryToFavorite(@Body() addToFavoriteDto: AddToFavoriteDto) {
     return this.repositoryService.addRepoToFavorite(addToFavoriteDto);
+  }
+
+  @Post('favorite/check')
+  checkRepositoryInFavorite(
+    @Body() checkRepoInFavoriteDto: CheckRepoInFavoriteDto,
+  ) {
+    return this.repositoryService.checkFavorite(checkRepoInFavoriteDto);
   }
 
   @Post('favorite/remove')
