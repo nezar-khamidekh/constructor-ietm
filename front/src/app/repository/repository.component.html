@@ -1,35 +1,54 @@
 <div class="repository">
   <div class="repository__header">
-    <div class="repository__title-wrapper">
-      <img
-        class="repository__type"
-        [src]="
-          repository.type === getRepositoryTypeEnum().Public
-            ? 'assets/svg/publicRepository.svg'
-            : 'assets/svg/privateRepository.svg'
-        "
-        [alt]="repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'"
-      />
-      <h2 class="repository__title">{{ repository.title }}</h2>
-    </div>
-    <div class="repository__author">
-      <img
-        class="repository__author-avatar"
-        appImageSanitized
-        [imagePath]="repository.author.avatar || ''"
-        [defaultImage]="'assets/svg/avatar.svg'"
-        [alt]="'аватар ' + repository.author.login"
-      />
-      <span class="repository__author-username">{{ repository.author.login }}</span>
-    </div>
-    <div class="repository__dates">
-      <div class="repository__date">
-        <img class="repository__date-img" src="assets/svg/dateEdit.svg" alt="дата изменения" />
-        <span class="repository__date-text">{{ repository.updatedAt | date: 'dd.MM.yyyy' }}</span>
+    <div class="repository__header-column">
+      <div class="repository__title-wrapper">
+        <img
+          class="repository__type"
+          [src]="
+            repository.type === getRepositoryTypeEnum().Public
+              ? 'assets/svg/publicRepository.svg'
+              : 'assets/svg/privateRepository.svg'
+          "
+          [alt]="repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'"
+        />
+        <h2 class="repository__title">{{ repository.title }}</h2>
       </div>
-      <div class="repository__date">
-        <img class="repository__date-img" src="assets/svg/dateCreate.svg" alt="дата создания" />
-        <span class="repository__date-text">{{ repository.createdAt | date: 'dd.MM.yyyy' }}</span>
+      <div class="repository__author">
+        <img
+          class="repository__author-avatar"
+          appImageSanitized
+          [imagePath]="repository.author.avatar || ''"
+          [defaultImage]="'assets/svg/avatar.svg'"
+          [alt]="'аватар ' + repository.author.login"
+        />
+        <span class="repository__author-username">{{ repository.author.login }}</span>
+      </div>
+      <div class="repository__dates">
+        <div class="repository__date">
+          <img class="repository__date-img" src="assets/svg/dateEdit.svg" alt="дата изменения" />
+          <span class="repository__date-text">{{ repository.updatedAt | date: 'dd.MM.yyyy' }}</span>
+        </div>
+        <div class="repository__date">
+          <img class="repository__date-img" src="assets/svg/dateCreate.svg" alt="дата создания" />
+          <span class="repository__date-text">{{ repository.createdAt | date: 'dd.MM.yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="repository__header-column">
+      <div class="repository__actions">
+        <button class="repository__action" mat-icon-button>
+          <img
+            class="repository__action-icon"
+            [src]="
+              isInFavorite
+                ? 'assets/svg/repositoryFavorite.svg'
+                : 'assets/svg/repositoryNotFavorite.svg'
+            "
+            [alt]="isInFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
+            (click)="onToggleFavorite()"
+          />
+        </button>
+        <button class="repository__action" mat-flat-button color="primary">Подписаться</button>
       </div>
     </div>
   </div>

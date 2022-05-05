@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SummaryComponent } from './components/summary/summary.component';
 import { RepositoryComponent } from './repository.component';
+import { RepositoryIsInFavoriteResolverService } from './resolvers/repository-is-in-favorite-resolver.service';
 import { RepositoryResolverService } from './resolvers/repository-resolver.service';
 
 const routes: Routes = [
@@ -10,6 +11,7 @@ const routes: Routes = [
     component: RepositoryComponent,
     resolve: {
       repository: RepositoryResolverService,
+      isInFavorite: RepositoryIsInFavoriteResolverService,
     },
     children: [
       {

@@ -1,4 +1,9 @@
-<app-repositories-page
-  [repositories]="repositories"
-  [title]="'Мои репозитории'"
-></app-repositories-page>
+<ng-container *ngIf="repositories.length; else noRepositories">
+  <app-repositories-page
+    [title]="'Мои репозитории'"
+    [repositories]="repositories"
+  ></app-repositories-page>
+</ng-container>
+<ng-template #noRepositories>
+  <app-page-status [text]="'Нет личных репозиториев'"></app-page-status>
+</ng-template>

@@ -6,7 +6,6 @@ import { RepositoryI } from '../shared/models/repository.interface';
   selector: 'app-favorite-repositories',
   templateUrl: './favorite-repositories.component.html',
   styleUrls: ['./favorite-repositories.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoriteRepositoriesComponent implements OnInit {
   repositories: RepositoryI[] = [];
@@ -14,6 +13,8 @@ export class FavoriteRepositoriesComponent implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.repositories = this.route.snapshot.data.repositories;
+    this.repositories = this.route.snapshot.data.repositories.map(
+      (favoriteRepository: any) => favoriteRepository.repository,
+    );
   }
 }

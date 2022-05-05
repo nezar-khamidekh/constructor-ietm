@@ -1,5 +1,8 @@
 <ng-container *ngIf="repositories.length; else noRepositories">
-  <app-repositories-page [title]="'Избранное'"></app-repositories-page>
+  <app-repositories-page
+    [title]="'Избранное'"
+    [repositories]="repositories"
+  ></app-repositories-page>
 </ng-container>
 <ng-template #noRepositories>
   <app-page-status [text]="'Нет репозиториев, добавленных в избранное'"></app-page-status>

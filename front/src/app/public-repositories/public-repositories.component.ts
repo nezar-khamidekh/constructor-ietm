@@ -6,7 +6,6 @@ import { RepositoryI } from '../shared/models/repository.interface';
   selector: 'app-public-repositories',
   templateUrl: './public-repositories.component.html',
   styleUrls: ['./public-repositories.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublicRepositoriesComponent implements OnInit {
   repositories: RepositoryI[] = [];

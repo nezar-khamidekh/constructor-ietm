@@ -54,4 +54,34 @@ export class RepositoryService {
       withCredentials: true,
     });
   }
+
+  addToFavorite(repoId: string, userId: string) {
+    return this.http.post(
+      `${this.apiUrl}/repository/favorite/add`,
+      { repoId: repoId, userId: userId },
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  removeFromFavorite(repoId: string, userId: string) {
+    return this.http.post(
+      `${this.apiUrl}/repository/favorite/remove`,
+      { repoId: repoId, userId: userId },
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  checkIsInFavorite(repoId: string, userId: string): Observable<boolean> {
+    return this.http.post<boolean>(
+      `${this.apiUrl}/repository/favorite/check`,
+      { repoId: repoId, userId: userId },
+      {
+        withCredentials: true,
+      },
+    );
+  }
 }
