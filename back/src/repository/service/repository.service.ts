@@ -509,15 +509,22 @@ export class RepositoryService {
 
   getUserFavoriteReps(userId: string) {
     return from(
-      this.favoriteModel
-        .find({ user: userId })
-        .populate('repository', [
+      this.favoriteModel.find({ user: userId }).populate({
+        path: 'repository',
+        select: [
           'title',
           'author',
           'type',
           'description',
           'preview',
-        ]),
+          'createdAt',
+          'updatedAt',
+        ],
+        populate: {
+          path: 'author',
+          select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
+        },
+      }),
     );
   }
 
