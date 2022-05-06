@@ -15,8 +15,8 @@ export class EditorManualComponent implements OnInit {
   ];
   selectedAnimation = this.animations[0].name;
 
-  durationPercent = 0;
-  maxDuration = 60;
+  curSecondsOnTimeline = 0;
+  maxDuration = 125;
   output = '00:00';
 
   constructor() {}
@@ -26,12 +26,9 @@ export class EditorManualComponent implements OnInit {
   changeAnimation(e: any) {}
 
   changeTime(e: any) {
-    this.durationPercent = e.value;
-    const duration = Math.floor((this.maxDuration * e.value) / 100);
-
-    const minutes = String(Math.floor(duration / 60)).padStart(2, '0');
-    const seconds = String(duration % 60).padStart(2, '0');
-
+    this.curSecondsOnTimeline = e.value;
+    const minutes = String(Math.floor(this.curSecondsOnTimeline / 60)).padStart(2, '0');
+    const seconds = String(this.curSecondsOnTimeline % 60).padStart(2, '0');
     this.output = minutes + ':' + seconds;
   }
 }
