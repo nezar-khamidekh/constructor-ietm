@@ -22,8 +22,12 @@ export class AuthGuard implements CanActivate {
       }),
       catchError((err) => {
         console.log(err);
-        if (route.data.checkUser) this.router.navigate(['/repositories']);
-        return of(!route.data.checkUser);
+        if (state.url.startsWith('/auth')) {
+          return of(true);
+        } else {
+          this.router.navigate(['/repositories']);
+          return of(false);
+        }
       }),
     );
   }

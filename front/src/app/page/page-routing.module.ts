@@ -9,11 +9,13 @@ const routes: Routes = [
     component: PageComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'main',
+      },
+      {
         path: 'main',
         loadChildren: () => import('../main/main.module').then((m) => m.MainModule),
-        data: {
-          checkUser: true,
-        },
         canActivate: [AuthGuard],
       },
       {
@@ -46,9 +48,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
         canActivate: [AuthGuard],
-        data: {
-          checkUser: true,
-        },
       },
       {
         path: 'editor/:model',

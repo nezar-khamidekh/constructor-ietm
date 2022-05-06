@@ -80,6 +80,9 @@ export class ManageTeamComponent implements OnInit {
       width: '450px',
       height: '450px',
       autoFocus: false,
+      data: {
+        type: 'circle',
+      },
     });
 
     this.subs.add(

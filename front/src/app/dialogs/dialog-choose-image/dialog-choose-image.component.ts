@@ -6,10 +6,12 @@ import {
   ElementRef,
   ChangeDetectorRef,
   Renderer2,
+  Inject,
 } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as Croppie from 'croppie';
+import { CropType } from 'croppie';
 
 @Component({
   selector: 'app-dialog-choose-image',
@@ -26,6 +28,7 @@ export class DialogChooseImageComponent implements OnInit {
   @ViewChild('croppie') croppie!: ElementRef;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { type: CropType },
     public dialogRef: MatDialogRef<DialogChooseImageComponent>,
     private sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef,
@@ -50,7 +53,7 @@ export class DialogChooseImageComponent implements OnInit {
       viewport: {
         width: 100,
         height: 100,
-        type: 'circle',
+        type: this.data.type,
       },
       boundary: {
         width: 150,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
 import { RepositoryService } from 'src/app/shared/services/repository.service';
 @Injectable({
@@ -10,9 +10,11 @@ export class RepositoryIsInFavoriteResolverService implements Resolve<any> {
   constructor(private repositoryService: RepositoryService, private dataStore: DataStoreService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<boolean> {
-    return this.repositoryService.checkIsInFavorite(
-      route.paramMap.get('repoId')!,
-      this.dataStore.getUserValue()?._id!,
-    );
+    return this.dataStore.getUserValue()
+      ? this.repositoryService.checkIsInFavorite(
+          route.paramMap.get('repoId')!,
+          this.dataStore.getUserValue()?._id!,
+        )
+      : of(false);
   }
 }

@@ -73,6 +73,9 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
       width: '450px',
       height: '450px',
       autoFocus: false,
+      data: {
+        type: 'square',
+      },
     });
 
     this.subs.add(

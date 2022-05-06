@@ -19,7 +19,7 @@ export class RepositoryComponent implements OnInit {
   isInFavorite = false;
   isInSubscriptions = false;
 
-  user!: UserI;
+  user: UserI | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,9 +29,9 @@ export class RepositoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.user = this.dataStore.getUserValue()!;
     this.repository = this.route.snapshot.data.repository;
     this.isInFavorite = this.route.snapshot.data.isInFavorite;
-    this.user = this.dataStore.getUserValue()!;
   }
 
   getRepositoryTypeEnum() {
@@ -42,7 +42,7 @@ export class RepositoryComponent implements OnInit {
     if (this.isInFavorite) {
       this.subs.add(
         this.repositoryService
-          .removeFromFavorite(this.repository._id, this.user._id)
+          .removeFromFavorite(this.repository._id, this.user!._id)
           .subscribe((res) => {
             this.isInFavorite = !this.isInFavorite;
             this.cdr.detectChanges();
@@ -51,7 +51,7 @@ export class RepositoryComponent implements OnInit {
     } else {
       this.subs.add(
         this.repositoryService
-          .addToFavorite(this.repository._id, this.user._id)
+          .addToFavorite(this.repository._id, this.user!._id)
           .subscribe((res) => {
             this.isInFavorite = !this.isInFavorite;
             this.cdr.detectChanges();

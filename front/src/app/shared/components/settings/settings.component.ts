@@ -61,33 +61,16 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  onSubmit() {
-    if (this.userFormGroup.valid) {
-      const user: UserUpdateI = {
-        _id: this.data.user._id!,
-        email: String(this.userFormGroup.get('email')?.value).toLowerCase(),
-        password: String(this.userFormGroup.get('password')?.value),
-        firstName: String(this.userFormGroup.get('firstName')?.value),
-        lastName: String(this.userFormGroup.get('lastName')?.value),
-        avatar: this.previewImageUrl || this.data.user.avatar || '',
-      };
-      this.subs.add(
-        this.userService.updateUser(user).subscribe(
-          (res: any) => {
-            this.dataStore.setUser({ ...user, login: this.data.user.login });
-            this.dialogRef.close();
-          },
-          (err: any) => {
-            console.log(err);
-          },
-        ),
-      );
+  getErrorMessage(control: any, error: string) {
+    if (control.hasError('required')) {
+      return 'Обязательное поле';
     }
+    if (control.hasError('email')) {
+      return 'Некорректный email';
+    }
+    return control.hasError('pattern') ? error : '';
   }
 
-  /**
-   * Инициализация формы регистрации
-   */
   initializeUserForm() {
     this.userFormGroup = this.fb.group({
       email: [this.data.user.email, [Validators.required, Validators.email]],
@@ -115,20 +98,38 @@ export class SettingsComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * Получение сообщений об ошибках элементы формы
-   * @param control Элемент управления формы
-   * @param error Ошибка валидности элемента формы
-   * @returns Сообщение об ошибки, либо ничего
-   */
-  getErrorMessage(control: any, error: string) {
-    if (control.hasError('required')) {
-      return 'Обязательное поле';
+  onSubmit() {
+    if (this.userFormGroup.valid) {
+      const user: UserUpdateI = {
+        _id: this.data.user._id!,
+        email: String(this.userFormGroup.get('email')?.value).toLowerCase(),
+        firstName: String(this.userFormGroup.get('firstName')?.value),
+        lastName: String(this.userFormGroup.get('lastName')?.value),
+        avatar: this.previewImageUrl || this.data.user.avatar || '',
+      };
+      if (this.userFormGroup.get('password')?.value) {
+        user.password = String(this.userFormGroup.get('password')?.value);
+      }
+      this.subs.add(
+        this.userService.updateUser(user).subscribe(
+          (res: any) => {
+            this.dataStore.setUser({ ...user, login: this.data.user.login });
+            this.dialogRef.close();
+          },
+          (err: any) => {
+            console.log(err);
+          },
+        ),
+      );
     }
-    if (control.hasError('email')) {
-      return 'Некорректный email';
-    }
-    return control.hasError('pattern') ? error : '';
+  }
+
+  updateImageResult() {
+    this.croppieObj.result({ type: 'base64', size: 'viewport' }).then((crop: any) => {
+      this.previewImage = this.sanitizer.bypassSecurityTrustResourceUrl(crop);
+      this.previewImageUrl = crop;
+      this.cdr.detectChanges();
+    });
   }
 
   onFileChange(event: any) {
@@ -175,13 +176,5 @@ export class SettingsComponent implements OnInit, OnDestroy {
     };
 
     this.fileReader.readAsDataURL(event.target.files[0]);
-  }
-
-  updateImageResult() {
-    this.croppieObj.result({ type: 'base64', size: 'viewport' }).then((crop: any) => {
-      this.previewImage = this.sanitizer.bypassSecurityTrustResourceUrl(crop);
-      this.previewImageUrl = crop;
-      this.cdr.detectChanges();
-    });
   }
 }
