@@ -522,12 +522,13 @@ export class SceneService {
       node.parent.type !== 'Sprite' &&
       node.type !== 'Sprite'
     ) {
+      const mesh = this.viewer.scene.getObjectById(node.id) as any;
       switch (typeEvent) {
         case 'mouseenter':
-          node.material.color.setHex(HIGHLIGHT_COLOR);
+          mesh.material.color.setHex(HIGHLIGHT_COLOR);
           break;
         case 'mouseleave':
-          node.material.color.setHex(node.defaultMaterial.color.getHex());
+          mesh.material.color.setHex(mesh.defaultMaterial.color.getHex());
           break;
         default:
           break;

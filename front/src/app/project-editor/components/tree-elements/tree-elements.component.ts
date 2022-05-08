@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { SceneService } from 'src/app/scene/services/scene.service';
+import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
+import { TreeStructureService } from 'src/app/tree-structure/services/tree-structure.service';
 import * as THREE from 'three';
 
 @Component({
@@ -18,20 +20,23 @@ import * as THREE from 'three';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TreeElementsComponent implements OnInit, OnChanges {
-  @Input() model: any;
+  @Input() tree: TreeStructureI;
 
   treeControl = new NestedTreeControl((node: any) => node.children);
-  dataSource = new MatTreeNestedDataSource();
+  dataSource = new MatTreeNestedDataSource<TreeStructureI>();
 
   hasChild = (_: number, node: any) => !!node.children && node.children.length > 0;
 
-  constructor(public sceneService: SceneService) {}
+  constructor(
+    public sceneService: SceneService,
+    private treeStructureService: TreeStructureService,
+  ) {}
 
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.model && !changes.model.firstChange) {
-      this.dataSource.data = [this.model];
+    if (changes.tree && !changes.tree.firstChange) {
+      this.dataSource.data = [this.tree];
     }
   }
 

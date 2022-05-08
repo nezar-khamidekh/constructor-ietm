@@ -11,6 +11,7 @@ import {
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
+import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
 import { TreeStructureService } from 'src/app/tree-structure/services/tree-structure.service';
 import { SubSink } from 'subsink';
 export const enum VIEWER_MOUSE_MODE {
@@ -43,7 +44,7 @@ export class EditorViewerComponent implements OnInit {
   @Input() modelId: string;
   @Output() saveInstructions = new EventEmitter();
 
-  model: any = null;
+  tree: TreeStructureI;
 
   annotations: AnnotationI[] = [];
 
@@ -138,10 +139,6 @@ export class EditorViewerComponent implements OnInit {
     );
   }
 
-  // onHideAnnotation(hideAnnotation: AnnotationI) {
-  //   this.sceneService.toggleAnnotationsVisibility(hideAnnotation.id);
-  // }
-
   onApplyAnnotationPosition(value: any) {
     this.currentAnnotation = {
       title: this.currentAnnotation.title,
@@ -152,12 +149,10 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onViewerIsReady() {
-    //generate tree
-    //this.treeStructureService.generate();
-    this.model = this.sceneService.getModel();
+    this.tree = this.treeStructureService.generate(this.sceneService.getModel());
   }
 
   onSaveInstructions() {
-    this.saveInstructions.emit({ annotations: this.annotations, modelTree: this.model });
+    this.saveInstructions.emit({ annotations: this.annotations, modelTree: this.tree });
   }
 }

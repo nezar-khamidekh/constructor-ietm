@@ -7,7 +7,7 @@
           (mouseenter)="sceneService.setHighLightObj(node, 'mouseenter')"
           (mouseleave)="sceneService.setHighLightObj(node, 'mouseleave')"
         >
-          {{ node.userData.name || node.name }}
+          {{ node.name }}
         </div>
         <ng-container *ngIf="!node.isRoot">
           <button
@@ -40,7 +40,7 @@
           <button
             mat-icon-button
             matTreeNodeToggle
-            [attr.aria-label]="'Toggle ' + node.userData.name || node.name"
+            [attr.aria-label]="'Toggle ' + node.name"
             [matTooltip]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
           >
             <img
@@ -57,7 +57,7 @@
             (mouseenter)="sceneService.setHighLightObj(node, 'mouseenter')"
             (mouseleave)="sceneService.setHighLightObj(node, 'mouseleave')"
           >
-            {{ node.userData.name || node.name }}
+            {{ node.name }}
           </div>
           <ng-container *ngIf="!node.isRoot">
             <button

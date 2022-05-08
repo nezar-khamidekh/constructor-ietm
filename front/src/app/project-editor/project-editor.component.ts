@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { AnnotationI } from '../shared/models/annotation.interface';
+import { TreeStructureI } from '../shared/models/treeStructure.interface';
 import { RepositoryService } from '../shared/services/repository.service';
 
 @Component({
@@ -38,7 +39,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.newModelId = data.modelId;
   }
 
-  onSaveInstructions(data: { annotations: AnnotationI[]; modelTree: any }) {
+  onSaveInstructions(data: { annotations: AnnotationI[]; modelTree: TreeStructureI }) {
     this.subs.add(
       this.repositoryService
         .update({
@@ -56,7 +57,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
               }),
             },
           ],
-          // modelTree: data.modelTree,
+          modelTree: data.modelTree,
         })
         .subscribe((res) => {
           console.log(res);
