@@ -145,3 +145,12 @@ body {
   height: 1px;
   background-color: $primaryBlueGreyColor;
 }
+
+.dg.main {
+  position: absolute !important;
+  z-index: 11 !important;
+}
+
+.dg li.folder {
+  border-left: none !important;
+}

@@ -27,12 +27,13 @@ import {
   CAMERA_ROTATE_SPEED,
   SECTION_DEFAULT_CONSTANT,
   EXPLODE_POWER,
+  RENDERER_CLEAR_COLOR,
 } from '../shared/models/viewerConstants';
 import { SectionPlanes } from './services/section.service';
 import { LoadingService } from '../shared/services/loading.service';
 import { ViewCubeComponent } from './components/view-cube/view-cube.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ViewerSettingsComponent } from './components/viewer-settings/viewer-settings.component';
+import * as dat from 'dat.gui';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -110,6 +111,21 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   constantSectionXY = SECTION_DEFAULT_CONSTANT;
   currentPlane: number | null = null;
 
+  gui = new dat.GUI({ name: 'Найстройки сцены', autoPlace: false });
+
+  settings = {
+    grid: true,
+    background: '#' + RENDERER_CLEAR_COLOR.getHexString(),
+    resetBackground: () => {
+      this.settings.background = '#' + RENDERER_CLEAR_COLOR.getHexString();
+    },
+    scale: {
+      x: 1,
+      y: 1,
+      z: 1,
+    },
+  };
+
   constructor(
     public sceneService: SceneService,
     private renderer: Renderer2,
@@ -120,6 +136,13 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadingService.setIsLoading(false);
+
+    if (!this.viewMode) {
+      const visibleGridHelper = localStorage.getItem('visibleGridHelper') || '';
+      if (visibleGridHelper) this.settings.grid = visibleGridHelper === 'true' ? true : false;
+      const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
+      if (backgroundColorScene) this.settings.background = backgroundColorScene;
+    }
 
     this.subs.add(
       this.matMenuTrigger.menuClosed.subscribe((v) => {
@@ -161,6 +184,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.gui.destroy();
     this.subs.unsubscribe();
   }
 
@@ -206,8 +230,13 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sceneService.setGridHelper(gltf);
       this.sceneService.setLight();
       this.sceneService.setCameraPosition();
-      this.sceneService.setBackgroundColorScene();
       if (this.annotations.length) this.renderAnnotations(this.annotations);
+      if (!this.viewMode) {
+        this.sceneService.setGridHelperVisibility(this.settings.grid);
+        this.sceneService.setBackgroundColorScene(this.settings.background);
+        this.setGui();
+      }
+
       this.viewerInitialized = true;
       this.viewerIsReady.emit();
       this.cdr.detectChanges();
@@ -272,6 +301,37 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.activeBtnIndex === VIEWER_BUTTONS.Isolate,
       this.mouseCoords,
     );
+  }
+
+  setGui() {
+    const guiGridFolder = this.gui.addFolder('Сетка');
+    guiGridFolder
+      .add(this.settings, 'grid')
+      .name('Включить')
+      .onChange((value) => {
+        localStorage.setItem('visibleGridHelper', value);
+        this.sceneService.setGridHelperVisibility(value);
+      });
+
+    const guiSceneBackgroundFolder = this.gui.addFolder('Задний фон');
+    guiSceneBackgroundFolder
+      .addColor(this.settings, 'background')
+      .name('Цвет')
+      .listen()
+      .onChange((color) => {
+        localStorage.setItem('backgroundColorScene', color);
+        this.sceneService.setBackgroundColorScene(color);
+      });
+    guiSceneBackgroundFolder
+      .add(this.settings, 'resetBackground')
+      .name('Сбросить')
+      .onChange(() => {
+        localStorage.setItem('backgroundColorScene', '#' + RENDERER_CLEAR_COLOR.getHexString());
+        this.sceneService.setBackgroundColorScene('#' + RENDERER_CLEAR_COLOR.getHexString());
+      });
+
+    guiSceneBackgroundFolder.open();
+    this.renderer.appendChild(this.viewerWrapper.nativeElement, this.gui.domElement);
   }
 
   renderAnnotations(annotations: AnnotationI[]) {
@@ -529,9 +589,5 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contextMenuFirstOpen = false;
       this.matMenuTrigger.openMenu();
     }
-  }
-
-  openViewerSettings() {
-    this.dialog.open(ViewerSettingsComponent);
   }
 }

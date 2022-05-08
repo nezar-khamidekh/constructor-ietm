@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 export const CAMERA_FOV = 75;
 export const CAMERA_NEAR = 0.1;
-export const CAMERA_FAR = 1000;
+export const CAMERA_FAR = 10000;
 export const CAMERA_POSITION_RATE = 0.9;
 export const RENDERER_PIXEL_RATIO = 2;
 export const GRID_HELPER_SIZE_RATE = 3;

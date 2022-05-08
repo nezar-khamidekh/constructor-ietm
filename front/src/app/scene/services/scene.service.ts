@@ -38,10 +38,6 @@ import {
   AxisAngleOrientationI,
   OffsetFactorOrientationI,
 } from '../components/view-cube/view-cube.component';
-import {
-  DefualtPositionCamera,
-  ModeVisibleGridHelper,
-} from '../components/viewer-settings/viewer-settings.component';
 
 @Injectable({
   providedIn: 'root',
@@ -240,18 +236,12 @@ export class SceneService {
     gridHelper.position.set(center.x, boundBox.min.y, center.z);
     gridHelper.name = '__Grid';
     gltf.scene.add(gridHelper);
-    this.setVisibleGridHelper();
   }
 
-  setVisibleGridHelper() {
-    const visibleGridHelper = localStorage.getItem('visibleGridHelper') || '';
+  setGridHelperVisibility(visibility: boolean) {
     const grid = this.viewer.scene.getObjectByName('__Grid');
-    if (visibleGridHelper) {
-      if (Number(visibleGridHelper) === ModeVisibleGridHelper.SwitchedOn) {
-        grid!.visible = true;
-      } else {
-        grid!.visible = false;
-      }
+    if (grid) {
+      grid.visible = visibility;
     }
   }
 
@@ -260,52 +250,16 @@ export class SceneService {
   }
 
   setCameraPosition() {
-    const positionCamera = localStorage.getItem('defualtPositionCamera') || '';
-    if (positionCamera) {
-      switch (Number(positionCamera)) {
-        case DefualtPositionCamera.FrontRight:
-          this.viewer.camera.position.set(
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-        case DefualtPositionCamera.RightBack:
-          this.viewer.camera.position.set(
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-        case DefualtPositionCamera.BackLeft:
-          this.viewer.camera.position.set(
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-        case DefualtPositionCamera.LeftFront:
-          this.viewer.camera.position.set(
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-      }
-    } else {
-      this.viewer.camera.position.set(
-        this.modelLongestSide * CAMERA_POSITION_RATE,
-        (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-        this.modelLongestSide * CAMERA_POSITION_RATE,
-      );
-    }
+    this.viewer.camera.position.set(
+      this.modelLongestSide * CAMERA_POSITION_RATE,
+      (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+      this.modelLongestSide * CAMERA_POSITION_RATE,
+    );
     this.viewer.controls.update();
   }
 
-  setBackgroundColorScene() {
-    const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
-    if (backgroundColorScene) this.viewer.scene.background = new THREE.Color(backgroundColorScene);
-    else this.viewer.scene.background = new THREE.Color('#ffffff');
+  setBackgroundColorScene(color: string) {
+    this.viewer.scene.background = new THREE.Color(color);
   }
 
   resizeCanvas(box: any, canvas: any) {
@@ -393,46 +347,13 @@ export class SceneService {
   moveCameraWithAnimation(onCompleteCallback: () => void) {
     this.viewer.controls.enabled = false;
     const oldCameraPos = this.viewer.camera.position.clone();
-    const positionCamera = localStorage.getItem('defualtPositionCamera') || '';
-    let newCameraPos = new THREE.Vector3();
-    if (positionCamera) {
-      switch (Number(positionCamera)) {
-        case DefualtPositionCamera.FrontRight:
-          newCameraPos = new THREE.Vector3(
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-        case DefualtPositionCamera.RightBack:
-          newCameraPos = new THREE.Vector3(
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-        case DefualtPositionCamera.BackLeft:
-          newCameraPos = new THREE.Vector3(
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-        case DefualtPositionCamera.LeftFront:
-          newCameraPos = new THREE.Vector3(
-            -this.modelLongestSide * CAMERA_POSITION_RATE,
-            (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            this.modelLongestSide * CAMERA_POSITION_RATE,
-          );
-          break;
-      }
-    } else {
-      newCameraPos = new THREE.Vector3(
-        this.modelLongestSide * CAMERA_POSITION_RATE,
-        (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-        this.modelLongestSide * CAMERA_POSITION_RATE,
-      );
-    }
+
+    const newCameraPos = new THREE.Vector3(
+      this.modelLongestSide * CAMERA_POSITION_RATE,
+      (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+      this.modelLongestSide * CAMERA_POSITION_RATE,
+    );
+
     const tween = new TWEEN.Tween(oldCameraPos)
       .to(newCameraPos, CAMERA_ANIM_DUR)
       .easing(TWEEN.Easing.Linear.None)
