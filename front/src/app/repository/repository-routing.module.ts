@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SummaryComponent } from './components/summary/summary.component';
+import { TreeComponent } from './components/tree/tree.component';
 import { RepositoryComponent } from './repository.component';
 import { RepositoryIsInFavoriteResolverService } from './resolvers/repository-is-in-favorite-resolver.service';
 import { RepositoryResolverService } from './resolvers/repository-resolver.service';
@@ -18,6 +19,10 @@ const routes: Routes = [
         path: '',
         component: SummaryComponent,
         pathMatch: 'full',
+      },
+      {
+        path: 'tree',
+        component: TreeComponent,
       },
     ],
   },

@@ -12,6 +12,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
+import { LoadingService } from 'src/app/shared/services/loading.service';
 import { TreeStructureService } from 'src/app/tree-structure/services/tree-structure.service';
 import { SubSink } from 'subsink';
 export const enum VIEWER_MOUSE_MODE {
@@ -62,6 +63,7 @@ export class EditorViewerComponent implements OnInit {
     private treeStructureService: TreeStructureService,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
+    private loadingService: LoadingService,
   ) {}
 
   ngOnInit(): void {
@@ -150,6 +152,7 @@ export class EditorViewerComponent implements OnInit {
 
   onViewerIsReady() {
     this.tree = this.treeStructureService.generate(this.sceneService.getModel());
+    this.loadingService.setIsLoading(false);
   }
 
   onSaveInstructions() {

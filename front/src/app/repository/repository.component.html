@@ -57,6 +57,7 @@
       class="repository__tab"
       [routerLink]="'/repository/' + repository._id"
       routerLinkActive="repository__tab_active"
+      [routerLinkActiveOptions]="{ exact: true }"
       >Описание</a
     >
     <a

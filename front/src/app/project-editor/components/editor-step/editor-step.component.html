@@ -1,16 +1,14 @@
 <section class="step">
-  <ng-container *ngIf="loadingService.getIsLoading() | async; else showContent">
+  <ng-container *ngIf="loadingService.getIsLoading() | async">
     <app-loader></app-loader>
   </ng-container>
-  <ng-template #showContent>
-    <div class="step__container">
-      <div class="step__header">
-        <h1 class="step__title">{{ title }}</h1>
-        <p class="step__subtitle">{{ subtitle }}</p>
-      </div>
-      <div class="step__content">
-        <ng-content></ng-content>
-      </div>
+  <div class="step__container">
+    <div class="step__header">
+      <h1 class="step__title">{{ title }}</h1>
+      <p class="step__subtitle">{{ subtitle }}</p>
     </div>
-  </ng-template>
+    <div class="step__content">
+      <ng-content></ng-content>
+    </div>
+  </div>
 </section>

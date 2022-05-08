@@ -135,8 +135,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loadingService.setIsLoading(false);
-
     if (!this.viewMode) {
       const visibleGridHelper = localStorage.getItem('visibleGridHelper') || '';
       if (visibleGridHelper) this.settings.grid = visibleGridHelper === 'true' ? true : false;

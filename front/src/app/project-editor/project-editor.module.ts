@@ -11,7 +11,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatRippleModule } from '@angular/material/core';
 import { EditorAnnotationsComponent } from './components/editor-annotations/editor-annotations.component';
-import { TreeElementsComponent } from './components/tree-elements/tree-elements.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTreeModule } from '@angular/material/tree';
@@ -32,7 +31,6 @@ import { TreeStructureModule } from '../tree-structure/tree-structure.module';
     EditorStepComponent,
     EditorViewerComponent,
     EditorAnnotationsComponent,
-    TreeElementsComponent,
     UploadModelComponent,
     StepButtonsComponent,
     InitRepositoryComponent,
