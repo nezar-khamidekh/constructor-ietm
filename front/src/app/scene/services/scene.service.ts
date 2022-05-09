@@ -522,7 +522,7 @@ export class SceneService {
       node.parent.type !== 'Sprite' &&
       node.type !== 'Sprite'
     ) {
-      const mesh = this.viewer.scene.getObjectById(node.id) as any;
+      const mesh = this.viewer.scene.getObjectByName(this.replacedNameNode(node.name)) as any;
       switch (typeEvent) {
         case 'mouseenter':
           mesh.material.color.setHex(HIGHLIGHT_COLOR);
@@ -582,11 +582,13 @@ export class SceneService {
     }
   }
 
-  toggleObjectVisibilityById(id: number) {
-    const obj = this.viewer.scene.getObjectById(id)!;
+  toggleObjectVisibilityById(name: string) {
+    const obj = this.viewer.scene.getObjectByName(this.replacedNameNode(name))!;
     obj.visible = !obj.visible;
     if (obj.visible)
-      this.setHiddenObjects(this.hiddenObjects$.value.filter((obj: any) => obj.id !== id));
+      this.setHiddenObjects(
+        this.hiddenObjects$.value.filter((obj: any) => obj.name !== this.replacedNameNode(name)),
+      );
     else this.setHiddenObjects([...this.hiddenObjects$.value, obj]);
   }
 
@@ -605,8 +607,8 @@ export class SceneService {
     if (this.viewer.state === VIEWER_STATE.Isolated) this.resetObjectIsolation();
   }
 
-  fitToView(id: number, onCompleteCallback: () => void) {
-    const obj = this.viewer.model.getObjectById(id)!;
+  fitToView(name: string, onCompleteCallback: () => void) {
+    const obj = this.viewer.model.getObjectByName(this.replacedNameNode(name))!;
     this.resetObjectIsolation();
     this.isolateObject(obj);
 
@@ -638,6 +640,21 @@ export class SceneService {
       this.viewer.camera.updateProjectionMatrix();
       this.viewer.controls.update();
     }
+  }
+
+  replacedNameNode(name: string) {
+    let nameNode = '';
+    if (name.includes(' ') && name.includes('.')) {
+      nameNode = name.replace(' ', '_');
+      nameNode = nameNode.replace('.', '');
+    } else if (name.includes(' ')) {
+      nameNode = name.replace(' ', '_');
+    } else if (name.includes('.')) {
+      nameNode = name.replace('.', '');
+    } else {
+      nameNode = name;
+    }
+    return nameNode;
   }
 
   playAnimation() {

@@ -24,15 +24,15 @@ export class TreeStructureComponent implements OnInit {
     this.dataSource.data = [this.tree];
   }
 
-  objectIsHidden(id: number, hiddenObjects: any[]) {
-    return hiddenObjects.some((obj) => obj.id === id);
+  objectIsHidden(name: string, hiddenObjects: any[]) {
+    return hiddenObjects.some((obj) => obj.id === this.sceneService.replacedNameNode(name));
   }
 
   toggleObjectVisibility(node: any) {
-    this.sceneService.toggleObjectVisibilityById(node.id);
+    this.sceneService.toggleObjectVisibilityById(node.name);
   }
 
   fitToObject(node: any) {
-    this.sceneService.fitToView(node.id, () => {});
+    this.sceneService.fitToView(node.name, () => {});
   }
 }

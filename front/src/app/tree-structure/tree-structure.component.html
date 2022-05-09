@@ -14,15 +14,15 @@
             class="tree__button"
             mat-icon-button
             (click)="toggleObjectVisibility(node)"
-            [matTooltip]="objectIsHidden(node.id, hiddenObjects) ? 'Показать' : 'Скрыть'"
+            [matTooltip]="objectIsHidden(node.name, hiddenObjects) ? 'Показать' : 'Скрыть'"
           >
             <img
               [src]="
-                objectIsHidden(node.id, hiddenObjects)
+                objectIsHidden(node.name, hiddenObjects)
                   ? 'assets/svg/visibility_off.svg'
                   : 'assets/svg/visibility.svg'
               "
-              [alt]="objectIsHidden(node.id, hiddenObjects) ? 'Скрыть' : 'Показать'"
+              [alt]="objectIsHidden(node.name, hiddenObjects) ? 'Скрыть' : 'Показать'"
             />
           </button>
         </ng-container>
@@ -64,15 +64,15 @@
               class="tree__button"
               mat-icon-button
               (click)="toggleObjectVisibility(node)"
-              [matTooltip]="objectIsHidden(node.id, hiddenObjects) ? 'Показать' : 'Скрыть'"
+              [matTooltip]="objectIsHidden(node.name, hiddenObjects) ? 'Показать' : 'Скрыть'"
             >
               <img
                 [src]="
-                  objectIsHidden(node.id, hiddenObjects)
+                  objectIsHidden(node.name, hiddenObjects)
                     ? 'assets/svg/visibility_off.svg'
                     : 'assets/svg/visibility.svg'
                 "
-                [alt]="objectIsHidden(node.id, hiddenObjects) ? 'Скрыть' : 'Показать'"
+                [alt]="objectIsHidden(node.name, hiddenObjects) ? 'Скрыть' : 'Показать'"
               />
             </button>
           </ng-container>
