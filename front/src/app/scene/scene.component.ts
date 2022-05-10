@@ -169,6 +169,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.settings.cameraPosition.y,
         this.settings.cameraPosition.z,
       );
+      for (let i = 0; i < 3; i++) {
+        this.gui.__folders['Положение камеры по умолчанию'].__controllers[i].updateDisplay();
+      }
     },
   };
 
@@ -281,7 +284,12 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sceneService.setGridHelper(gltf);
       this.sceneService.setLight();
       this.sceneService.setCameraDefaultPosition();
-      this.settings.cameraPosition = { ...this.viewer.camera.position };
+      if (
+        this.settings.cameraPosition.x === 0 &&
+        this.settings.cameraPosition.y === 0 &&
+        this.settings.cameraPosition.z === 0
+      )
+        this.settings.cameraPosition = { ...this.viewer.camera.position };
       if (this.annotations.length) this.renderAnnotations(this.annotations);
       if (!this.viewMode) {
         this.sceneService.setGridHelperVisibility(this.settings.grid);
@@ -388,9 +396,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       .add(this.settings.cameraPosition, 'x')
       .min(-10)
       .max(10)
-      .step(0.001)
+      .step(0.1)
       .name('x')
-      .listen()
       .onChange((x) => {
         this.settings.cameraPosition.x = x;
         this.viewer.camera.position.setX(this.settings.cameraPosition.x);
@@ -399,9 +406,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       .add(this.settings.cameraPosition, 'y')
       .min(-10)
       .max(10)
-      .step(0.001)
+      .step(0.1)
       .name('y')
-      .listen()
       .onChange((y) => {
         this.settings.cameraPosition.y = y;
         this.viewer.camera.position.setY(this.settings.cameraPosition.y);
@@ -410,11 +416,11 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       .add(this.settings.cameraPosition, 'z')
       .min(-10)
       .max(10)
-      .step(0.001)
+      .step(0.1)
       .name('z')
-      .listen()
       .onChange((z) => {
         this.settings.cameraPosition.z = z;
+
         this.viewer.camera.position.setZ(this.settings.cameraPosition.z);
       });
     guiCameraPositionFolder.add(this.settings, 'acceptPosition').name('Применить');
