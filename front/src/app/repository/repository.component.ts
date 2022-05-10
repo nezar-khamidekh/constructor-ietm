@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
@@ -22,6 +22,7 @@ export class RepositoryComponent implements OnInit {
   user: UserI | null = null;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private repositoryService: RepositoryService,
     private dataStore: DataStoreService,
@@ -36,6 +37,12 @@ export class RepositoryComponent implements OnInit {
 
   getRepositoryTypeEnum() {
     return RepositoryType;
+  }
+
+  getAuthorLastFirsName(author: UserI) {
+    return `(${author.lastName[0].toUpperCase()}${author.lastName.slice(
+      1,
+    )} ${author.firstName[0].toUpperCase()}${author.firstName.slice(1)})`;
   }
 
   onToggleFavorite() {
@@ -58,5 +65,15 @@ export class RepositoryComponent implements OnInit {
           }),
       );
     }
+  }
+
+  onEdit() {}
+
+  onDelete() {
+    this.subs.add(
+      this.repositoryService.remove(this.repository._id).subscribe((res) => {
+        this.router.navigate(['/main']);
+      }),
+    );
   }
 }

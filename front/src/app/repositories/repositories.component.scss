@@ -53,13 +53,12 @@
     }
   }
 
-  &__header-title-wrapper{
+  &__header-title-wrapper {
     display: flex;
     align-items: center;
-
   }
 
-  &__type{
+  &__type {
     width: 24px;
     height: 24px;
   }
@@ -85,7 +84,7 @@
     object-fit: cover;
   }
 
-  &__author-username {
+  &__author-text {
     opacity: 0.7;
     margin-left: 5px;
   }

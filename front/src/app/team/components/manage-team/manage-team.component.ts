@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { isEmail } from 'src/app/shared/helpers/helpers';
+import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.interface';
 import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UserI } from 'src/app/shared/models/user.interface';
@@ -102,31 +103,35 @@ export class ManageTeamComponent implements OnInit {
     if (this.teamFormGroup.get('newParticipant')?.valid) {
       const username = this.teamFormGroup.get(['newParticipant', 'username'])?.value;
       const email = isEmail(username) ? username : null;
+      const sendInvitationData: AddParticipantDto = {
+        teamId: this.teamToEdit?._id!,
+        role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
+      };
+      if (email) {
+        sendInvitationData.email = email;
+      } else {
+        sendInvitationData.login = email ? '' : username;
+      }
+
       this.subs.add(
-        this.teamService
-          .sendInvitation({
-            teamId: this.teamToEdit?._id!,
-            email: email ?? '',
-            login: email ? '' : username,
-            role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
-          })
-          .subscribe((addedParticipant) => {
-            this.teamToEdit!.participants = [
-              ...this.teamToEdit!.participants!,
-              {
-                login: addedParticipant.login,
-                role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
-                user: {
-                  avatar: addedParticipant.avatar || '',
-                  email: addedParticipant.email,
-                  firstName: addedParticipant.firstName,
-                  lastName: addedParticipant.lastName,
-                  _id: addedParticipant._id,
-                },
+        this.teamService.sendInvitation(sendInvitationData).subscribe((addedParticipant) => {
+          this.teamToEdit!.participants = [
+            ...this.teamToEdit!.participants!,
+            {
+              login: addedParticipant.login,
+              role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
+              user: {
+                avatar: addedParticipant.avatar || '',
+                email: addedParticipant.email,
+                firstName: addedParticipant.firstName,
+                lastName: addedParticipant.lastName,
+                _id: addedParticipant._id,
               },
-            ];
-            this.cdr.detectChanges();
-          }),
+            },
+          ];
+          this.teamFormGroup.reset();
+          this.cdr.detectChanges();
+        }),
       );
     }
   }

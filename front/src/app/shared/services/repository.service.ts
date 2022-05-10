@@ -55,6 +55,12 @@ export class RepositoryService {
     });
   }
 
+  remove(repoId: string) {
+    return this.http.get(`${this.apiUrl}/repository/delete/${repoId}`, {
+      withCredentials: true,
+    });
+  }
+
   addToFavorite(repoId: string, userId: string) {
     return this.http.post(
       `${this.apiUrl}/repository/favorite/add`,

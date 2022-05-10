@@ -12,6 +12,9 @@
   }
 
   &__header-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     &:nth-child(1) {
       flex: 1;
     }
@@ -35,10 +38,37 @@
     margin-left: 5px;
   }
 
+  &__authors {
+    display: flex;
+    align-items: center;
+  }
+
   &__author {
     display: flex;
     align-items: center;
     margin-top: 15px;
+
+    &:not(:last-child) {
+      &::after {
+        content: '';
+        display: block;
+        margin: 0 15px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #000;
+        opacity: 0.7;
+      }
+    }
+  }
+
+  &__author-link {
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 
   &__author-avatar {
@@ -47,7 +77,7 @@
     object-fit: cover;
   }
 
-  &__author-username {
+  &__author-text {
     opacity: 0.7;
     margin-left: 5px;
   }
@@ -79,6 +109,7 @@
 
   &__actions {
     display: flex;
+    justify-content: flex-end;
   }
 
   &__action {
