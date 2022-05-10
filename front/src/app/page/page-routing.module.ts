@@ -31,6 +31,7 @@ const routes: Routes = [
           import('../favorite-repositories/favorite-repositories.module').then(
             (m) => m.FavoriteRepositoriesModule,
           ),
+        canActivate: [AuthGuard],
       },
       {
         path: 'user-repositories',
@@ -38,6 +39,7 @@ const routes: Routes = [
           import('../user-repositories/user-repositories.module').then(
             (m) => m.UserRepositoriesModule,
           ),
+        canActivate: [AuthGuard],
       },
       {
         path: 'team',
@@ -48,11 +50,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
         canActivate: [AuthGuard],
-      },
-      {
-        path: 'editor/:model',
-        loadChildren: () =>
-          import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
       },
       {
         path: 'repository/:repoId',
