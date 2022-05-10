@@ -13,15 +13,34 @@
         />
         <h2 class="repository__title">{{ repository.title }}</h2>
       </div>
-      <div class="repository__author">
-        <img
-          class="repository__author-avatar"
-          appImageSanitized
-          [imagePath]="repository.author.avatar || ''"
-          [defaultImage]="'assets/svg/avatar.svg'"
-          [alt]="'аватар ' + repository.author.login"
-        />
-        <span class="repository__author-username">{{ repository.author.login }}</span>
+      <div class="repository__authors">
+        <div class="repository__author">
+          <img
+            class="repository__author-avatar"
+            appImageSanitized
+            [imagePath]="repository.author.avatar || ''"
+            [defaultImage]="'assets/svg/avatar.svg'"
+            [alt]="'аватар ' + repository.author.login"
+          />
+          <span class="repository__author-text">{{ repository.author.login }}</span>
+          <span
+            class="repository__author-text"
+            *ngIf="repository.author.firstName && repository.author.lastName"
+            >{{ getAuthorLastFirsName(repository.author) }}</span
+          >
+        </div>
+        <div class="repository__author" *ngIf="repository.team">
+          <a class="repository__author-link" [routerLink]="'/team/' + repository.team._id">
+            <img
+              class="repository__author-avatar"
+              appImageSanitized
+              [imagePath]="repository.team.avatar || ''"
+              [defaultImage]="'assets/svg/team.svg'"
+              [alt]="'аватар ' + repository.team.title"
+            />
+            <span class="repository__author-text">{{ repository.team.title }}</span>
+          </a>
+        </div>
       </div>
       <div class="repository__dates">
         <div class="repository__date">
@@ -49,6 +68,24 @@
           />
         </button>
         <button class="repository__action" mat-flat-button color="primary">Подписаться</button>
+      </div>
+      <div class="repository__actions">
+        <button class="repository__action" mat-icon-button>
+          <img
+            class="repository__action-icon"
+            src="assets/svg/edit_blue.svg"
+            alt="Редактировать"
+            (click)="onEdit()"
+          />
+        </button>
+        <button class="repository__action" mat-icon-button>
+          <img
+            class="repository__action-icon"
+            src="assets/svg/delete.svg"
+            alt="Удалить"
+            (click)="onDelete()"
+          />
+        </button>
       </div>
     </div>
   </div>
