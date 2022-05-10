@@ -106,9 +106,20 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   viewer!: ViewerI;
 
-  constantSectionYZ = SECTION_DEFAULT_CONSTANT;
-  constantSectionXZ = SECTION_DEFAULT_CONSTANT;
-  constantSectionXY = SECTION_DEFAULT_CONSTANT;
+  sections = [
+    {
+      value: SECTION_DEFAULT_CONSTANT,
+      inverted: false,
+    },
+    {
+      value: SECTION_DEFAULT_CONSTANT,
+      inverted: false,
+    },
+    {
+      value: SECTION_DEFAULT_CONSTANT,
+      inverted: false,
+    },
+  ];
   currentPlane: number | null = null;
 
   gui = new dat.GUI({ name: 'Найстройки сцены', autoPlace: false });
@@ -456,13 +467,32 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   changeConstantSection(data: any) {
     switch (data.index) {
       case SectionPlanes.YZ:
-        this.constantSectionYZ = data.value;
+        this.sections[0].value = data.value;
         break;
       case SectionPlanes.XZ:
-        this.constantSectionXZ = data.value;
+        this.sections[1].value = data.value;
         break;
       case SectionPlanes.XY:
-        this.constantSectionXY = data.value;
+        this.sections[2].value = data.value;
+        break;
+      default:
+        break;
+    }
+  }
+
+  changeInvertPlane(data: any) {
+    switch (data.index) {
+      case SectionPlanes.YZ:
+        this.sections[0].inverted = data.checked;
+        this.sceneService.invertCurrentPlane(this.sections[0].inverted);
+        break;
+      case SectionPlanes.XZ:
+        this.sections[1].inverted = data.checked;
+        this.sceneService.invertCurrentPlane(this.sections[1].inverted);
+        break;
+      case SectionPlanes.XY:
+        this.sections[2].inverted = data.checked;
+        this.sceneService.invertCurrentPlane(this.sections[2].inverted);
         break;
       default:
         break;
@@ -525,9 +555,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       case VIEWER_BUTTONS.Cut:
         if (!this.btnIsInAction) {
           this.currentPlane = null;
-          this.constantSectionYZ = SECTION_DEFAULT_CONSTANT;
-          this.constantSectionXZ = SECTION_DEFAULT_CONSTANT;
-          this.constantSectionXY = SECTION_DEFAULT_CONSTANT;
+          this.sections[0].value = SECTION_DEFAULT_CONSTANT;
+          this.sections[1].value = SECTION_DEFAULT_CONSTANT;
+          this.sections[2].value = SECTION_DEFAULT_CONSTANT;
           this.btnIsInAction = true;
         } else this.stopCuttingModel();
         break;

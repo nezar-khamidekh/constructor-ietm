@@ -25,9 +25,7 @@ export class ViewerToolbarComponent implements OnInit {
   @Input() activeBtnIndex!: number;
   @Input() rotateAnimationSliderValue = CAMERA_ROTATE_SPEED;
   @Input() explodeSliderValue = EXPLODE_POWER;
-  @Input() constantSectionYZ = SECTION_DEFAULT_CONSTANT;
-  @Input() constantSectionXZ = SECTION_DEFAULT_CONSTANT;
-  @Input() constantSectionXY = SECTION_DEFAULT_CONSTANT;
+  @Input() sections: any;
   @Input() currentPlane: number | null = null;
   @Input() viewMode: boolean;
   @Output() viewerBtnClicked = new EventEmitter<number>();
@@ -38,6 +36,7 @@ export class ViewerToolbarComponent implements OnInit {
   @Output() moveSectionXY = new EventEmitter();
   @Output() createPlane = new EventEmitter();
   @Output() changeConstantSection = new EventEmitter();
+  @Output() changeInvertSection = new EventEmitter();
 
   rotateAnimationSliderMinValue = CAMERA_ROTATE_SPEED;
   rotateAnimationSliderMaxValue = 20;
@@ -103,19 +102,22 @@ export class ViewerToolbarComponent implements OnInit {
       case SectionPlanes.YZ:
         this.createPlane.emit({
           indexPlane: index,
-          constantSection: this.constantSectionYZ,
+          constantSection: this.sections[0].value,
+          inverted: this.sections[0].inverted,
         });
         break;
       case SectionPlanes.XZ:
         this.createPlane.emit({
           indexPlane: index,
-          constantSection: this.constantSectionXZ,
+          constantSection: this.sections[1].value,
+          inverted: this.sections[1].inverted,
         });
         break;
       case SectionPlanes.XY:
         this.createPlane.emit({
           indexPlane: index,
-          constantSection: this.constantSectionXY,
+          constantSection: this.sections[2].value,
+          inverted: this.sections[2].inverted,
         });
         break;
       default:

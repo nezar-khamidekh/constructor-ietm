@@ -59,6 +59,8 @@
   }
 
   &__text {
+    display: flex;
+    align-items: center;
     color: black !important;
   }
 }

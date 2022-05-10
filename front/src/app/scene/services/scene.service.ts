@@ -718,12 +718,13 @@ export class SceneService {
     );
   }
 
-  createSectionPlane(data: { indexPlane: number; constantSection: number }) {
+  createSectionPlane(data: { indexPlane: number; constantSection: number; inverted: boolean }) {
     this.sectionService.createSection(
       this.viewer.model,
       this.viewer.scene,
       data.indexPlane,
       data.constantSection,
+      data.inverted,
     );
   }
 
@@ -748,5 +749,9 @@ export class SceneService {
 
   moveXY(value: number) {
     this.sectionService.movePlane(SectionPlanes.XY, value);
+  }
+
+  invertCurrentPlane(checked: boolean) {
+    this.sectionService.invertPlane(checked);
   }
 }

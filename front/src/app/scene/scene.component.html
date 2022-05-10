@@ -4,9 +4,7 @@
       [activeBtnIndex]="activeBtnIndex"
       [rotateAnimationSliderValue]="rotateSpeedValue"
       [explodeSliderValue]="explodePowerValue"
-      [constantSectionYZ]="constantSectionYZ"
-      [constantSectionXZ]="constantSectionXZ"
-      [constantSectionXY]="constantSectionXY"
+      [sections]="sections"
       [currentPlane]="currentPlane"
       [viewMode]="viewMode"
       (viewerBtnClicked)="onViewerBtnClicked($event)"
@@ -15,6 +13,7 @@
       (moveSectionYZ)="moveYZ($event)"
       (moveSectionXZ)="moveXZ($event)"
       (moveSectionXY)="moveXY($event)"
+      (changeInvertSection)="changeInvertPlane($event)"
       (createPlane)="createSectionPlane($event)"
       (changeConstantSection)="changeConstantSection($event)"
     ></app-viewer-toolbar>

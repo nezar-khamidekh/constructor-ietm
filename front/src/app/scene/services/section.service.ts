@@ -25,7 +25,13 @@ export class SectionService {
 
   constructor() {}
 
-  createSection(model: any, scene: THREE.Scene, indexPlane: number, constantSection: number) {
+  createSection(
+    model: any,
+    scene: THREE.Scene,
+    indexPlane: number,
+    constantSection: number,
+    inverted: boolean,
+  ) {
     this.clearPreviousSection(scene);
     this.boundBox.setFromObject(model);
     this.boundBox.getSize(this.size);
@@ -43,6 +49,11 @@ export class SectionService {
         break;
       default:
         break;
+    }
+
+    if (inverted) {
+      this.plane.negate();
+      (this.plane as any)._negated = true;
     }
 
     const bufferGeometries: any = [];
@@ -64,8 +75,6 @@ export class SectionService {
 
     const planeGeometry = new THREE.PlaneBufferGeometry(longestSide * 2, longestSide * 2);
     this.createClippingPlane(solidGeometry, indexPlane, planeGeometry, stencilGroups, scene);
-
-    //move
 
     this.updatePlane();
     this.buildHelper(indexPlane);
@@ -250,25 +259,43 @@ export class SectionService {
       case SectionPlanes.YZ:
         if (scale > 1) scale = 1;
         if (scale < 0) scale = 0;
-        this.plane.constant = scale * this.size.x + this.boundBox.min.x;
+        if (!(this.plane as any)._negated) {
+          this.plane.constant = scale * this.size.x + this.boundBox.min.x;
+        } else {
+          this.plane.constant = (1 - scale) * this.size.x - this.boundBox.max.x;
+        }
         this.planeHelper.position.x = this.size.x * scale;
         break;
       case SectionPlanes.XZ:
         if (scale > 1) scale = 1;
         if (scale < 0) scale = 0;
-        this.plane.constant = scale * this.size.y + this.boundBox.min.y;
+        if (!(this.plane as any)._negated) {
+          this.plane.constant = scale * this.size.y + this.boundBox.min.y;
+        } else {
+          this.plane.constant = (1 - scale) * this.size.y - this.boundBox.max.y;
+        }
         this.planeHelper.position.y = this.size.y * scale;
         break;
       case SectionPlanes.XY:
         if (scale > 1) scale = 1;
         if (scale < 0) scale = 0;
-        this.plane.constant = scale * this.size.z + this.boundBox.min.z;
+        if (!(this.plane as any)._negated) {
+          this.plane.constant = scale * this.size.z + this.boundBox.min.z;
+        } else {
+          this.plane.constant = (1 - scale) * this.size.z - this.boundBox.max.z;
+        }
         this.planeHelper.position.z = this.size.z * scale;
         break;
 
       default:
         break;
     }
+    this.updatePlane();
+  }
+
+  invertPlane(checked: boolean) {
+    this.plane.negate();
+    (this.plane as any)._negated = checked;
     this.updatePlane();
   }
 }
