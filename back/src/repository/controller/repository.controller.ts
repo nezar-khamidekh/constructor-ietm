@@ -21,6 +21,7 @@ import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
 import { CheckRepoInFavoriteDto } from '../models/dto/checkRepoInFavorite.dto';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
+import { FindRepositoryDto } from '../models/dto/findRepository.dto';
 import { RegisterModelDto } from '../models/dto/registerModel.dto';
 import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
 import { RemoveModelDto } from '../models/dto/removeModel.dto';
@@ -171,6 +172,11 @@ export class RepositoryController {
   @Get('favorite/user/:id')
   getUserFavorites(@Param('id') id: string) {
     return this.repositoryService.getUserFavoriteReps(id);
+  }
+
+  @Post('search')
+  searchRepositoryByQuery(@Body() findRepositoryDto: FindRepositoryDto) {
+    return this.repositoryService.searchRepositoryByQuery(findRepositoryDto);
   }
 
   @Get('favorite/all')

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   Repository,
   RepositoryDocument,
+  RepositoryType,
 } from '../models/schemas/repository.schema';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -23,6 +24,7 @@ import { Favorite, FavoriteDocument } from '../models/schemas/favorite.schema';
 import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
 import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
 import { CheckRepoInFavoriteDto } from '../models/dto/checkRepoInFavorite.dto';
+import { FindRepositoryDto } from '../models/dto/findRepository.dto';
 
 @Injectable()
 export class RepositoryService {
@@ -554,6 +556,46 @@ export class RepositoryService {
       map((result: any) => {
         return result.deletedCount ? true : false;
       }),
+    );
+  }
+
+  searchRepositoryByQuery(findRepositoryDto: FindRepositoryDto) {
+    return from(
+      this.repositoryModel
+        .find({
+          $or: [
+            {
+              description: {
+                $regex: findRepositoryDto.queryStr,
+                $options: 'i',
+              },
+            },
+            { title: { $regex: findRepositoryDto.queryStr, $options: 'i' } },
+          ],
+          type: RepositoryType.Public,
+        })
+        .populate({
+          path: 'team',
+          select: ['title', 'avatar', 'description', 'participants'],
+          populate: {
+            path: 'participants.user',
+            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
+          },
+        })
+        .populate('author', [
+          'avatar',
+          'lastName',
+          'firstName',
+          'email',
+          'login',
+        ])
+        .populate('participants.user', [
+          'avatar',
+          'lastName',
+          'firstName',
+          'email',
+          'login',
+        ]),
     );
   }
 }
