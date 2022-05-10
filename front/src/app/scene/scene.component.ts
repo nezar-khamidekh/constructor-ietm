@@ -28,6 +28,7 @@ import {
   SECTION_DEFAULT_CONSTANT,
   EXPLODE_POWER,
   RENDERER_CLEAR_COLOR,
+  CAMERA_POSITION_RATE,
 } from '../shared/models/viewerConstants';
 import { SectionPlanes } from './services/section.service';
 import { LoadingService } from '../shared/services/loading.service';
@@ -130,10 +131,44 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     resetBackground: () => {
       this.settings.background = '#' + RENDERER_CLEAR_COLOR.getHexString();
     },
-    scale: {
-      x: 1,
-      y: 1,
-      z: 1,
+    cameraPosition: {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    acceptPosition: () => {
+      localStorage.setItem(
+        'positionCamera',
+        JSON.stringify({
+          x: this.settings.cameraPosition.x,
+          y: this.settings.cameraPosition.y,
+          z: this.settings.cameraPosition.z,
+        }),
+      );
+      this.viewer.camera.position.set(
+        this.settings.cameraPosition.x,
+        this.settings.cameraPosition.y,
+        this.settings.cameraPosition.z,
+      );
+    },
+    resetPosition: () => {
+      this.settings.cameraPosition.x = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
+      this.settings.cameraPosition.y =
+        (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2;
+      this.settings.cameraPosition.z = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
+      localStorage.setItem(
+        'positionCamera',
+        JSON.stringify({
+          x: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
+          y: (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+          z: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
+        }),
+      );
+      this.viewer.camera.position.set(
+        this.settings.cameraPosition.x,
+        this.settings.cameraPosition.y,
+        this.settings.cameraPosition.z,
+      );
     },
   };
 
@@ -151,6 +186,12 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       if (visibleGridHelper) this.settings.grid = visibleGridHelper === 'true' ? true : false;
       const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
       if (backgroundColorScene) this.settings.background = backgroundColorScene;
+      const cameraPosition = JSON.parse(localStorage.getItem('positionCamera')!) || '';
+      if (cameraPosition) {
+        this.settings.cameraPosition.x = cameraPosition.x;
+        this.settings.cameraPosition.y = cameraPosition.y;
+        this.settings.cameraPosition.z = cameraPosition.z;
+      }
     }
 
     this.subs.add(
@@ -234,15 +275,18 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     loader.parse(JSON.stringify(file), '', (gltf) => {
       console.log(gltf);
       this.sceneService.setModel(gltf);
+      this.sceneService.setLongestSide(gltf);
       this.sceneService.setMixer(gltf);
       this.sceneService.setMeshesDefaultMaterial();
       this.sceneService.setGridHelper(gltf);
       this.sceneService.setLight();
-      this.sceneService.setCameraPosition();
+      this.sceneService.setCameraDefaultPosition();
+      this.settings.cameraPosition = { ...this.viewer.camera.position };
       if (this.annotations.length) this.renderAnnotations(this.annotations);
       if (!this.viewMode) {
         this.sceneService.setGridHelperVisibility(this.settings.grid);
         this.sceneService.setBackgroundColorScene(this.settings.background);
+        this.sceneService.setCameraDefaultPosition(this.settings.cameraPosition);
         this.setGui();
       }
 
@@ -339,7 +383,45 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sceneService.setBackgroundColorScene('#' + RENDERER_CLEAR_COLOR.getHexString());
       });
 
+    const guiCameraPositionFolder = this.gui.addFolder('Положение камеры по умолчанию');
+    guiCameraPositionFolder
+      .add(this.settings.cameraPosition, 'x')
+      .min(-10)
+      .max(10)
+      .step(0.001)
+      .name('x')
+      .listen()
+      .onChange((x) => {
+        this.settings.cameraPosition.x = x;
+        this.viewer.camera.position.setX(this.settings.cameraPosition.x);
+      });
+    guiCameraPositionFolder
+      .add(this.settings.cameraPosition, 'y')
+      .min(-10)
+      .max(10)
+      .step(0.001)
+      .name('y')
+      .listen()
+      .onChange((y) => {
+        this.settings.cameraPosition.y = y;
+        this.viewer.camera.position.setY(this.settings.cameraPosition.y);
+      });
+    guiCameraPositionFolder
+      .add(this.settings.cameraPosition, 'z')
+      .min(-10)
+      .max(10)
+      .step(0.001)
+      .name('z')
+      .listen()
+      .onChange((z) => {
+        this.settings.cameraPosition.z = z;
+        this.viewer.camera.position.setZ(this.settings.cameraPosition.z);
+      });
+    guiCameraPositionFolder.add(this.settings, 'acceptPosition').name('Применить');
+    guiCameraPositionFolder.add(this.settings, 'resetPosition').name('Сбросить');
+
     guiSceneBackgroundFolder.open();
+    guiCameraPositionFolder.open();
     this.renderer.appendChild(this.viewerWrapper.nativeElement, this.gui.domElement);
   }
 

@@ -221,11 +221,17 @@ export class SceneService {
     });
   }
 
-  setGridHelper(gltf: any) {
+  setLongestSide(gltf: any) {
     const boundBox = new THREE.Box3().setFromObject(gltf.scene);
     const size = new THREE.Vector3();
     boundBox.getSize(size);
     this.modelLongestSide = Math.max(size.x, size.y, size.z);
+  }
+
+  setGridHelper(gltf: any) {
+    const boundBox = new THREE.Box3().setFromObject(gltf.scene);
+    const size = new THREE.Vector3();
+    boundBox.getSize(size);
     const gridHelper = new THREE.GridHelper(
       this.modelLongestSide * GRID_HELPER_SIZE_RATE,
       GRID_HELPER_DIVISIONS,
@@ -249,12 +255,13 @@ export class SceneService {
     this.viewer.scene.setLight(this.modelLongestSide);
   }
 
-  setCameraPosition() {
-    this.viewer.camera.position.set(
-      this.modelLongestSide * CAMERA_POSITION_RATE,
-      (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-      this.modelLongestSide * CAMERA_POSITION_RATE,
-    );
+  setCameraDefaultPosition(position?: { x: number; y: number; z: number }) {
+    const posCamera = position ?? {
+      x: this.modelLongestSide * CAMERA_POSITION_RATE,
+      y: (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+      z: this.modelLongestSide * CAMERA_POSITION_RATE,
+    };
+    this.viewer.camera.position.set(posCamera.x, posCamera.y, posCamera.z);
     this.viewer.controls.update();
   }
 
@@ -345,13 +352,14 @@ export class SceneService {
   }
 
   moveCameraWithAnimation(onCompleteCallback: () => void) {
+    const posCamera = JSON.parse(localStorage.getItem('positionCamera')!) || '';
     this.viewer.controls.enabled = false;
     const oldCameraPos = this.viewer.camera.position.clone();
 
     const newCameraPos = new THREE.Vector3(
-      this.modelLongestSide * CAMERA_POSITION_RATE,
-      (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-      this.modelLongestSide * CAMERA_POSITION_RATE,
+      posCamera ? posCamera.x : this.modelLongestSide * CAMERA_POSITION_RATE,
+      posCamera ? posCamera.y : (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+      posCamera ? posCamera.z : this.modelLongestSide * CAMERA_POSITION_RATE,
     );
 
     const tween = new TWEEN.Tween(oldCameraPos)
