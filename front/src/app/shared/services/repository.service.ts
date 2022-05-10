@@ -90,4 +90,14 @@ export class RepositoryService {
       },
     );
   }
+
+  find(query: string): Observable<RepositoryI[]> {
+    return this.http.post<RepositoryI[]>(
+      `${this.apiUrl}/repository/search`,
+      { queryStr: query },
+      {
+        withCredentials: true,
+      },
+    );
+  }
 }

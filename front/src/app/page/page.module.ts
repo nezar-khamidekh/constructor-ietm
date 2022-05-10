@@ -13,7 +13,7 @@ import { HeaderComponent } from '../shared/components/header/header.component';
 import { SettingsComponent } from '../shared/components/settings/settings.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ImageSanitizedModule } from '../shared/directives/image-sanitized/image-sanitized.module';
 
@@ -31,6 +31,7 @@ import { ImageSanitizedModule } from '../shared/directives/image-sanitized/image
     MatTooltipModule,
     ReactiveFormsModule,
     ImageSanitizedModule,
+    FormsModule,
   ],
 })
 export class PageModule {}

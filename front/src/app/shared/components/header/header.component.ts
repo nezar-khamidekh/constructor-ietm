@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { UserI } from '../../models/user.interface';
+import { DataStoreService } from '../../services/data-store.service';
 import { SettingsComponent } from '../settings/settings.component';
 
 @Component({
@@ -10,10 +12,23 @@ import { SettingsComponent } from '../settings/settings.component';
   styleUrls: ['./header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   @Input() user: UserI | null = null;
 
-  constructor(private authService: AuthService, public dialog: MatDialog) {}
+  searchValue = '';
+
+  constructor(
+    private authService: AuthService,
+    public dialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute,
+  ) {}
+
+  ngOnInit(): void {
+    if (this.route.snapshot.queryParams.searchQuery) {
+      this.searchValue = this.route.snapshot.queryParams.searchQuery;
+    }
+  }
 
   openSettings() {
     this.dialog.open(SettingsComponent, {
@@ -27,5 +42,12 @@ export class HeaderComponent {
     this.authService.logout().subscribe((res) => {
       window.location.reload();
     });
+  }
+
+  onSearchRepositories() {
+    if (this.searchValue)
+      this.router.navigate(['/repositories'], {
+        queryParams: { searchQuery: this.searchValue },
+      });
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 import { Observable } from 'rxjs';
 import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { RepositoryService } from 'src/app/shared/services/repository.service';
@@ -10,7 +10,10 @@ import { RepositoryService } from 'src/app/shared/services/repository.service';
 export class PublicRepositoriesResolverService implements Resolve<any> {
   constructor(private repositoryService: RepositoryService) {}
 
-  resolve(): Observable<RepositoryI[]> {
+  resolve(route: ActivatedRouteSnapshot): Observable<RepositoryI[]> {
+    if (route.queryParams.searchQuery) {
+      return this.repositoryService.find(route.queryParams.searchQuery);
+    }
     return this.repositoryService.getAll();
   }
 }

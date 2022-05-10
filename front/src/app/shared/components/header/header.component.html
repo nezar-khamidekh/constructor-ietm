@@ -21,8 +21,18 @@
     </ul>
   </nav>
   <div class="search-bar">
-    <input class="search-bar__input" type="text" placeholder="Поиск" />
-    <button class="search-bar__btn" mat-icon-button color="primary">
+    <div class="search-bar__input-wrapper">
+      <input class="search-bar__input" [(ngModel)]="searchValue" type="text" placeholder="Поиск" />
+      <button class="search-bar__clear-btn" *ngIf="searchValue" (click)="searchValue = ''">
+        <img class="search-bar__clear-icon" src="assets/svg/clear.svg" alt="Очистить" />
+      </button>
+    </div>
+    <button
+      class="search-bar__btn"
+      mat-icon-button
+      color="primary"
+      (click)="onSearchRepositories()"
+    >
       <img class="search-bar__btn-icon" src="assets/svg/search-bar.svg" alt="поиск" />
     </button>
   </div>

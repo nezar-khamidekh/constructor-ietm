@@ -14,38 +14,19 @@
       />
       <div class="repository__content">
         <div class="repository__header">
-          <div class="repository__header-column">
-            <div class="repository__header-title-wrapper">
-              <img
-                class="repository__type"
-                [src]="
-                  repository.type === getRepositoryTypeEnum().Public
-                    ? 'assets/svg/publicRepository.svg'
-                    : 'assets/svg/privateRepository.svg'
-                "
-                [alt]="
-                  repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'
-                "
-              />
-              <h2 class="repository__title">{{ repository.title }}</h2>
-            </div>
-            <div class="repository__author">
-              <img
-                class="repository__author-avatar"
-                appImageSanitized
-                [imagePath]="repository.author.avatar || ''"
-                [defaultImage]="'assets/svg/avatar.svg'"
-                [alt]="'аватар ' + repository.author.login"
-              />
-              <span class="repository__author-text">{{ repository.author.login }}</span>
-              <span
-                class="repository__author-text"
-                *ngIf="repository.author.firstName && repository.author.lastName"
-                >{{ getAuthorLastFirsName(repository.author) }}</span
-              >
-            </div>
+          <div class="repository__title-wrapper">
+            <img
+              class="repository__type"
+              [src]="
+                repository.type === getRepositoryTypeEnum().Public
+                  ? 'assets/svg/publicRepository.svg'
+                  : 'assets/svg/privateRepository.svg'
+              "
+              [alt]="repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'"
+            />
+            <h2 class="repository__title">{{ repository.title }}</h2>
           </div>
-          <div class="repository__header-column">
+          <div class="repository__dates">
             <div class="repository__date">
               <img
                 class="repository__date-img"
@@ -67,6 +48,33 @@
               }}</span>
             </div>
           </div>
+        </div>
+        <div class="repository__author">
+          <img
+            class="repository__author-avatar"
+            appImageSanitized
+            [imagePath]="repository.author.avatar || ''"
+            [defaultImage]="'assets/svg/avatar.svg'"
+            [alt]="'аватар ' + repository.author.login"
+          />
+          <span class="repository__author-text">{{ repository.author.login }}</span>
+          <span
+            class="repository__author-text"
+            *ngIf="repository.author.firstName && repository.author.lastName"
+            >{{ getAuthorLastFirsName(repository.author) }}</span
+          >
+        </div>
+        <div class="repository__author" *ngIf="repository.team">
+          <a class="repository__author-link" [routerLink]="'/team/' + repository.team._id">
+            <img
+              class="repository__author-avatar"
+              appImageSanitized
+              [imagePath]="repository.team.avatar || ''"
+              [defaultImage]="'assets/svg/team.svg'"
+              [alt]="'аватар ' + repository.team.title"
+            />
+            <span class="repository__author-text">{{ repository.team.title }}</span>
+          </a>
         </div>
         <div class="repository__description">
           {{ repository.description }}
