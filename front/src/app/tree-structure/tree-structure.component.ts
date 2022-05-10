@@ -25,7 +25,7 @@ export class TreeStructureComponent implements OnInit {
   }
 
   objectIsHidden(name: string, hiddenObjects: any[]) {
-    return hiddenObjects.some((obj) => obj.id === this.sceneService.replacedNameNode(name));
+    return hiddenObjects.some((obj) => obj.name === this.sceneService.replacedNameNode(name));
   }
 
   toggleObjectVisibility(node: any) {
