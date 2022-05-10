@@ -7,7 +7,7 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { TeamService } from 'src/team/service/team.service';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
-import { forkJoin, from, map, Observable, switchMap } from 'rxjs';
+import { forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
 import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
@@ -291,18 +291,34 @@ export class RepositoryService {
 
   deleteOne(id: string): Observable<boolean> {
     return from(this.repositoryModel.deleteOne({ _id: id })).pipe(
-      map((result: any) => {
-        return result.deletedCount ? true : false;
+      switchMap((result: any) => {
+        if (result.deletedCount)
+          return from(this.favoriteModel.deleteMany({ repository: id })).pipe(
+            map((res: any) => {
+              return res.deletedCount ? true : false;
+            }),
+          );
+        else return of(false);
       }),
     );
   }
 
   deleteAll(): Observable<boolean> {
     return from(this.repositoryModel.deleteMany()).pipe(
-      map((result: any) => {
-        return result.deletedCount ? true : false;
+      switchMap((result: any) => {
+        if (result.deletedCount)
+          return from(this.favoriteModel.deleteMany()).pipe(
+            map((res: any) => {
+              return res.deletedCount ? true : false;
+            }),
+          );
+        else return of(false);
       }),
     );
+  }
+
+  getAllFavoriteTickets() {
+    return from(this.favoriteModel.find());
   }
 
   registerModel(file: Express.Multer.File, registerModelDto: RegisterModelDto) {

@@ -21,13 +21,13 @@ export class Repository {
   @Prop({ type: Types.ObjectId, ref: 'Team', default: null })
   team: Types.ObjectId;
 
-  @Prop({ length: 200, unique: true })
+  @Prop({ length: 200, unique: true, index: 'text' })
   title: string;
 
   @Prop()
   type: RepositoryType;
 
-  @Prop({ default: null })
+  @Prop({ default: null, index: 'text' })
   description: string;
 
   @Prop({ default: null })

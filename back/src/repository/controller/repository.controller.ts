@@ -172,4 +172,9 @@ export class RepositoryController {
   getUserFavorites(@Param('id') id: string) {
     return this.repositoryService.getUserFavoriteReps(id);
   }
+
+  @Get('favorite/all')
+  getAllFavoriteTickets() {
+    return this.repositoryService.getAllFavoriteTickets();
+  }
 }
