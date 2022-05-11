@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Подтверждение операции</h1>
+<div mat-dialog-content>
+  <p class="message">{{ data.message }}</p>
+</div>
+<div [ngStyle]="{ 'justify-content': 'space-around' }" mat-dialog-actions>
+  <button mat-flat-button color="warn" (click)="onNoClick()">Отмена</button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="{ status: true }" cdkFocusInitial>
+    Да
+  </button>
+</div>

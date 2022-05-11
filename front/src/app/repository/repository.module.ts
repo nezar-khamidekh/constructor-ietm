@@ -9,6 +9,7 @@ import { SummaryComponent } from './components/summary/summary.component';
 import { MatButtonModule } from '@angular/material/button';
 import { TreeComponent } from './components/tree/tree.component';
 import { TreeStructureModule } from '../tree-structure/tree-structure.module';
+import { DialogDeleteItemModule } from '../dialogs/dialog-delete-item/dialog-delete-item.module';
 
 @NgModule({
   declarations: [RepositoryComponent, SummaryComponent, TreeComponent],
@@ -19,6 +20,7 @@ import { TreeStructureModule } from '../tree-structure/tree-structure.module';
     ImageSanitizedModule,
     MatButtonModule,
     TreeStructureModule,
+    DialogDeleteItemModule,
   ],
 })
 export class RepositoryModule {}

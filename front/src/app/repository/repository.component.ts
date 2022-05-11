@@ -1,7 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
+import { DialogDeleteItemComponent } from '../dialogs/dialog-delete-item/dialog-delete-item.component';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 import { UserI } from '../shared/models/user.interface';
@@ -23,6 +27,7 @@ export class RepositoryComponent implements OnInit {
   user: UserI | null = null;
 
   constructor(
+    public dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
     private repositoryService: RepositoryService,
@@ -76,10 +81,23 @@ export class RepositoryComponent implements OnInit {
   onEdit() {}
 
   onDelete() {
+    const dialogRef = this.dialog.open(DialogDeleteItemComponent, {
+      width: '450px',
+      data: { message: `Вы действительно хотите удалить репозиторий "${this.repository.title}"?` },
+    });
+
     this.subs.add(
-      this.repositoryService.remove(this.repository._id).subscribe((res) => {
-        this.router.navigate(['/main']);
-      }),
+      dialogRef
+        .afterClosed()
+        .pipe(
+          switchMap((result: { status: boolean }) => {
+            if (result.status) return this.repositoryService.remove(this.repository._id);
+            return of(null);
+          }),
+        )
+        .subscribe((res) => {
+          if (res) this.router.navigate(['/main']);
+        }),
     );
   }
 }
