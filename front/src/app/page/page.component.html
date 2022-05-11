@@ -1,4 +1,7 @@
 <app-header [user]="user"></app-header>
+<div class="loading-bar" *ngIf="isLoadingBar$ | async">
+  <mat-progress-bar color="accent" mode="indeterminate"></mat-progress-bar>
+</div>
 <main class="main">
   <router-outlet></router-outlet>
 </main>

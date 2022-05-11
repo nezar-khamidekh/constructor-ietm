@@ -1,4 +1,7 @@
+@import '_variables';
+
 :host {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -7,4 +10,11 @@
 .main {
   flex: 1;
   height: calc(100% - 82px);
+}
+
+.loading-bar {
+  position: absolute;
+  top: $headerHeight;
+  left: 0;
+  width: 100%;
 }
