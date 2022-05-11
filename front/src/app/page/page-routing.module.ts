@@ -17,6 +17,9 @@ const routes: Routes = [
         path: 'main',
         loadChildren: () => import('../main/main.module').then((m) => m.MainModule),
         canActivate: [AuthGuard],
+        data: {
+          title: 'Главная',
+        },
       },
       {
         path: 'repositories',
@@ -24,6 +27,9 @@ const routes: Routes = [
           import('../public-repositories/public-repositories.module').then(
             (m) => m.PublicRepositoriesModule,
           ),
+        data: {
+          title: 'Репозитории',
+        },
       },
       {
         path: 'favorite',
@@ -32,6 +38,9 @@ const routes: Routes = [
             (m) => m.FavoriteRepositoriesModule,
           ),
         canActivate: [AuthGuard],
+        data: {
+          title: 'Избранное',
+        },
       },
       {
         path: 'user-repositories',
@@ -40,6 +49,9 @@ const routes: Routes = [
             (m) => m.UserRepositoriesModule,
           ),
         canActivate: [AuthGuard],
+        data: {
+          title: 'Личные репозитории',
+        },
       },
       {
         path: 'team',
@@ -50,6 +62,9 @@ const routes: Routes = [
         loadChildren: () =>
           import('../project-editor/project-editor.module').then((m) => m.ProjectEditorModule),
         canActivate: [AuthGuard],
+        data: {
+          title: 'Редактор',
+        },
       },
       {
         path: 'repository/:repoId',

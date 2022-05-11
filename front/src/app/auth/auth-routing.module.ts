@@ -12,10 +12,16 @@ const routes: Routes = [
   {
     path: 'login',
     component: SigninComponent,
+    data: {
+      title: 'Авторизация',
+    },
   },
   {
     path: 'registration',
     component: SignupComponent,
+    data: {
+      title: 'Регистрация',
+    },
   },
   {
     path: '**',

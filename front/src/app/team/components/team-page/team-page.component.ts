@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
@@ -17,14 +18,19 @@ export class TeamPageComponent implements OnInit {
   team!: TeamI;
 
   constructor(
-    private route: ActivatedRoute,
     public dataStore: DataStoreService,
+    private route: ActivatedRoute,
     private teamService: TeamService,
     private router: Router,
+    private titleService: Title,
   ) {}
 
   ngOnInit(): void {
     this.team = this.route.snapshot.data.team;
+
+    this.titleService.setTitle(
+      `Команда "${this.team.title}" | Конструктор интерактивных инструкций`,
+    );
   }
 
   leaveFromTeam() {

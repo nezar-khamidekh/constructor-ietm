@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { RepositoryI } from '../shared/models/repository.interface';
@@ -26,6 +27,7 @@ export class RepositoryComponent implements OnInit {
     private route: ActivatedRoute,
     private repositoryService: RepositoryService,
     private dataStore: DataStoreService,
+    private titleService: Title,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -33,6 +35,10 @@ export class RepositoryComponent implements OnInit {
     this.user = this.dataStore.getUserValue()!;
     this.repository = this.route.snapshot.data.repository;
     this.isInFavorite = this.route.snapshot.data.isInFavorite;
+
+    this.titleService.setTitle(
+      `Репозиторий "${this.repository.title}" | Конструктор интерактивных инструкций`,
+    );
   }
 
   getRepositoryTypeEnum() {

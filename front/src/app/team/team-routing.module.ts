@@ -18,7 +18,7 @@ const routes: Routes = [
         component: ManageTeamComponent,
         canActivate: [AuthGuard],
         data: {
-          checkUser: true,
+          title: 'Новая команда',
         },
       },
       {
@@ -26,9 +26,6 @@ const routes: Routes = [
         component: ManageTeamComponent,
         canActivate: [AuthGuard],
         resolve: { team: TeamResolverService },
-        data: {
-          checkUser: true,
-        },
       },
       {
         path: 'user-teams',
@@ -36,7 +33,7 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         resolve: { teams: UserTeamsResolverService },
         data: {
-          checkUser: true,
+          title: 'Команды',
         },
       },
       {
@@ -44,9 +41,6 @@ const routes: Routes = [
         component: TeamPageComponent,
         canActivate: [AuthGuard],
         resolve: { team: TeamResolverService },
-        data: {
-          checkUser: true,
-        },
       },
     ],
   },

@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { isEmail } from 'src/app/shared/helpers/helpers';
@@ -38,6 +39,7 @@ export class ManageTeamComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
+    private titleService: Title,
   ) {}
 
   ngOnInit(): void {
@@ -45,6 +47,10 @@ export class ManageTeamComponent implements OnInit {
       this.editMode = true;
       this.teamToEdit = this.route.snapshot.data.team;
       this.teamAvatar = this.teamToEdit?.avatar || '';
+
+      this.titleService.setTitle(
+        `Редактирование команды "${this.teamToEdit!.title}" | Конструктор интерактивных инструкций`,
+      );
     }
 
     this.subs.add(
