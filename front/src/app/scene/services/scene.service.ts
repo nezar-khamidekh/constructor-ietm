@@ -762,4 +762,38 @@ export class SceneService {
   invertCurrentPlane(checked: boolean) {
     this.sectionService.invertPlane(checked);
   }
+
+  clearScene() {
+    this.viewer.scene.traverse((object: any) => {
+      if (object.geometry) object.geometry.dispose();
+      if (object.material) {
+        if (object.material.isMaterial) this.cleanMaterial(object.material);
+        else for (const material of object.material) this.cleanMaterial(material);
+      }
+    });
+    this.viewer.scene.children.forEach((child) => {
+      this.viewer.scene.remove(child);
+    });
+    this.viewer.model.traverse((object: any) => {
+      if (object.geometry) object.geometry.dispose();
+      if (object.material) {
+        if (object.material.isMaterial) this.cleanMaterial(object.material);
+        else for (const material of object.material) this.cleanMaterial(material);
+      }
+    });
+    this.viewer.model.children = [];
+
+    this.viewer.renderer.dispose();
+  }
+
+  cleanMaterial(material: any) {
+    material.dispose();
+
+    for (const key of Object.keys(material)) {
+      const value = material[key];
+      if (value && typeof value === 'object' && 'minFilter' in value) {
+        value.dispose();
+      }
+    }
+  }
 }

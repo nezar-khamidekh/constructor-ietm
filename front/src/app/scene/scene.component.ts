@@ -107,6 +107,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   viewer!: ViewerI;
 
+  animateRequestId: number;
+
   sections = [
     {
       value: SECTION_DEFAULT_CONSTANT,
@@ -237,6 +239,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.sceneService.clearScene();
+    window.cancelAnimationFrame(this.animateRequestId);
     this.gui.destroy();
     this.subs.unsubscribe();
   }
@@ -324,7 +328,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   animate() {
     TWEEN.update();
-    window.requestAnimationFrame(() => this.animate());
+    this.animateRequestId = window.requestAnimationFrame(() => this.animate());
     this.setHoveredObj();
     this.sceneService.animateScene();
     if (this.cube) this.cube.positionSettingsCube();
