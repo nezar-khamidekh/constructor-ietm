@@ -1,50 +1,66 @@
 <div class="team-page">
-  <div class="team-page__container">
+  <div
+    class="team-page__container"
+    [ngClass]="{ 'team-page__container_full-width': teamRepositories.length }"
+  >
     <h1 class="team-page__title page-title">{{ team.title }}</h1>
-    <div class="team-page__card team-card">
-      <div class="team-card__header">
-        <img
-          class="team-card__image"
-          appImageSanitized
-          [imagePath]="team.avatar"
-          [defaultImage]="'assets/svg/team.svg'"
-          alt="команда"
-        />
-        <p class="team-card__description">
-          {{ team.description }}
-        </p>
-        <div class="team-card__actions">
-          <a
-            class="team-card__action"
-            mat-flat-button
-            color="primary"
-            [routerLink]="'/team/edit/' + team._id"
-            *ngIf="team.participants! | isTeamAuthor: dataStore.getUserValue()!._id"
-          >
+    <div class="team-page__content">
+      <div class="team-page__card-wrapper">
+        <h2 class="team-page__subtitle">Информация</h2>
+        <div class="team-card">
+          <div class="team-card__header">
             <img
-              class="team-card__action-img"
-              src="assets/svg/edit_white.svg"
-              alt="редактировать"
+              class="team-card__image"
+              appImageSanitized
+              [imagePath]="team.avatar"
+              [defaultImage]="'assets/svg/team.svg'"
+              alt="команда"
             />
-          </a>
-          <button
-            class="team-card__action"
-            mat-flat-button
-            color="warn"
-            *ngIf="!(team.participants! | isTeamAuthor: dataStore.getUserValue()!._id)"
-            (click)="leaveFromTeam()"
-          >
-            <img class="team-card__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
-          </button>
+            <p class="team-card__description">
+              {{ team.description }}
+            </p>
+            <div class="team-card__actions">
+              <a
+                class="team-card__action"
+                mat-flat-button
+                color="primary"
+                [routerLink]="'/team/edit/' + team._id"
+                *ngIf="team.participants! | isTeamAuthor: dataStore.getUserValue()!._id"
+              >
+                <img
+                  class="team-card__action-img"
+                  src="assets/svg/edit_white.svg"
+                  alt="редактировать"
+                />
+              </a>
+              <button
+                class="team-card__action"
+                mat-flat-button
+                color="warn"
+                *ngIf="!(team.participants! | isTeamAuthor: dataStore.getUserValue()!._id)"
+                (click)="leaveFromTeam()"
+              >
+                <img
+                  class="team-card__action-img"
+                  src="assets/svg/leave.svg"
+                  alt="выйти из команды"
+                />
+              </button>
+            </div>
+          </div>
+          <div class="team-card__content">
+            <app-participants-table
+              *ngIf="team.participants && team.participants?.length"
+              [participants]="team.participants || []"
+              [viewMode]="true"
+            >
+            </app-participants-table>
+          </div>
         </div>
       </div>
-      <div class="team-card__content">
-        <app-participants-table
-          *ngIf="team.participants && team.participants?.length"
-          [participants]="team.participants || []"
-          [viewMode]="true"
-        >
-        </app-participants-table>
+      <div class="team-page__repositories" *ngIf="teamRepositories.length">
+        <h2 class="team-page__subtitle">Репозитории</h2>
+        <app-repositories [repositories]="teamRepositories"></app-repositories>
       </div>
     </div>
   </div>

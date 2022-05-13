@@ -12,7 +12,5 @@ export class RepositoriesPageComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
-    // this.repositories = this.route.snapshot.data.repositories;
-  }
+  ngOnInit(): void {}
 }
