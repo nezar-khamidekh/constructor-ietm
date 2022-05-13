@@ -1,53 +1,58 @@
 <p class="title">Участники</p>
-<table mat-table [dataSource]="participants" class="participants-table">
-  <ng-container matColumnDef="user">
-    <th mat-header-cell *matHeaderCellDef>Пользователь</th>
-    <td mat-cell *matCellDef="let participant">
-      <img
-        class="participants-table__participant-avatar"
-        appImageSanitized
-        [imagePath]="participant.user.avatar || ''"
-        [defaultImage]="'assets/svg/avatar.svg'"
-        alt="аватар пользователя"
-      />
-      <span class="participants-table__participant-nickname">{{ participant.login }}</span>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="role">
-    <th mat-header-cell *matHeaderCellDef>Роль</th>
-    <td mat-cell *matCellDef="let participant">
-      <select
-        class="participants-table__select"
-        [(ngModel)]="participant.role"
-        [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
-      >
-        <ng-container *ngFor="let role of getParticipantRoles(); let i = index">
-          <option
-            *ngIf="!role.disabled || participant.role === getParticipantRoleEnum().Author"
-            [ngValue]="i"
-          >
-            {{ role.title }}
-          </option>
-        </ng-container>
-      </select>
-    </td>
-  </ng-container>
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Действия</th>
-    <td mat-cell *matCellDef="let participant">
-      <button
-        mat-icon-button
-        color="warn"
-        [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
-        (click)="removeParticipant.emit(participant.user._id)"
-      >
-        <img src="assets/svg/delete.svg" alt="удалить" />
-      </button>
-    </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="viewMode ? displayedColumnsViewMode : displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: viewMode ? displayedColumnsViewMode : displayedColumns"
-  ></tr>
-</table>
+<div class="participants">
+  <table mat-table [dataSource]="participants" class="participants-table">
+    <ng-container matColumnDef="user">
+      <th mat-header-cell *matHeaderCellDef>Пользователь</th>
+      <td mat-cell *matCellDef="let participant">
+        <img
+          class="participants-table__participant-avatar"
+          appImageSanitized
+          [imagePath]="participant.user.avatar || ''"
+          [defaultImage]="'assets/svg/avatar.svg'"
+          alt="аватар пользователя"
+        />
+        <span class="participants-table__participant-nickname">{{ participant.login }}</span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>Роль</th>
+      <td mat-cell *matCellDef="let participant">
+        <select
+          class="participants-table__select"
+          [(ngModel)]="participant.role"
+          [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
+        >
+          <ng-container *ngFor="let role of getParticipantRoles(); let i = index">
+            <option
+              *ngIf="!role.disabled || participant.role === getParticipantRoleEnum().Author"
+              [ngValue]="i"
+            >
+              {{ role.title }}
+            </option>
+          </ng-container>
+        </select>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Действия</th>
+      <td mat-cell *matCellDef="let participant">
+        <button
+          mat-icon-button
+          color="warn"
+          [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
+          (click)="removeParticipant.emit(participant.user._id)"
+        >
+          <img src="assets/svg/delete.svg" alt="удалить" />
+        </button>
+      </td>
+    </ng-container>
+    <tr
+      mat-header-row
+      *matHeaderRowDef="viewMode ? displayedColumnsViewMode : displayedColumns"
+    ></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: viewMode ? displayedColumnsViewMode : displayedColumns"
+    ></tr>
+  </table>
+</div>

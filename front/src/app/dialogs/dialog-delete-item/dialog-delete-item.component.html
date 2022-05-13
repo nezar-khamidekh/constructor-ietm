@@ -4,7 +4,5 @@
 </div>
 <div [ngStyle]="{ 'justify-content': 'space-around' }" mat-dialog-actions>
   <button mat-flat-button color="warn" (click)="onNoClick()">Отмена</button>
-  <button mat-flat-button color="primary" [mat-dialog-close]="{ status: true }" cdkFocusInitial>
-    Да
-  </button>
+  <button mat-flat-button color="primary" [mat-dialog-close]="{ status: true }">Да</button>
 </div>

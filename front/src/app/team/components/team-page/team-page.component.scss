@@ -18,22 +18,46 @@
     margin: 0 auto;
     margin-top: 20px;
     padding: 0 15px;
+
+    &_full-width {
+      max-width: none;
+      width: 100%;
+    }
   }
 
-  &__card {
+  &__content {
+    display: flex;
     margin-top: 40px;
+    gap: 80px;
+  }
+
+  &__subtitle {
+    font-size: 26px;
+    font-weight: 400;
+    text-align: center;
+  }
+
+  &__card-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__repositories {
+    flex: 1;
   }
 }
 
 .team-card {
   display: flex;
   flex-direction: column;
+  align-self: flex-start;
   border-radius: 10px;
   border: 1px solid $primaryGreyBorderColor;
   background-color: $primaryGreyBgColor;
   padding: 10px 15px;
   min-width: 450px;
   min-height: 350px;
+  margin-top: 20px;
 
   &__header {
     display: flex;

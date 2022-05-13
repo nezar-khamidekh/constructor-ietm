@@ -17,6 +17,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
+import { RepositoriesModule } from '../repositories/repositories.module';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
     MatTableModule,
     MatFormFieldModule,
     MatSelectModule,
+    RepositoriesModule,
   ],
 })
 export class TeamModule {}

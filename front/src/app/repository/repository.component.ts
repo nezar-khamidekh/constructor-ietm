@@ -86,6 +86,7 @@ export class RepositoryComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogDeleteItemComponent, {
       width: '450px',
       data: { message: `Вы действительно хотите удалить репозиторий "${this.repository.title}"?` },
+      autoFocus: false,
     });
 
     this.subs.add(
@@ -98,7 +99,7 @@ export class RepositoryComponent implements OnInit {
           }),
         )
         .subscribe((res) => {
-          if (res) this.router.navigate(['/main']);
+          if (res !== null) this.router.navigate(['/main']);
         }),
     );
   }
