@@ -46,14 +46,13 @@ export class TreeStructureComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataSource.data = [this.tree];
+    this.treeControl.expand(this.dataSource.data[0]);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.tree && !changes.tree.firstChange) {
       this.dataSource.data = [this.tree];
-      this.dataSource.data.forEach((node: any) => {
-        this.treeControl.expand(this.dataSource.data.find((n) => n.id === node.id));
-      });
+      this.treeControl.expand(this.dataSource.data[0]);
       this.cdr.detectChanges();
     }
   }
@@ -72,6 +71,7 @@ export class TreeStructureComponent implements OnInit {
 
   renameElement(node: TreeStructureI) {
     const dialogRef = this.dialog.open(TreeRenameComponent, {
+      width: '300px',
       data: { node: node },
     });
     this.subs.add(

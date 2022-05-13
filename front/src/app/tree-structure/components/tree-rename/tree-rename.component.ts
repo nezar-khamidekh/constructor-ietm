@@ -21,10 +21,15 @@ export class TreeRenameComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.updatedName = this.data.node.name;
+    this.updatedName = this.data.node.viewName ?? this.data.node.name;
   }
 
   saveName() {
-    this.dialogRef.close({ ...this.data.node, viewName: this.updatedName });
+    if (this.updatedName) this.dialogRef.close({ ...this.data.node, viewName: this.updatedName });
+    else this.dialogRef.close();
+  }
+
+  cancle() {
+    this.dialogRef.close();
   }
 }

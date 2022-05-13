@@ -1,13 +1,24 @@
 <div class="tree-rename">
   <p class="tree-rename__title">Наименование элемента</p>
   <input class="tree-rename__input" [(ngModel)]="updatedName" />
-  <button
-    class="tree-rename__btn"
-    mat-raised-button
-    color="primary"
-    type="button"
-    (click)="saveName()"
-  >
-    Сохранить
-  </button>
+  <div class="tree-rename__actions">
+    <button
+      class="tree-rename__btn"
+      mat-raised-button
+      color="warn"
+      type="button"
+      (click)="cancle()"
+    >
+      Отмена
+    </button>
+    <button
+      class="tree-rename__btn"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="saveName()"
+    >
+      Сохранить
+    </button>
+  </div>
 </div>
