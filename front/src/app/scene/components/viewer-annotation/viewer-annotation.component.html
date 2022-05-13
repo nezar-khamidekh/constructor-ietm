@@ -1,0 +1,26 @@
+<div class="viewer-annotation">
+  <p class="viewer-annotation__title">Заголовок аннотации</p>
+  <input class="viewer-annotation__input" />
+  <p class="viewer-annotation__title">Текст аннотации</p>
+  <textarea class="viewer-annotation__text-annotation"></textarea>
+  <div class="viewer-annotation__actions">
+    <button
+      class="viewer-annotation__btn"
+      mat-raised-button
+      color="warn"
+      type="button"
+      (click)="cancel()"
+    >
+      Отмена
+    </button>
+    <button
+      class="viewer-annotation__btn"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="saveAnnotation()"
+    >
+      Сохранить
+    </button>
+  </div>
+</div>

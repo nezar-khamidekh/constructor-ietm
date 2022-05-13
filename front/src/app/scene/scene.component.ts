@@ -35,6 +35,7 @@ import { LoadingService } from '../shared/services/loading.service';
 import { ViewCubeComponent } from './components/view-cube/view-cube.component';
 import { MatDialog } from '@angular/material/dialog';
 import * as dat from 'dat.gui';
+import { ViewerAnnotationComponent } from './components/viewer-annotation/viewer-annotation.component';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -49,6 +50,7 @@ export enum VIEWER_BUTTONS {
   PauseAnimation,
   Cut,
   HideAnnotations,
+  AddAnnotation,
 }
 
 @Component({
@@ -663,6 +665,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
           });
         }
         this.viewMode = !this.viewMode;
+        break;
+      case VIEWER_BUTTONS.AddAnnotation:
+        this.dialog.open(ViewerAnnotationComponent, { width: '300px' });
+        this.resetContextMenu();
         break;
       default:
         break;

@@ -29,7 +29,7 @@ export class TreeRenameComponent implements OnInit {
     else this.dialogRef.close();
   }
 
-  cancle() {
+  cancel() {
     this.dialogRef.close();
   }
 }

@@ -68,6 +68,20 @@
           <img class="context-menu__btn-icon" src="assets/svg/reset.svg" alt="изолировать" />
           <span class="context-menu__btn-text">Изолировать</span>
         </button>
+        <button
+          mat-menu-item
+          class="context-menu__btn"
+          [hidden]="sceneService.selectedObj"
+          [disabled]="!sceneService.selectedObj"
+          (click)="onViewerBtnClicked(getViewerButtonsEnum().AddAnnotation)"
+        >
+          <img
+            class="context-menu__btn-icon"
+            src="assets/svg/attachAnnotation.svg"
+            alt="прикрепить аннотацию"
+          />
+          <span class="context-menu__btn-text">Прикрепить аннотацию</span>
+        </button>
       </ng-template>
     </div>
   </mat-menu>

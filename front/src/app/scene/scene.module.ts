@@ -12,9 +12,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { FormsModule } from '@angular/forms';
 import { ViewCubeComponent } from './components/view-cube/view-cube.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ViewerAnnotationComponent } from './components/viewer-annotation/viewer-annotation.component';
 
 @NgModule({
-  declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent, ViewCubeComponent],
+  declarations: [SceneComponent, ViewerToolbarComponent, ViewerButtonComponent, ViewCubeComponent, ViewerAnnotationComponent],
   imports: [
     CommonModule,
     SceneRoutingModule,
