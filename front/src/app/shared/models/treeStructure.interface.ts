@@ -8,4 +8,5 @@ export interface TreeStructureI {
     type: string;
   };
   isRoot?: boolean;
+  viewName?: string;
 }

@@ -45,4 +45,20 @@ export class TreeStructureService {
     }
     return treeNode;
   }
+
+  findNode(node: TreeStructureI, tree: TreeStructureI) {
+    if (node.isRoot) return tree;
+    const childNode = this.findChildNode(tree.children, node);
+    return childNode ?? null;
+  }
+
+  findChildNode(array: TreeStructureI[], node: TreeStructureI): TreeStructureI | any {
+    for (const child of array) {
+      if (child.id === node.id) return child;
+      if (child.children.length) {
+        const childNode = this.findChildNode(child.children, node);
+        if (childNode) return childNode;
+      }
+    }
+  }
 }

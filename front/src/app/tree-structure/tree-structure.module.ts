@@ -5,10 +5,19 @@ import { TreeStructureComponent } from './tree-structure.component';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
+import { TreeRenameComponent } from './components/tree-rename/tree-rename.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [TreeStructureComponent],
-  imports: [CommonModule, MatTreeModule, MatTooltipModule, MatButtonModule],
+  declarations: [TreeStructureComponent, TreeRenameComponent],
+  imports: [
+    CommonModule,
+    MatTreeModule,
+    MatTooltipModule,
+    MatButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   exports: [TreeStructureComponent],
   providers: [TreeStructureService],
 })

@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { UserI } from '../../models/user.interface';
-import { DataStoreService } from '../../services/data-store.service';
 import { SettingsComponent } from '../settings/settings.component';
 
 @Component({

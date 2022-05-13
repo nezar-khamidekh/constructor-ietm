@@ -158,4 +158,8 @@ export class EditorViewerComponent implements OnInit {
   onSaveInstructions() {
     this.saveInstructions.emit({ annotations: this.annotations, modelTree: this.tree });
   }
+
+  onUpdateTree(tree: TreeStructureI) {
+    this.tree = { ...tree };
+  }
 }

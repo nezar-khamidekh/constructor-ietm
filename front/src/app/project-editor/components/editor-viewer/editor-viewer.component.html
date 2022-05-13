@@ -31,7 +31,12 @@
         </mat-tab>
         <mat-tab class="toolbar__tab" label="Дерево элементов">
           <div class="toolbar__content">
-            <app-tree-structure *ngIf="tree" [tree]="tree"></app-tree-structure>
+            <app-tree-structure
+              *ngIf="tree"
+              [tree]="tree"
+              [viewMode]="true"
+              (updateTree)="onUpdateTree($event)"
+            ></app-tree-structure>
           </div>
         </mat-tab>
       </mat-tab-group>

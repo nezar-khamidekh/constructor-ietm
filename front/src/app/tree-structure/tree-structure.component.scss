@@ -33,4 +33,8 @@
   div[role='group'] > .mat-tree-node {
     padding-left: 40px;
   }
+
+  &__name-element {
+    cursor: pointer;
+  }
 }
