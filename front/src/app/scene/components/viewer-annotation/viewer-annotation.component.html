@@ -1,8 +1,8 @@
 <div class="viewer-annotation">
   <p class="viewer-annotation__title">Заголовок аннотации</p>
-  <input class="viewer-annotation__input" />
+  <input class="viewer-annotation__input" [(ngModel)]="title" />
   <p class="viewer-annotation__title">Текст аннотации</p>
-  <textarea class="viewer-annotation__text-annotation"></textarea>
+  <textarea class="viewer-annotation__text-annotation" [(ngModel)]="text"></textarea>
   <div class="viewer-annotation__actions">
     <button
       class="viewer-annotation__btn"

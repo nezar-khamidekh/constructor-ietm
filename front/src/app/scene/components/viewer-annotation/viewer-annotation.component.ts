@@ -12,6 +12,9 @@ interface DIALOG_DATA {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewerAnnotationComponent implements OnInit {
+  title = '';
+  text = '';
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DIALOG_DATA,
     private dialogRef: MatDialogRef<ViewerAnnotationComponent>,
@@ -20,7 +23,7 @@ export class ViewerAnnotationComponent implements OnInit {
   ngOnInit(): void {}
 
   saveAnnotation() {
-    this.dialogRef.close();
+    this.dialogRef.close({ title: this.title, text: this.text });
   }
 
   cancel() {

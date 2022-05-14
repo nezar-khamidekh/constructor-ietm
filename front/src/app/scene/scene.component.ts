@@ -107,6 +107,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   contextMenuClickedOutside = false;
   contextMenuFirstOpen = true;
 
+  coordsAnnotation: any;
+  attachedObject: any;
+
   viewer!: ViewerI;
 
   animateRequestId: number;
@@ -348,16 +351,18 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     if (filteredIntersects)
       if (filteredIntersects.length > 0) {
-        switch (this.viewerMouseMode) {
-          case VIEWER_MOUSE_MODE.ApplyAnnotation:
-            this.applyAnnotationPosition.emit({
-              coords: filteredIntersects[0].point,
-              attachedObject: filteredIntersects[0].object,
-            });
-            break;
-          default:
-            break;
-        }
+        this.coordsAnnotation = filteredIntersects[0].point;
+        this.attachedObject = filteredIntersects[0].object;
+        // switch (this.viewerMouseMode) {
+        //   case VIEWER_MOUSE_MODE.ApplyAnnotation:
+        // this.applyAnnotationPosition.emit({
+        //   coords: filteredIntersects[0].point,
+        //   attachedObject: filteredIntersects[0].object,
+        // });
+        //   break;
+        // default:
+        //   break;
+        // }
         this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
         this.sceneService.selectObject(filteredIntersects);
       }
@@ -667,8 +672,16 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.viewMode = !this.viewMode;
         break;
       case VIEWER_BUTTONS.AddAnnotation:
-        this.dialog.open(ViewerAnnotationComponent, { width: '300px' });
+        const dialogRef = this.dialog.open(ViewerAnnotationComponent, { width: '300px' });
         this.resetContextMenu();
+        dialogRef.afterClosed().subscribe((res: { title: string; text: string }) => {
+          this.applyAnnotationPosition.emit({
+            title: res.title,
+            text: res.text,
+            coords: this.coordsAnnotation,
+            attachedObject: this.attachedObject,
+          });
+        });
         break;
       default:
         break;
@@ -696,6 +709,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onRightClick(event: MouseEvent) {
+    this.onMouseClick(event);
     this.contextMenuClickedOutside = false;
     event.preventDefault();
     if (this.sceneService.selectedObj) {

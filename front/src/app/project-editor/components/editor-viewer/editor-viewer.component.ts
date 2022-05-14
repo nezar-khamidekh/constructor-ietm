@@ -95,6 +95,7 @@ export class EditorViewerComponent implements OnInit {
     }
   }
 
+  //не нужен??
   onApplyAnnotation(status: boolean) {
     this.viewerMouseMode = status ? VIEWER_MOUSE_MODE.ApplyAnnotation : VIEWER_MOUSE_MODE.Default;
   }
@@ -143,11 +144,12 @@ export class EditorViewerComponent implements OnInit {
 
   onApplyAnnotationPosition(value: any) {
     this.currentAnnotation = {
-      title: this.currentAnnotation.title,
-      text: this.currentAnnotation.text,
+      title: value.title,
+      text: value.text,
       position: value.coords,
       attachedObject: value.attachedObject,
     };
+    this.onSaveAnnotation();
   }
 
   onViewerIsReady() {
