@@ -24,6 +24,7 @@ import { DialogChooseImageModule } from '../dialogs/dialog-choose-image/dialog-c
 import { DndDirective } from './directives/dnd.directive';
 import { EditorManualComponent } from './components/editor-manual/editor-manual.component';
 import { TreeStructureModule } from '../tree-structure/tree-structure.module';
+import { EditorInstructionsComponent } from './components/editor-instructions/editor-instructions.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { TreeStructureModule } from '../tree-structure/tree-structure.module';
     InitRepositoryComponent,
     DndDirective,
     EditorManualComponent,
+    EditorInstructionsComponent,
   ],
   imports: [
     CommonModule,

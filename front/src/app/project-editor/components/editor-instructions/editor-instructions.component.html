@@ -1,0 +1,160 @@
+<div class="editor-instructions">
+  <ng-container [ngSwitch]="instructionStep">
+    <ng-template [ngSwitchCase]="getInsructionStep().ListInstructions">
+      <button
+        class="editor-instructions__btn"
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="addInstruction()"
+      >
+        Добавить инструкцию
+      </button>
+      <div class="editor-instructions__table-wrapper">
+        <table class="editor-instructions__table">
+          <thead>
+            <tr class="editor-instructions__row">
+              <th class="editor-instructions__column editor-instructions__column-time">id</th>
+              <th class="editor-instructions__column editor-instructions__column-time">
+                Заголовок
+              </th>
+              <th class="editor-instructions__column editor-instructions__column-action">
+                Действия
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="item" *ngFor="let instruction of instructions">
+              <td class="editor-instructions__column editor-instructions__column-time">
+                {{ instruction.id }}
+              </td>
+              <td class="editor-instructions__column editor-instructions__column-time">
+                {{ instruction.title }}
+              </td>
+              <td class="editor-instructions__column editor-instructions__column-action">
+                <button
+                  mat-icon-button
+                  matTooltip="Редактировать инструкцию"
+                  (click)="editInstruction()"
+                >
+                  <img
+                    class="editor-instructions__btn-icon"
+                    src="assets/svg/edit.svg"
+                    alt="редактировать"
+                  />
+                </button>
+                <button
+                  mat-icon-button
+                  matTooltip="Удалить инструкцию"
+                  (click)="deleteInstruction()"
+                >
+                  <img
+                    class="editor-instructions__btn-icon"
+                    src="assets/svg/delete.svg"
+                    alt="удалить"
+                  />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-template>
+    <ng-template [ngSwitchCase]="getInsructionStep().ListSlides">
+      <button
+        class="editor-instructions__btn"
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="addSlide()"
+      >
+        Добавить слайд
+      </button>
+      <input class="editor-instructions__input" />
+      <div class="editor-instructions__table-wrapper">
+        <table class="editor-instructions__table">
+          <thead>
+            <tr class="editor-instructions__row">
+              <th class="editor-instructions__column editor-instructions__column-time">id</th>
+              <th class="editor-instructions__column editor-instructions__column-time">
+                Заголовок
+              </th>
+              <th class="editor-instructions__column editor-instructions__column-action">
+                Действия
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="item" *ngFor="let slide of instructions[0].slides">
+              <td class="editor-instructions__column editor-instructions__column-time">
+                {{ slide.id }}
+              </td>
+              <td class="editor-instructions__column editor-instructions__column-time">
+                {{ slide.title }}
+              </td>
+              <td class="editor-instructions__column editor-instructions__column-action">
+                <button mat-icon-button matTooltip="Редактировать слайд" (click)="editSlide()">
+                  <img
+                    class="editor-instructions__btn-icon"
+                    src="assets/svg/edit.svg"
+                    alt="редактировать"
+                  />
+                </button>
+                <button mat-icon-button matTooltip="Удалить слайд" (click)="deleteSlide()">
+                  <img
+                    class="editor-instructions__btn-icon"
+                    src="assets/svg/delete.svg"
+                    alt="удалить"
+                  />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="editor-instructions__actions">
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="backToInstructions()"
+        >
+          Отмена
+        </button>
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="saveInstruction()"
+        >
+          Сохранить
+        </button>
+      </div>
+    </ng-template>
+    <ng-template [ngSwitchCase]="getInsructionStep().Slide">
+      <p class="ditor-instructions__title">Слайд №1</p>
+      <div class="editor-instructions__actions">
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="backToSlides()"
+        >
+          Отмена
+        </button>
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="saveSlide()"
+        >
+          Сохранить
+        </button>
+      </div>
+    </ng-template>
+  </ng-container>
+</div>

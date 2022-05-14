@@ -12,9 +12,14 @@
   <div class="editor-viewer__toolbar toolbar">
     <div class="toolbar__tabs">
       <mat-tab-group (selectedTabChange)="changeTab($event)">
-        <mat-tab class="toolbar__tab" label="Руководства">
+        <!-- <mat-tab class="toolbar__tab" label="Руководства">
           <div class="toolbar__content">
             <app-editor-manual></app-editor-manual>
+          </div>
+        </mat-tab> -->
+        <mat-tab class="toolbar__tab" label="Инструкции">
+          <div class="toolbar__content">
+            <app-editor-instructions></app-editor-instructions>
           </div>
         </mat-tab>
         <mat-tab class="toolbar__tab" label="Аннотации">
