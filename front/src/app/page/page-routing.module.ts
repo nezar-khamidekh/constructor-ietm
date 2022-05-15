@@ -16,19 +16,8 @@ const routes: Routes = [
       {
         path: 'main',
         loadChildren: () => import('../main/main.module').then((m) => m.MainModule),
-        canActivate: [AuthGuard],
         data: {
           title: 'Главная',
-        },
-      },
-      {
-        path: 'repositories',
-        loadChildren: () =>
-          import('../public-repositories/public-repositories.module').then(
-            (m) => m.PublicRepositoriesModule,
-          ),
-        data: {
-          title: 'Репозитории',
         },
       },
       {
@@ -73,7 +62,7 @@ const routes: Routes = [
       },
       {
         path: '**',
-        redirectTo: 'repositories',
+        redirectTo: 'main',
       },
     ],
   },

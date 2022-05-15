@@ -55,19 +55,14 @@
     </div>
     <div class="repository__header-column" *ngIf="user">
       <div class="repository__actions">
-        <button class="repository__action" mat-icon-button>
-          <img
-            class="repository__action-icon"
-            [src]="
-              isInFavorite
-                ? 'assets/svg/repositoryFavorite.svg'
-                : 'assets/svg/repositoryNotFavorite.svg'
-            "
-            [alt]="isInFavorite ? 'Удалить из избранного' : 'Добавить в избранное'"
-            (click)="onToggleFavorite()"
-          />
+        <button
+          class="repository__action"
+          mat-flat-button
+          [color]="isInFavorite ? 'accent' : 'primary'"
+          (click)="onToggleFavorite()"
+        >
+          {{ isInFavorite ? 'Удалить из избранного' : 'Добавить в избранное' }}
         </button>
-        <button class="repository__action" mat-flat-button color="primary">Подписаться</button>
       </div>
       <div class="repository__actions">
         <button class="repository__action" mat-icon-button>

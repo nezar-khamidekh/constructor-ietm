@@ -4,13 +4,8 @@
   display: flex;
   height: 100%;
 
-  &__activity {
-    display: flex;
-    justify-content: space-between;
+  &__repositories {
     flex: 1;
-    padding: 30px;
-    overflow: auto;
-    height: 100%;
   }
 }
 

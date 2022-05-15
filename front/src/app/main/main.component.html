@@ -5,10 +5,17 @@
     [userTeams]="userTeams"
     [repositories]="accountRepositories"
     (selecAccount)="onSelectAccount($event)"
+    *ngIf="user"
   ></app-sidenav>
-  <div class="main-page__activity">
-    <app-activity title="Активность по командам"></app-activity>
-    <div class="vertical-line"></div>
-    <app-activity title="Активность по подпискам"></app-activity>
+  <div class="main-page__repositories">
+    <ng-container *ngIf="repositories.length; else noRepositories">
+      <app-repositories-page
+        [repositories]="repositories"
+        [title]="'Репозитории'"
+      ></app-repositories-page>
+    </ng-container>
+    <ng-template #noRepositories>
+      <app-page-status [text]="'По данному запросу репозиториев не найдено'"></app-page-status>
+    </ng-template>
   </div>
 </div>

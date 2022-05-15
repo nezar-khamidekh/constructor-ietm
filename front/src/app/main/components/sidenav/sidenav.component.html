@@ -43,7 +43,7 @@
               *ngSwitchCase="getRepositoryType().Private"
             />
           </ng-container>
-          <a class="repositories__list-item-title" [routerLink]="repository._id">{{
+          <a class="repositories__list-item-title" [routerLink]="'/repository/' + repository._id">{{
             repository.title
           }}</a>
         </li>
