@@ -4,9 +4,11 @@ import {
   Get,
   Param,
   Post,
+  Req,
   Response,
   StreamableFile,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -14,6 +16,7 @@ import { createReadStream } from 'fs';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { map, Observable } from 'rxjs';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
 import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
@@ -57,14 +60,26 @@ export class RepositoryController {
     return this.repositoryService.getOneById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('user/:id')
   getReposByUser(@Param('id') id: string): Observable<RepositoryDocument[]> {
     return this.repositoryService.getUserRepos(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('team/:id')
-  getReposByTeam(@Param('id') id: string): Observable<RepositoryDocument[]> {
-    return this.repositoryService.getTeamRepos(id);
+  getReposByTeam(
+    @Param('id') id: string,
+    @Req() req,
+  ): Observable<RepositoryDocument[]> {
+    return this.repositoryService.getTeamRepos(id, req.user._id);
+  }
+
+  @Get('team-public/:id')
+  getPublicReposByTeam(
+    @Param('id') id: string,
+  ): Observable<RepositoryDocument[]> {
+    return this.repositoryService.getPublicTeamRepos(id);
   }
 
   @Post('participant/add')

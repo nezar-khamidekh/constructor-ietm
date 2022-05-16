@@ -8,7 +8,7 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { TeamService } from 'src/team/service/team.service';
 import { CreateRepositoryDto } from '../models/dto/createRepository.dto';
-import { forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
+import { from, map, Observable, of, switchMap } from 'rxjs';
 import { UserService } from 'src/user/service/user.service';
 import { AddParticipantDto } from 'src/team/models/dto/addParticipant.dto';
 import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto';
@@ -25,6 +25,22 @@ import { AddToFavoriteDto } from '../models/dto/addToFavorite.dto';
 import { RemoveFromFavoriteDto } from '../models/dto/removeFromFavorite.dto';
 import { CheckRepoInFavoriteDto } from '../models/dto/checkRepoInFavorite.dto';
 import { FindRepositoryDto } from '../models/dto/findRepository.dto';
+
+const TEAM_POPULATE_DATA = {
+  path: 'team',
+  select: ['title', 'avatar', 'description', 'participants'],
+  populate: {
+    path: 'participants.user',
+    select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
+  },
+};
+const USER_POPULATE_FIELDS_LIST = [
+  'avatar',
+  'lastName',
+  'firstName',
+  'email',
+  'login',
+];
 
 @Injectable()
 export class RepositoryService {
@@ -79,28 +95,9 @@ export class RepositoryService {
     return from(
       this.repositoryModel
         .findById(id)
-        .populate({
-          path: 'team',
-          select: ['title', 'avatar', 'description', 'participants'],
-          populate: {
-            path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
-          },
-        })
-        .populate('author', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ])
-        .populate('participants.user', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ]),
+        .populate(TEAM_POPULATE_DATA)
+        .populate('author', USER_POPULATE_FIELDS_LIST)
+        .populate('participants.user', USER_POPULATE_FIELDS_LIST),
     ).pipe(
       map((repo) => {
         if (repo) return repo;
@@ -117,28 +114,9 @@ export class RepositoryService {
     return from(
       this.repositoryModel
         .find()
-        .populate({
-          path: 'team',
-          select: ['title', 'avatar', 'description', 'participants'],
-          populate: {
-            path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
-          },
-        })
-        .populate('author', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ])
-        .populate('participants.user', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ]),
+        .populate(TEAM_POPULATE_DATA)
+        .populate('author', USER_POPULATE_FIELDS_LIST)
+        .populate('participants.user', USER_POPULATE_FIELDS_LIST),
     );
   }
 
@@ -152,20 +130,8 @@ export class RepositoryService {
           ],
           team: null,
         })
-        .populate('author', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ])
-        .populate('participants.user', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ]),
+        .populate('author', USER_POPULATE_FIELDS_LIST)
+        .populate('participants.user', USER_POPULATE_FIELDS_LIST),
     ).pipe(
       map((repos) => {
         return repos;
@@ -173,25 +139,30 @@ export class RepositoryService {
     );
   }
 
-  getTeamRepos(teamId: string): Observable<any> {
+  getTeamRepos(teamId: string, userId: string): Observable<any> {
     return from(
       this.repositoryModel
         .find({ team: teamId })
-        .populate({
-          path: 'team',
-          select: ['title', 'avatar', 'description', 'participants'],
-          populate: {
-            path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
-          },
-        })
-        .populate('author', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ]),
+        .populate(TEAM_POPULATE_DATA)
+        .populate('author', USER_POPULATE_FIELDS_LIST),
+    ).pipe(
+      map((repos: any[]) => {
+        return repos.filter(
+          (repo) =>
+            repo.team?.participants.some(
+              (participant) => participant.user._id.toString() === userId,
+            ) || repo.type === RepositoryType.Public,
+        );
+      }),
+    );
+  }
+
+  getPublicTeamRepos(teamId: string): Observable<any> {
+    return from(
+      this.repositoryModel
+        .find({ team: teamId, type: RepositoryType.Public })
+        .populate(TEAM_POPULATE_DATA)
+        .populate('author', USER_POPULATE_FIELDS_LIST),
     );
   }
 
@@ -540,7 +511,7 @@ export class RepositoryService {
         ],
         populate: {
           path: 'author',
-          select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
+          select: USER_POPULATE_FIELDS_LIST,
         },
       }),
     );
@@ -574,28 +545,9 @@ export class RepositoryService {
           ],
           type: RepositoryType.Public,
         })
-        .populate({
-          path: 'team',
-          select: ['title', 'avatar', 'description', 'participants'],
-          populate: {
-            path: 'participants.user',
-            select: ['avatar', 'lastName', 'firstName', 'email', 'login'],
-          },
-        })
-        .populate('author', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ])
-        .populate('participants.user', [
-          'avatar',
-          'lastName',
-          'firstName',
-          'email',
-          'login',
-        ]),
+        .populate(TEAM_POPULATE_DATA)
+        .populate('author', USER_POPULATE_FIELDS_LIST)
+        .populate('participants.user', USER_POPULATE_FIELDS_LIST),
     );
   }
 }

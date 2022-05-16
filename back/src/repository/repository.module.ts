@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from 'src/auth/auth.module';
 import { TeamModule } from 'src/team/team.module';
 import { UserModule } from 'src/user/user.module';
 import { ViewerModule } from 'src/viewer/viewer.module';
@@ -20,6 +21,7 @@ import { RepositoryService } from './service/repository.service';
     TeamModule,
     UserModule,
     ViewerModule,
+    AuthModule,
   ],
   controllers: [RepositoryController],
   providers: [RepositoryService],
