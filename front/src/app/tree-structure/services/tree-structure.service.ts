@@ -9,7 +9,7 @@ export class TreeStructureService {
     const tree: TreeStructureI = {
       id: model.id,
       uuid: model.uuid,
-      name: model.userData.name || model.name,
+      name: model.name || model.userData.name,
       children: [],
       type: model.type,
       parent: {
@@ -29,7 +29,7 @@ export class TreeStructureService {
     const treeNode: TreeStructureI = {
       id: node.id,
       uuid: node.uuid,
-      name: node.userData.name || node.name,
+      name: node.name || node.userData.name,
       children: [],
       type: node.type,
       parent: {
