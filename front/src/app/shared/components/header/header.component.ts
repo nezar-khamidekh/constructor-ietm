@@ -44,9 +44,8 @@ export class HeaderComponent implements OnInit {
   }
 
   onSearchRepositories() {
-    if (this.searchValue)
-      this.router.navigate(['/repositories'], {
-        queryParams: { searchQuery: this.searchValue },
-      });
+    this.router.navigate(['/main'], {
+      queryParams: this.searchValue ? { searchQuery: this.searchValue } : null,
+    });
   }
 }

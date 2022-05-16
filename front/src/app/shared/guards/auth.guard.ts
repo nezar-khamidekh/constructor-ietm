@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
           if (state.url.startsWith('/auth')) {
             return of(true);
           } else {
-            this.router.navigate(['/repositories']);
+            this.router.navigate(['/main']);
             return of(false);
           }
         }),

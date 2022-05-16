@@ -6,7 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, skip, switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { TeamI } from '../shared/models/team.interface';
@@ -27,6 +27,8 @@ export class MainComponent implements OnInit, OnDestroy {
   userTeams: TeamI[] = [];
   accountRepositories: RepositoryI[] = [];
 
+  repositories: RepositoryI[] = [];
+
   constructor(
     private dataStore: DataStoreService,
     private route: ActivatedRoute,
@@ -35,8 +37,9 @@ export class MainComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.accountRepositories = this.route.snapshot.data.repositories;
-    this.userTeams = this.route.snapshot.data.teams;
+    this.accountRepositories = this.route.snapshot.data.userRepositories;
+    this.userTeams = this.route.snapshot.data.userTeams;
+    this.repositories = this.route.snapshot.data.publicRepositories;
 
     this.subs.add(
       this.dataStore
@@ -49,6 +52,23 @@ export class MainComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         }),
     );
+
+    this.subs.add(
+      this.route.queryParams
+        .pipe(
+          skip(1),
+          switchMap((queryParams) => {
+            if (queryParams.searchQuery) {
+              return this.repositoryService.find(queryParams.searchQuery);
+            } else {
+              return this.repositoryService.getAll();
+            }
+          }),
+        )
+        .subscribe((repositories) => {
+          this.repositories = repositories;
+        }),
+    );
   }
 
   ngOnDestroy(): void {
@@ -58,7 +78,7 @@ export class MainComponent implements OnInit, OnDestroy {
   onSelectAccount(account: any) {
     this.selectedAccount = account;
     if (this.selectedAccount._id === this.user._id)
-      this.accountRepositories = this.route.snapshot.data.repositories;
+      this.accountRepositories = this.route.snapshot.data.userRepositories;
     else
       this.subs.add(
         this.repositoryService.getByTeam(this.selectedAccount._id).subscribe((repositories) => {
