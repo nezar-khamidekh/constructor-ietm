@@ -120,6 +120,16 @@ export class RepositoryService {
     );
   }
 
+  getAllPublic() {
+    return from(
+      this.repositoryModel
+        .find({ type: RepositoryType.Public })
+        .populate(TEAM_POPULATE_DATA)
+        .populate('author', USER_POPULATE_FIELDS_LIST)
+        .populate('participants.user', USER_POPULATE_FIELDS_LIST),
+    );
+  }
+
   getUserRepos(userId: string): Observable<any> {
     return from(
       this.repositoryModel

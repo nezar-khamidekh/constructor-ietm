@@ -55,6 +55,11 @@ export class RepositoryController {
     return this.repositoryService.getAll();
   }
 
+  @Get('all-public')
+  getAllPublicRepos() {
+    return this.repositoryService.getAllPublic();
+  }
+
   @Get('one/:id')
   getRepositoryById(@Param('id') id: string): Observable<RepositoryDocument> {
     return this.repositoryService.getOneById(id);
