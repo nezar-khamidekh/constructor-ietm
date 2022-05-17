@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ParticipantI } from 'src/app/shared/models/participant.interface';
-import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
+import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRoles';
 
 @Pipe({
   name: 'participantRole',

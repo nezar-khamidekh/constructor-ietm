@@ -16,8 +16,9 @@ import { ParticipantsTableComponent } from './components/participants-table/part
 import { MatTableModule } from '@angular/material/table';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
 import { RepositoriesModule } from '../repositories/repositories.module';
+import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
+import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { RepositoriesModule } from '../repositories/repositories.module';
     MatFormFieldModule,
     MatSelectModule,
     RepositoriesModule,
+    HasRoleModule,
   ],
 })
 export class TeamModule {}

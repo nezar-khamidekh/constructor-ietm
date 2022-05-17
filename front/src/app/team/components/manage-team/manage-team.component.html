@@ -52,7 +52,11 @@
         <div
           class="form__field new-participant"
           formGroupName="newParticipant"
-          *ngIf="teamToEdit?.participants! | isTeamAuthor: user._id!"
+          *appHasRole="
+            [getParticipantRoleEnum().Author];
+            userId: user._id;
+            participants: teamToEdit?.participants!
+          "
         >
           <label class="form__label" for="description">Добавить участника</label>
           <div class="form__control-wrapper form__control-wrapper_w-100">

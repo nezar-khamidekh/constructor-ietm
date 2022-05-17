@@ -7,7 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { isEmail } from 'src/app/shared/helpers/helpers';
 import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.interface';
-import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
+import { ParticipantRole } from 'src/app/shared/models/participant.interface';
+import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRoles';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UserI } from 'src/app/shared/models/user.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
@@ -80,6 +81,10 @@ export class ManageTeamComponent implements OnInit {
 
   getParticipantRoles() {
     return PARTICIPANT_ROLES.slice(1, PARTICIPANT_ROLES.length);
+  }
+
+  getParticipantRoleEnum() {
+    return ParticipantRole;
   }
 
   openDialogChooseImage(): void {

@@ -25,7 +25,11 @@
                 mat-flat-button
                 color="primary"
                 [routerLink]="'/team/edit/' + team._id"
-                *ngIf="team.participants! | isTeamAuthor: user._id"
+                *appHasRole="
+                  [getParticipantRoleEnum().Author];
+                  userId: user._id;
+                  participants: team.participants!
+                "
               >
                 <img
                   class="team-card__action-img"
@@ -37,7 +41,11 @@
                 class="team-card__action"
                 mat-flat-button
                 color="warn"
-                *ngIf="!(team.participants! | isTeamAuthor: user._id)"
+                *appHasRole="
+                  [getParticipantRoleEnum().Editor, getParticipantRoleEnum().Reader];
+                  userId: user._id;
+                  participants: team.participants!
+                "
                 (click)="leaveFromTeam()"
               >
                 <img

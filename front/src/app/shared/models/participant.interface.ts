@@ -11,7 +11,7 @@ export interface ParticipantI {
 }
 
 export enum ParticipantRole {
-  'Author',
-  'Editor',
-  'Reader',
+  Author,
+  Editor,
+  Reader,
 }

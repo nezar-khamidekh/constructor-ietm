@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ParticipantRole } from 'src/app/shared/models/participant.interface';
 import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
@@ -28,14 +29,16 @@ export class TeamPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log(this.route.snapshot.data.repositories);
-
     this.team = this.route.snapshot.data.team;
     this.teamRepositories = this.route.snapshot.data.repositories;
 
     this.titleService.setTitle(
       `Команда "${this.team.title}" | Конструктор интерактивных инструкций`,
     );
+  }
+
+  getParticipantRoleEnum() {
+    return ParticipantRole;
   }
 
   leaveFromTeam() {

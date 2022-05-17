@@ -64,7 +64,14 @@
           {{ isInFavorite ? 'Удалить из избранного' : 'Добавить в избранное' }}
         </button>
       </div>
-      <div class="repository__actions">
+      <div
+        class="repository__actions"
+        *appHasRole="
+          [getParticipantRoleEnum().Author, getParticipantRoleEnum().Editor];
+          userId: user._id;
+          participants: repository.participants
+        "
+      >
         <button class="repository__action" mat-icon-button>
           <img
             class="repository__action-icon"

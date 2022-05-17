@@ -7,6 +7,7 @@ import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { DialogDeleteItemComponent } from '../dialogs/dialog-delete-item/dialog-delete-item.component';
 import { SceneService } from '../scene/services/scene.service';
+import { ParticipantRole } from '../shared/models/participant.interface';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 import { UserI } from '../shared/models/user.interface';
@@ -35,7 +36,6 @@ export class RepositoryComponent implements OnInit {
     private dataStore: DataStoreService,
     private titleService: Title,
     private cdr: ChangeDetectorRef,
-    private sceneService: SceneService,
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +50,10 @@ export class RepositoryComponent implements OnInit {
 
   getRepositoryTypeEnum() {
     return RepositoryType;
+  }
+
+  getParticipantRoleEnum() {
+    return ParticipantRole;
   }
 
   getAuthorLastFirsName(author: UserI) {

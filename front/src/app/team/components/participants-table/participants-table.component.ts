@@ -6,8 +6,8 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { ParticipantI } from 'src/app/shared/models/participant.interface';
-import { ParticipantRole, PARTICIPANT_ROLES } from 'src/app/shared/models/participantRole';
+import { ParticipantI, ParticipantRole } from 'src/app/shared/models/participant.interface';
+import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRoles';
 
 @Component({
   selector: 'app-participants-table',
