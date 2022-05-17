@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
@@ -30,6 +31,7 @@ export class ManageTeamComponent implements OnInit {
   teamToEdit: TeamI | null = null;
 
   user!: UserI;
+  hasAccess = false;
 
   constructor(
     public dialog: MatDialog,
@@ -41,6 +43,7 @@ export class ManageTeamComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private titleService: Title,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -57,6 +60,21 @@ export class ManageTeamComponent implements OnInit {
     this.subs.add(
       this.dataStore.getUser().subscribe((user) => {
         this.user = user;
+
+        const roles: number[] = this.route.snapshot.data.roles;
+        const userRole = this.teamToEdit!.participants?.find(
+          (participant) => participant.user._id === this.user._id,
+        )?.role;
+
+        if (typeof userRole === 'undefined' || !roles.includes(userRole)) {
+          this.router.navigate(['/main']);
+          this.snackBar.open('Недостаточно прав', '', {
+            duration: 5000,
+            panelClass: 'errorSnack',
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          });
+        } else this.hasAccess = true;
       }),
     );
 

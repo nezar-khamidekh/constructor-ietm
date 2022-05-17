@@ -1,4 +1,4 @@
-<div class="manage-team">
+<div class="manage-team" *ngIf="hasAccess">
   <div class="manage-team__container">
     <h1 class="manage-team__title page-title">
       {{ editMode ? 'Команда 	&#34;' + teamToEdit?.title + '&#34;' : 'Новая команда' }}

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../shared/guards/auth.guard';
+import { ParticipantRole } from '../shared/models/participant.interface';
 import { ManageTeamComponent } from './components/manage-team/manage-team.component';
 import { TeamPageComponent } from './components/team-page/team-page.component';
 import { TeamsListComponent } from './components/teams-list/teams-list.component';
@@ -27,6 +28,9 @@ const routes: Routes = [
         component: ManageTeamComponent,
         canActivate: [AuthGuard],
         resolve: { team: TeamResolverService },
+        data: {
+          roles: [ParticipantRole.Author],
+        },
       },
       {
         path: 'user-teams',
