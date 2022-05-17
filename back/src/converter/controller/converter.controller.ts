@@ -2,12 +2,17 @@ import {
   Body,
   Controller,
   Post,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { createReadStream } from 'fs';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
+import { map } from 'rxjs';
 import { ConvertModelDto } from '../model/dto/convertModelDto.dto';
 import { ConverterService } from '../service/converter.service';
 
@@ -33,7 +38,15 @@ export class ConverterController {
   registerModel(
     @UploadedFile() file: Express.Multer.File,
     @Body() convertModelDto: ConvertModelDto,
+    @Res() res: Response,
   ) {
-    return this.converterService.convertModel(file.filename, convertModelDto);
+    const outputPath = this.converterService.convertModel(
+      file.filename,
+      convertModelDto,
+    );
+    outputPath.subscribe((path) => {
+      const model = createReadStream(join(process.cwd(), path));
+      model.pipe(res);
+    });
   }
 }
