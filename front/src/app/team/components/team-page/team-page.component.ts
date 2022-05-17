@@ -28,6 +28,8 @@ export class TeamPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.route.snapshot.data.repositories);
+
     this.team = this.route.snapshot.data.team;
     this.teamRepositories = this.route.snapshot.data.repositories;
 

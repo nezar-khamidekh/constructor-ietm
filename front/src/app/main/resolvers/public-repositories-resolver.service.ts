@@ -14,6 +14,6 @@ export class PublicRepositoriesResolverService implements Resolve<any> {
     if (route.queryParams.searchQuery) {
       return this.repositoryService.find(route.queryParams.searchQuery);
     }
-    return this.repositoryService.getAll();
+    return this.repositoryService.getPublic();
   }
 }

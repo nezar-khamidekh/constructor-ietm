@@ -19,13 +19,13 @@
             <p class="team-card__description">
               {{ team.description }}
             </p>
-            <div class="team-card__actions">
+            <div class="team-card__actions" *ngIf="dataStore.getUserValue() as user">
               <a
                 class="team-card__action"
                 mat-flat-button
                 color="primary"
                 [routerLink]="'/team/edit/' + team._id"
-                *ngIf="team.participants! | isTeamAuthor: dataStore.getUserValue()!._id"
+                *ngIf="team.participants! | isTeamAuthor: user._id"
               >
                 <img
                   class="team-card__action-img"
@@ -37,7 +37,7 @@
                 class="team-card__action"
                 mat-flat-button
                 color="warn"
-                *ngIf="!(team.participants! | isTeamAuthor: dataStore.getUserValue()!._id)"
+                *ngIf="!(team.participants! | isTeamAuthor: user._id)"
                 (click)="leaveFromTeam()"
               >
                 <img

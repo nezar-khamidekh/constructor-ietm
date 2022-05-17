@@ -11,7 +11,7 @@
     <ng-container *ngIf="repositories.length; else noRepositories">
       <app-repositories-page
         [repositories]="repositories"
-        [title]="'Репозитории'"
+        [title]="'Публичные репозитории'"
       ></app-repositories-page>
     </ng-container>
     <ng-template #noRepositories>

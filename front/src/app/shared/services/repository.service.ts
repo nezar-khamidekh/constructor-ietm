@@ -19,8 +19,8 @@ export class RepositoryService {
     });
   }
 
-  getAll(): Observable<RepositoryI[]> {
-    return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/all`, {
+  getPublic(): Observable<RepositoryI[]> {
+    return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/all-public`, {
       withCredentials: true,
     });
   }
@@ -39,6 +39,12 @@ export class RepositoryService {
 
   getByTeam(teamId: string): Observable<RepositoryI[]> {
     return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/team/${teamId}`, {
+      withCredentials: true,
+    });
+  }
+
+  getByTeamPublic(teamId: string): Observable<RepositoryI[]> {
+    return this.http.get<RepositoryI[]>(`${this.apiUrl}/repository/team-public/${teamId}`, {
       withCredentials: true,
     });
   }

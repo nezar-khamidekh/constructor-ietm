@@ -40,7 +40,6 @@ const routes: Routes = [
       {
         path: ':teamId',
         component: TeamPageComponent,
-        canActivate: [AuthGuard],
         resolve: { team: TeamResolverService, repositories: TeamRepositoriesResolverService },
       },
     ],

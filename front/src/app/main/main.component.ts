@@ -61,7 +61,7 @@ export class MainComponent implements OnInit, OnDestroy {
             if (queryParams.searchQuery) {
               return this.repositoryService.find(queryParams.searchQuery);
             } else {
-              return this.repositoryService.getAll();
+              return this.repositoryService.getPublic();
             }
           }),
         )
