@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -76,6 +76,7 @@ export class ManageTeamComponent implements OnInit {
         username: ['', Validators.required],
         role: ['', Validators.required],
       }),
+      participants: this.fb.array(!this.editMode ? [] : this.teamToEdit?.participants!),
     });
   }
 
@@ -126,21 +127,21 @@ export class ManageTeamComponent implements OnInit {
 
       this.subs.add(
         this.teamService.sendInvitation(sendInvitationData).subscribe((addedParticipant) => {
-          this.teamToEdit!.participants = [
-            ...this.teamToEdit!.participants!,
-            {
-              login: addedParticipant.login,
-              role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
-              user: {
-                avatar: addedParticipant.avatar || '',
-                email: addedParticipant.email,
-                firstName: addedParticipant.firstName,
-                lastName: addedParticipant.lastName,
-                _id: addedParticipant._id,
-              },
+          const newParticipant = {
+            login: addedParticipant.login,
+            role: this.teamFormGroup.get(['newParticipant', 'role'])?.value,
+            user: {
+              avatar: addedParticipant.avatar || '',
+              email: addedParticipant.email,
+              firstName: addedParticipant.firstName,
+              lastName: addedParticipant.lastName,
+              _id: addedParticipant._id,
             },
-          ];
-          this.teamFormGroup.reset();
+          };
+          this.teamToEdit!.participants = [...this.teamToEdit!.participants!, newParticipant];
+          (<FormArray>this.teamFormGroup.get('participants'))?.push(
+            this.fb.control(newParticipant),
+          );
           this.cdr.detectChanges();
         }),
       );
@@ -153,6 +154,7 @@ export class ManageTeamComponent implements OnInit {
 
   onSubmit() {
     const teamGroup = this.teamFormGroup.get('team')!;
+    const participantsGroup = this.teamFormGroup.get('participants')!;
     if (teamGroup.valid) {
       if (!this.editMode)
         this.subs.add(
@@ -162,15 +164,20 @@ export class ManageTeamComponent implements OnInit {
               this.router.navigate(['/team', res._id]);
             }),
         );
-      else
+      else {
         this.subs.add(
           this.teamService
-            .updateTeam({ ...teamGroup.value, _id: this.teamToEdit?._id })
+            .updateTeam({
+              _id: this.teamToEdit?._id,
+              ...teamGroup.value,
+              participants: [...participantsGroup.value],
+            })
             .subscribe((res) => {
               this.teamToEdit!.title = teamGroup.get('title')!.value;
               this.cdr.detectChanges();
             }),
         );
+      }
     }
   }
 
@@ -181,6 +188,10 @@ export class ManageTeamComponent implements OnInit {
         .subscribe((res) => {
           this.teamToEdit!.participants = this.teamToEdit!.participants!.filter(
             (participant) => participant.user._id !== userId,
+          );
+          this.teamFormGroup.setControl(
+            'participants',
+            this.fb.array(this.teamToEdit!.participants),
           );
           this.cdr.detectChanges();
         }),
