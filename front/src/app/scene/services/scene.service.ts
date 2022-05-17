@@ -1,35 +1,19 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import MainScene from 'src/app/shared/classes/MainScene';
-import { ViewerI, VIEWER_STATE } from 'src/app/shared/models/viewer.interface';
 import {
   CAMERA_ANIM_DUR,
-  CAMERA_FAR,
-  CAMERA_FOV,
-  CAMERA_NEAR,
   CAMERA_POSITION_RATE,
   CLICKED_OBJ_MATERIAL,
   GRID_HELPER_DIVISIONS,
   GRID_HELPER_SIZE_RATE,
   HIGHLIGHT_COLOR,
-  OUTLINE_PASS_EDGE_STRENGTH,
-  OUTLINE_PASS_EDGE_THICKNESS,
-  OUTLINE_PASS_HIDDEN_EDGE_COLOR,
-  OUTLINE_PASS_VISIBLE_EDGE_COLOR,
-  RENDERER_CLEAR_COLOR,
-  RENDERER_PIXEL_RATIO,
   TRANSPARENT_OBJ_MATERIAL,
 } from 'src/app/shared/models/viewerConstants';
 import { environment } from 'src/environments/environment';
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { SectionPlanes, SectionService } from './section.service';
@@ -38,6 +22,8 @@ import {
   AxisAngleOrientationI,
   OffsetFactorOrientationI,
 } from '../components/view-cube/view-cube.component';
+import { Viewer } from '../classes/Viewer';
+import { VIEWER_STATE } from '../models/viewerState.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +31,7 @@ import {
 export class SceneService {
   private apiUrl: string = environment.baseUrl;
 
-  viewer!: ViewerI;
+  viewer: Viewer;
 
   effectFXAA = new ShaderPass(FXAAShader);
   canvasRect: any;
@@ -96,27 +82,8 @@ export class SceneService {
     return parseInt(rr + gg + bb, 16);
   }
 
-  createViewer() {
-    this.viewer = {
-      scene: new MainScene(),
-      renderer: new THREE.WebGLRenderer(),
-      composer: null,
-      outlinePass: {},
-      labelRenderer: null,
-      camera: new THREE.PerspectiveCamera(),
-      controls: {},
-      modelBoundingBox: {},
-      raycaster: new THREE.Raycaster(),
-      clock: new THREE.Clock(),
-      time: 0,
-      isPlaying: false,
-      model: new THREE.Object3D(),
-      state: VIEWER_STATE.Default,
-    };
-  }
-
-  getViewer() {
-    return this.viewer;
+  setViewer(viewer: Viewer) {
+    this.viewer = viewer;
   }
 
   getHiddenObjects() {
@@ -137,80 +104,6 @@ export class SceneService {
 
   setAnnotations(annotations: any[]) {
     this.annotations$.next([...annotations]);
-  }
-
-  setCamera(aspect: number) {
-    this.viewer.camera = new THREE.PerspectiveCamera(CAMERA_FOV, aspect, CAMERA_NEAR, CAMERA_FAR);
-  }
-
-  setRenderer(canvas: any, wrapper: any, pixelRatio: number) {
-    this.viewer.renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      powerPreference: 'high-performance',
-      antialias: true,
-      logarithmicDepthBuffer: true,
-      alpha: true,
-    });
-    this.viewer.renderer.shadowMap.enabled = true;
-    this.viewer.renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
-    this.viewer.renderer.setPixelRatio(
-      pixelRatio > RENDERER_PIXEL_RATIO ? RENDERER_PIXEL_RATIO : pixelRatio,
-    );
-    this.viewer.renderer.setClearColor(RENDERER_CLEAR_COLOR);
-    // this.viewer.renderer.outputEncoding = THREE.GammaEncoding;
-    this.viewer.renderer.localClippingEnabled = true;
-  }
-
-  setLabelRenderer(wrapper: any) {
-    this.viewer.labelRenderer = new CSS2DRenderer();
-    this.viewer.labelRenderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
-    this.viewer.labelRenderer.domElement.style.position = 'absolute';
-    this.viewer.labelRenderer.domElement.style.top = '0px';
-    this.viewer.labelRenderer.domElement.style.pointerEvents = 'none';
-  }
-
-  setCanvasRect(canvasRect: any) {
-    this.canvasRect = canvasRect;
-  }
-
-  setComposer() {
-    this.viewer.composer = new EffectComposer(this.viewer.renderer);
-    const renderPass = new RenderPass(this.viewer.scene, this.viewer.camera);
-    this.viewer.composer.addPass(renderPass);
-    this.effectFXAA = new ShaderPass(FXAAShader);
-    this.effectFXAA.uniforms['resolution'].value.set(
-      1 / this.canvasRect.width,
-      1 / this.canvasRect.height,
-    );
-    this.viewer.composer.addPass(this.effectFXAA);
-    this.viewer.outlinePass = new OutlinePass(
-      new THREE.Vector2(this.canvasRect.width, this.canvasRect.height),
-      this.viewer.scene,
-      this.viewer.camera,
-    );
-    this.viewer.outlinePass.edgeStrength = OUTLINE_PASS_EDGE_STRENGTH;
-    this.viewer.outlinePass.edgeThickness = OUTLINE_PASS_EDGE_THICKNESS;
-    this.viewer.outlinePass.visibleEdgeColor.set(OUTLINE_PASS_VISIBLE_EDGE_COLOR);
-    this.viewer.outlinePass.hiddenEdgeColor.set(OUTLINE_PASS_HIDDEN_EDGE_COLOR);
-    this.viewer.composer.addPass(this.viewer.outlinePass);
-
-    this.viewer.composer.renderTarget1.stencilBuffer = true;
-    this.viewer.composer.renderTarget2.stencilBuffer = true;
-  }
-
-  setControls() {
-    this.viewer.controls = new OrbitControls(this.viewer.camera, this.viewer.renderer.domElement);
-  }
-
-  setMixer(model: any) {
-    this.viewer.mixer = new THREE.AnimationMixer(model.scene);
-    this.animations = model.animations;
-  }
-
-  setModel(model: any) {
-    this.viewer.model = model.scene.children[0];
-    (this.viewer.model as any).isRoot = true;
-    this.viewer.scene.add(model.scene);
   }
 
   setMeshesDefaultMaterial() {
@@ -267,20 +160,6 @@ export class SceneService {
 
   setBackgroundColorScene(color: string) {
     this.viewer.scene.background = new THREE.Color(color);
-  }
-
-  resizeCanvas(box: any, canvas: any) {
-    this.viewer.renderer.setSize(box.width, box.height);
-    const pixelRatio = this.viewer.renderer.getPixelRatio();
-    if (this.viewer.composer) this.viewer.composer.setSize(box.width, box.height);
-    this.effectFXAA.uniforms['resolution'].value.set(
-      (1 / box.width) * pixelRatio,
-      (1 / box.height) * pixelRatio,
-    );
-    this.viewer.camera.aspect = box.width / box.height;
-    this.viewer.camera.updateProjectionMatrix();
-    this.canvasRect = canvas.getBoundingClientRect();
-    if (this.viewer.labelRenderer) this.viewer.labelRenderer.setSize(box.width, box.height);
   }
 
   animateScene() {

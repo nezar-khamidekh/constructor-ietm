@@ -17,7 +17,6 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { SceneService } from './services/scene.service';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { ViewerI } from '../shared/models/viewer.interface';
 import { AnnotationI } from '../shared/models/annotation.interface';
 import * as TWEEN from '@tweenjs/tween.js';
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer';
@@ -31,11 +30,11 @@ import {
   CAMERA_POSITION_RATE,
 } from '../shared/models/viewerConstants';
 import { SectionPlanes } from './services/section.service';
-import { LoadingService } from '../shared/services/loading.service';
 import { ViewCubeComponent } from './components/view-cube/view-cube.component';
 import { MatDialog } from '@angular/material/dialog';
 import * as dat from 'dat.gui';
 import { ViewerAnnotationComponent } from './components/viewer-annotation/viewer-annotation.component';
+import { Viewer } from './classes/Viewer';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -75,7 +74,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(ViewCubeComponent) cube: ViewCubeComponent;
 
   @HostListener('window:resize', ['$event']) onResize($event: any) {
-    this.sceneService.resizeCanvas(
+    this.viewer.resize(
       this.viewerWrapper.nativeElement.getBoundingClientRect(),
       this.canvas.nativeElement,
     );
@@ -110,7 +109,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   coordsAnnotation: any;
   attachedObject: any;
 
-  viewer!: ViewerI;
+  viewer: Viewer;
 
   animateRequestId: number;
 
@@ -185,7 +184,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public sceneService: SceneService,
     private renderer: Renderer2,
-    private loadingService: LoadingService,
     private cdr: ChangeDetectorRef,
     public dialog: MatDialog,
   ) {}
@@ -232,32 +230,28 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.sceneService
           .getRepositoryModel({ repoId: this.repositoryId, modelId: this.modelId })
           .subscribe((file) => {
-            this.setUpViewer(file);
+            this.initializeViewer(file);
           }),
       );
     else
       this.subs.add(
         this.sceneService.loadDefaultModel().subscribe((file) => {
-          this.setUpViewer(file);
+          this.initializeViewer(file);
         }),
       );
   }
 
   ngOnDestroy(): void {
-    this.sceneService.clearScene();
-    window.cancelAnimationFrame(this.animateRequestId);
+    if (this.viewer) this.sceneService.clearScene();
+    if (this.animateRequestId) window.cancelAnimationFrame(this.animateRequestId);
     this.gui.destroy();
     this.subs.unsubscribe();
   }
 
-  setUpViewer(file: any) {
+  initializeViewer(file: any) {
     console.log(file);
 
-    this.sceneService.createViewer();
-    this.viewer = this.sceneService.getViewer();
     const loader = new GLTFLoader();
-
-    this.sceneService.setCanvasRect(this.canvas.nativeElement.getBoundingClientRect());
 
     loader.setDRACOLoader(
       new DRACOLoader().setDecoderPath(
@@ -265,54 +259,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       ),
     );
 
-    this.sceneService.setCamera(
-      this.viewerWrapper.nativeElement.clientWidth / this.viewerWrapper.nativeElement.clientHeight,
-    );
-
-    this.sceneService.setRenderer(
-      this.canvas.nativeElement,
-      this.viewerWrapper.nativeElement,
-      window.devicePixelRatio,
-    );
-
-    this.sceneService.setLabelRenderer(this.viewerWrapper.nativeElement);
-    this.renderer.appendChild(
-      this.viewerWrapper.nativeElement,
-      this.viewer.labelRenderer.domElement,
-    );
-    this.sceneService.setComposer();
-
-    this.sceneService.setControls();
-
     loader.parse(JSON.stringify(file), '', (gltf) => {
-      console.log(gltf);
-      this.sceneService.setModel(gltf);
-      this.sceneService.setLongestSide(gltf);
-      this.sceneService.setMixer(gltf);
-      this.sceneService.setMeshesDefaultMaterial();
-      this.sceneService.setGridHelper(gltf);
-      this.sceneService.setLight();
-      this.sceneService.setCameraDefaultPosition();
-      if (
-        this.settings.cameraPosition.x === 0 &&
-        this.settings.cameraPosition.y === 0 &&
-        this.settings.cameraPosition.z === 0
-      )
-        this.settings.cameraPosition = { ...this.viewer.camera.position };
-      if (this.annotations.length) this.renderAnnotations(this.annotations);
-      if (!this.viewMode) {
-        this.sceneService.setGridHelperVisibility(this.settings.grid);
-        this.sceneService.setBackgroundColorScene(this.settings.background);
-        this.sceneService.setCameraDefaultPosition(this.settings.cameraPosition);
-        this.setGui();
-      }
-
-      this.viewerInitialized = true;
-      this.viewerIsReady.emit();
-      this.cdr.detectChanges();
+      this.onLoadModel(gltf);
     });
-
-    this.animate();
   }
 
   getViewerButtonsEnum() {
@@ -321,13 +270,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getMouseCoorsByMouseEvent(e: MouseEvent) {
     return {
-      x:
-        ((e.clientX - this.sceneService.canvasRect.left) / this.sceneService.canvasRect.width) * 2 -
-        1,
-      y:
-        -((e.clientY - this.sceneService.canvasRect.top) / this.sceneService.canvasRect.height) *
-          2 +
-        1,
+      x: ((e.clientX - this.viewer.canvasRect.left) / this.viewer.canvasRect.width) * 2 - 1,
+      y: -((e.clientY - this.viewer.canvasRect.top) / this.viewer.canvasRect.height) * 2 + 1,
     };
   }
 
@@ -729,5 +673,43 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.contextMenuFirstOpen = false;
       this.matMenuTrigger.openMenu();
     }
+  }
+
+  onLoadModel(gltf: any) {
+    console.log(gltf);
+
+    this.viewer = new Viewer(
+      this.canvas.nativeElement,
+      window.devicePixelRatio,
+      this.canvas.nativeElement.getBoundingClientRect(),
+      this.viewerWrapper.nativeElement,
+      this.viewerWrapper.nativeElement.clientWidth / this.viewerWrapper.nativeElement.clientHeight,
+      gltf,
+      this.renderer,
+    );
+    this.sceneService.setViewer(this.viewer);
+    this.sceneService.setLongestSide(gltf);
+    this.sceneService.setMeshesDefaultMaterial();
+    this.sceneService.setGridHelper(gltf);
+    this.sceneService.setLight();
+    this.sceneService.setCameraDefaultPosition();
+    if (
+      this.settings.cameraPosition.x === 0 &&
+      this.settings.cameraPosition.y === 0 &&
+      this.settings.cameraPosition.z === 0
+    )
+      this.settings.cameraPosition = { ...this.viewer.camera.position };
+    if (this.annotations.length) this.renderAnnotations(this.annotations);
+    if (!this.viewMode) {
+      this.sceneService.setGridHelperVisibility(this.settings.grid);
+      this.sceneService.setBackgroundColorScene(this.settings.background);
+      this.sceneService.setCameraDefaultPosition(this.settings.cameraPosition);
+      this.setGui();
+    }
+
+    this.viewerInitialized = true;
+    this.viewerIsReady.emit();
+    this.animate();
+    this.cdr.detectChanges();
   }
 }
