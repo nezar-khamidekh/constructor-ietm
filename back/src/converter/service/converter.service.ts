@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { ConfigService } from '@nestjs/config';
 import { join, basename, extname } from 'path';
 import { from, map } from 'rxjs';
+import { createReadStream } from 'fs';
 
 @Injectable()
 export class ConverterService {
@@ -16,25 +17,18 @@ export class ConverterService {
   }
 
   convertModel(filePath: string, params: ConvertModelDto) {
+    const inputPath = this.inputPath(filePath);
+    const outputPath = this.outputPath(filePath, params.format);
     return from(
       isNaN(params.compression)
-        ? nrc.run(
-            [
-              `gltf-converter ${this.inputPath(filePath)} ${this.outputPath(
-                filePath,
-                params.format,
-              )}`,
-            ],
-            {
-              cwd: this.CONVERTER_PATH,
-            },
-          )
+        ? nrc.run([`gltf-converter ${inputPath} ${outputPath}`], {
+            cwd: this.CONVERTER_PATH,
+          })
         : nrc.run(
             [
-              `gltf-converter ${this.inputPath(filePath)} ${this.outputPath(
-                filePath,
-                params.format,
-              )} --draco --speed=${10 - params.compression}`,
+              `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
+                10 - params.compression
+              }`,
             ],
             {
               cwd: this.CONVERTER_PATH,
@@ -42,8 +36,7 @@ export class ConverterService {
           ),
     ).pipe(
       map(() => {
-        // TODO: response with converted model
-        return true;
+        return outputPath;
       }),
     );
   }
