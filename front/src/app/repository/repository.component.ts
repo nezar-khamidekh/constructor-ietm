@@ -25,6 +25,7 @@ export class RepositoryComponent implements OnInit {
   repository!: RepositoryI;
   isInFavorite = false;
   isInSubscriptions = false;
+  viewerInitialized = false;
 
   user: UserI | null = null;
 
@@ -106,5 +107,9 @@ export class RepositoryComponent implements OnInit {
           if (res !== null) this.router.navigate(['/main']);
         }),
     );
+  }
+
+  viewerIsReady() {
+    this.viewerInitialized = true;
   }
 }

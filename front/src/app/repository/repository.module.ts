@@ -11,6 +11,7 @@ import { TreeComponent } from './components/tree/tree.component';
 import { TreeStructureModule } from '../tree-structure/tree-structure.module';
 import { DialogDeleteItemModule } from '../dialogs/dialog-delete-item/dialog-delete-item.module';
 import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [RepositoryComponent, SummaryComponent, TreeComponent],
@@ -23,6 +24,7 @@ import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
     TreeStructureModule,
     DialogDeleteItemModule,
     HasRoleModule,
+    MatProgressSpinnerModule,
   ],
 })
 export class RepositoryModule {}

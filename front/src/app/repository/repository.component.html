@@ -119,11 +119,15 @@
     >
   </div>
   <div class="repository__content">
+    <div class="loader" *ngIf="!viewerInitialized">
+      <mat-spinner></mat-spinner>
+    </div>
     <div class="viewer" *ngIf="repository">
       <app-scene
         [repositoryId]="repository._id"
         [modelId]="repository.models[repository.models.length - 1]._id"
         [viewMode]="true"
+        (viewerIsReady)="viewerIsReady()"
       ></app-scene>
     </div>
     <div class="content">
