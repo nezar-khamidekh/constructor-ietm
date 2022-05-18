@@ -35,6 +35,8 @@ import { MatDialog } from '@angular/material/dialog';
 import * as dat from 'dat.gui';
 import { ViewerAnnotationComponent } from './components/viewer-annotation/viewer-annotation.component';
 import { Viewer } from './classes/Viewer';
+import { DataStoreService } from '../shared/services/data-store.service';
+import { TreeStructureService } from '../tree-structure/services/tree-structure.service';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -186,6 +188,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
     public dialog: MatDialog,
+    private treeStructureService: TreeStructureService,
   ) {}
 
   ngOnInit(): void {
@@ -297,18 +300,12 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       if (filteredIntersects.length > 0) {
         this.coordsAnnotation = filteredIntersects[0].point;
         this.attachedObject = filteredIntersects[0].object;
-        // switch (this.viewerMouseMode) {
-        //   case VIEWER_MOUSE_MODE.ApplyAnnotation:
-        // this.applyAnnotationPosition.emit({
-        //   coords: filteredIntersects[0].point,
-        //   attachedObject: filteredIntersects[0].object,
-        // });
-        //   break;
-        // default:
-        //   break;
-        // }
         this.viewer.outlinePass.selectedObjects = [filteredIntersects[0].object];
         this.sceneService.selectObject(filteredIntersects);
+        if (this.sceneService.selectedObj)
+          this.treeStructureService.setSelectedTreeNodeObjectId(
+            this.sceneService.selectedObj.objectId,
+          );
       }
   }
 

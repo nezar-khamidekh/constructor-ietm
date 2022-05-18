@@ -411,15 +411,17 @@ export class SceneService {
       node.type !== 'Sprite'
     ) {
       const mesh = this.viewer.scene.getObjectByProperty('objectId', node.objectId) as any;
-      switch (typeEvent) {
-        case 'mouseenter':
-          mesh.material.color.setHex(HIGHLIGHT_COLOR);
-          break;
-        case 'mouseleave':
-          mesh.material.color.setHex(mesh.defaultMaterial.color.getHex());
-          break;
-        default:
-          break;
+      if (mesh.material) {
+        switch (typeEvent) {
+          case 'mouseenter':
+            mesh.material.color.setHex(HIGHLIGHT_COLOR);
+            break;
+          case 'mouseleave':
+            mesh.material.color.setHex(mesh.defaultMaterial.color.getHex());
+            break;
+          default:
+            break;
+        }
       }
     }
   }

@@ -8,6 +8,9 @@ import {
   ChangeDetectorRef,
   Output,
   EventEmitter,
+  ViewChildren,
+  QueryList,
+  ElementRef,
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
@@ -31,9 +34,13 @@ export class TreeStructureComponent implements OnInit {
 
   @Output() updateTree = new EventEmitter();
 
+  @ViewChildren('treeNode') treeNodesRef: QueryList<ElementRef>;
+
   treeControl = new NestedTreeControl((node: any) => node.children);
   dataSource = new MatTreeNestedDataSource<TreeStructureI>();
   expandedNodes: any = [];
+
+  selectedTreeNodeObjectId = '';
 
   hasChild = (_: number, node: any) => !!node.children && node.children.length > 0;
 
@@ -47,6 +54,22 @@ export class TreeStructureComponent implements OnInit {
   ngOnInit(): void {
     this.dataSource.data = [this.tree];
     this.treeControl.expand(this.dataSource.data[0]);
+
+    this.subs.add(
+      this.treeStructure.getSelectedTreeNodeObjectId().subscribe((res) => {
+        this.selectedTreeNodeObjectId = res;
+        if (this.selectedTreeNodeObjectId) {
+          const node = this.treeNodesRef
+            .toArray()
+            .find((el) => el.nativeElement.id === this.selectedTreeNodeObjectId);
+          this.expand(this.dataSource.data, this.selectedTreeNodeObjectId);
+          setTimeout(() => {
+            node?.nativeElement.scrollIntoView({ behavior: 'smooth' });
+          }, 0);
+          this.cdr.detectChanges();
+        }
+      }),
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -89,5 +112,16 @@ export class TreeStructureComponent implements OnInit {
         }
       }),
     );
+  }
+
+  expand(data: TreeStructureI[], objectId: string): any {
+    data.forEach((node) => {
+      if (node.children && node.children.find((c) => c.objectId === objectId)) {
+        this.treeControl.expand(node);
+        this.expand(this.dataSource.data, node.objectId);
+      } else if (node.children && node.children.find((c) => c.children)) {
+        this.expand(node.children, objectId);
+      }
+    });
   }
 }

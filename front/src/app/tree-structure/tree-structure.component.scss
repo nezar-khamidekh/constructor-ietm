@@ -1,13 +1,11 @@
+@import '_variables';
+
 :host {
   height: 100%;
 }
 
 .tree-wrapper {
   height: 100%;
-
-  &__name-element {
-    cursor: pointer;
-  }
 
   &__button {
     margin-left: 2px;
@@ -34,7 +32,31 @@
     padding-left: 40px;
   }
 
-  &__name-element {
+  &__node {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+
+  &__node-name {
     cursor: pointer;
+  }
+}
+
+.highlight {
+  animation: backgroundColorAnimation 3s ease-in-out;
+}
+
+@keyframes backgroundColorAnimation {
+  0% {
+    background-color: #ffca80;
+  }
+
+  75% {
+    background-color: #ffca80;
+  }
+
+  100% {
+    background-color: transparent;
   }
 }

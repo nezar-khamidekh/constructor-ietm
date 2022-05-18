@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
 
 @Injectable()
 export class TreeStructureService {
-  constructor() {}
+  private selectedTreeNodeObjectId: BehaviorSubject<string>;
+
+  constructor() {
+    this.selectedTreeNodeObjectId = new BehaviorSubject('');
+  }
 
   generate(model: any): TreeStructureI {
     const tree: TreeStructureI = {
@@ -60,5 +65,13 @@ export class TreeStructureService {
         if (childNode) return childNode;
       }
     }
+  }
+
+  getSelectedTreeNodeObjectId(): Observable<string> {
+    return this.selectedTreeNodeObjectId.asObservable();
+  }
+
+  setSelectedTreeNodeObjectId(objectId: string) {
+    this.selectedTreeNodeObjectId.next(objectId);
   }
 }
