@@ -106,11 +106,12 @@ export class SceneService {
     this.annotations$.next([...annotations]);
   }
 
-  setMeshesDefaultMaterial() {
+  setObjectsCustomProperties() {
     this.viewer.model.traverse((child: any) => {
       if ((child instanceof THREE.Mesh) as any) {
         child.defaultMaterial = child.material.clone();
       }
+      child.objectId = child.userData.uuid;
     });
   }
 
@@ -405,11 +406,11 @@ export class SceneService {
 
   highlightElement(typeEvent: string, node: any) {
     if (
-      node.uuid !== this.selectedObj?.uuid &&
+      node.objectId !== this.selectedObj?.objectId &&
       node.parent.type !== 'Sprite' &&
       node.type !== 'Sprite'
     ) {
-      const mesh = this.viewer.scene.getObjectByName(this.replacedNameNode(node.name)) as any;
+      const mesh = this.viewer.scene.getObjectByProperty('objectId', node.objectId) as any;
       switch (typeEvent) {
         case 'mouseenter':
           mesh.material.color.setHex(HIGHLIGHT_COLOR);
@@ -469,12 +470,12 @@ export class SceneService {
     }
   }
 
-  toggleObjectVisibilityById(name: string) {
-    const obj = this.viewer.scene.getObjectByName(this.replacedNameNode(name))!;
+  toggleObjectVisibilityById(objectId: string) {
+    const obj = this.viewer.scene.getObjectByProperty('objectId', objectId)!;
     obj.visible = !obj.visible;
     if (obj.visible)
       this.setHiddenObjects(
-        this.hiddenObjects$.value.filter((obj: any) => obj.name !== this.replacedNameNode(name)),
+        this.hiddenObjects$.value.filter((obj: any) => obj.objectId !== objectId),
       );
     else this.setHiddenObjects([...this.hiddenObjects$.value, obj]);
   }
@@ -494,8 +495,8 @@ export class SceneService {
     if (this.viewer.state === VIEWER_STATE.Isolated) this.resetObjectIsolation();
   }
 
-  fitToView(name: string, onCompleteCallback: () => void) {
-    const obj = this.viewer.model.getObjectByName(this.replacedNameNode(name))!;
+  fitToView(objectId: string, onCompleteCallback: () => void) {
+    const obj = this.viewer.model.getObjectByProperty('objectId', objectId)!;
     this.resetObjectIsolation();
     this.isolateObject(obj);
 

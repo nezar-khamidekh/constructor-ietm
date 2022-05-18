@@ -689,7 +689,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     );
     this.sceneService.setViewer(this.viewer);
     this.sceneService.setLongestSide(gltf);
-    this.sceneService.setMeshesDefaultMaterial();
+    this.sceneService.setObjectsCustomProperties();
     this.sceneService.setGridHelper(gltf);
     this.sceneService.setLight();
     this.sceneService.setCameraDefaultPosition();

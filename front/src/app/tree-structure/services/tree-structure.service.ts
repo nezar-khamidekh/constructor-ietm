@@ -5,10 +5,10 @@ import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
 export class TreeStructureService {
   constructor() {}
 
-  generate(model: THREE.Object3D): TreeStructureI {
+  generate(model: any): TreeStructureI {
     const tree: TreeStructureI = {
       id: model.id,
-      uuid: model.uuid,
+      objectId: model.objectId,
       name: model.name || model.userData.name,
       children: [],
       type: model.type,
@@ -18,8 +18,8 @@ export class TreeStructureService {
       isRoot: true,
     };
     model.children
-      .filter((child) => child.type !== 'Sprite')
-      .forEach((child) => {
+      .filter((child: any) => child.type !== 'Sprite')
+      .forEach((child: any) => {
         tree.children.push(this.generateNode(child));
       });
     return tree;
@@ -28,7 +28,7 @@ export class TreeStructureService {
   generateNode(node: any): TreeStructureI {
     const treeNode: TreeStructureI = {
       id: node.id,
-      uuid: node.uuid,
+      objectId: node.objectId,
       name: node.name || node.userData.name,
       children: [],
       type: node.type,

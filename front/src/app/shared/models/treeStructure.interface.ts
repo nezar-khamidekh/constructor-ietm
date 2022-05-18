@@ -1,6 +1,6 @@
 export interface TreeStructureI {
   id: number;
-  uuid: string;
+  objectId: string;
   name: string;
   children: TreeStructureI[];
   type: string;

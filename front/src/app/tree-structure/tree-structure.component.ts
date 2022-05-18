@@ -57,16 +57,16 @@ export class TreeStructureComponent implements OnInit {
     }
   }
 
-  objectIsHidden(name: string, hiddenObjects: any[]) {
-    return hiddenObjects.some((obj) => obj.name === this.sceneService.replacedNameNode(name));
+  objectIsHidden(objectId: string, hiddenObjects: any[]) {
+    return hiddenObjects.some((obj) => obj.objectId === objectId);
   }
 
   toggleObjectVisibility(node: any) {
-    this.sceneService.toggleObjectVisibilityById(node.name);
+    this.sceneService.toggleObjectVisibilityById(node.objectId);
   }
 
   fitToObject(node: any) {
-    this.sceneService.fitToView(node.name, () => {});
+    this.sceneService.fitToView(node.objectId, () => {});
   }
 
   renameElement(node: TreeStructureI) {
