@@ -55,40 +55,60 @@ export class RepositoryService {
   ) {}
 
   create(createRepositoryDto: CreateRepositoryDto) {
-    if (createRepositoryDto.team) {
-      return this.teamService
-        .checkIfTeamHasUser({
-          teamId: createRepositoryDto.team,
-          userId: createRepositoryDto.author,
-        })
-        .pipe(
-          switchMap((checkResult: boolean) => {
-            if (checkResult) {
-              const newRepo = new this.repositoryModel(createRepositoryDto);
-              return from(newRepo.save()).pipe(
-                map((repo) => {
-                  return repo;
+    return this.checkIfRepoTitleExits(createRepositoryDto.title).pipe(
+      switchMap((check) => {
+        if (!check) {
+          if (createRepositoryDto.team) {
+            return this.teamService
+              .checkIfTeamHasUser({
+                teamId: createRepositoryDto.team,
+                userId: createRepositoryDto.author,
+              })
+              .pipe(
+                switchMap((checkResult: boolean) => {
+                  if (checkResult) {
+                    const newRepo = new this.repositoryModel(
+                      createRepositoryDto,
+                    );
+                    return from(newRepo.save()).pipe(
+                      map((repo) => {
+                        return repo;
+                      }),
+                    );
+                  }
                 }),
               );
-            }
-          }),
-        );
-    } else {
-      const newRepo = new this.repositoryModel(createRepositoryDto);
-      return from(newRepo.save()).pipe(
-        switchMap((repo) => {
-          return this.addParticipant({
-            repoId: repo._id,
-            role: ParticipantRole.Author,
-            userId: createRepositoryDto.author,
-          }).pipe(
-            map((result) => {
-              return repo;
-            }),
+          } else {
+            const newRepo = new this.repositoryModel(createRepositoryDto);
+            return from(newRepo.save()).pipe(
+              switchMap((repo) => {
+                return this.addParticipant({
+                  repoId: repo._id,
+                  role: ParticipantRole.Author,
+                  userId: createRepositoryDto.author,
+                }).pipe(
+                  map((result) => {
+                    return repo;
+                  }),
+                );
+              }),
+            );
+          }
+        } else
+          throw new HttpException(
+            'Название репозитория занято',
+            HttpStatus.CONFLICT,
           );
-        }),
-      );
-    }
+      }),
+    );
+  }
+
+  checkIfRepoTitleExits(title: string) {
+    return from(this.repositoryModel.findOne({ title: title })).pipe(
+      map((repo) => {
+        return repo ? true : false;
+      }),
+    );
   }
 
   getOneById(id: string) {
