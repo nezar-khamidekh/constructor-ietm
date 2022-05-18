@@ -134,6 +134,7 @@ export class RepositoryService {
     return from(
       this.repositoryModel
         .find()
+        .sort([['updatedAt', -1]])
         .populate(TEAM_POPULATE_DATA)
         .populate('author', USER_POPULATE_FIELDS_LIST)
         .populate('participants.user', USER_POPULATE_FIELDS_LIST),
@@ -144,6 +145,7 @@ export class RepositoryService {
     return from(
       this.repositoryModel
         .find({ type: RepositoryType.Public })
+        .sort([['updatedAt', -1]])
         .populate(TEAM_POPULATE_DATA)
         .populate('author', USER_POPULATE_FIELDS_LIST)
         .populate('participants.user', USER_POPULATE_FIELDS_LIST),
@@ -160,6 +162,7 @@ export class RepositoryService {
           ],
           team: null,
         })
+        .sort([['updatedAt', -1]])
         .populate('author', USER_POPULATE_FIELDS_LIST)
         .populate('participants.user', USER_POPULATE_FIELDS_LIST),
     ).pipe(
@@ -173,6 +176,7 @@ export class RepositoryService {
     return from(
       this.repositoryModel
         .find({ team: teamId })
+        .sort([['updatedAt', -1]])
         .populate(TEAM_POPULATE_DATA)
         .populate('author', USER_POPULATE_FIELDS_LIST),
     ).pipe(
@@ -191,6 +195,7 @@ export class RepositoryService {
     return from(
       this.repositoryModel
         .find({ team: teamId, type: RepositoryType.Public })
+        .sort([['updatedAt', -1]])
         .populate(TEAM_POPULATE_DATA)
         .populate('author', USER_POPULATE_FIELDS_LIST),
     );
