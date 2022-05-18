@@ -10,6 +10,7 @@ import {
 } from './annotation-group.schema';
 import { Guideline, GuidelineSchema } from './guideline.schema';
 import { Model, ModelSchema } from './model.schema';
+import { SceneSettings, SceneSettingsSchema } from './scene-settings.schema';
 
 export type RepositoryDocument = Repository & Document;
 
@@ -47,6 +48,9 @@ export class Repository {
 
   @Prop({ type: Object, default: null })
   modelTree: any;
+
+  @Prop({ type: SceneSettingsSchema, default: null })
+  sceneSettings: SceneSettings;
 }
 export const RepositorySchema = SchemaFactory.createForClass(Repository);
 
