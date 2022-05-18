@@ -57,7 +57,7 @@ export class ViewerService {
       },
     };
     gltf.nodes.forEach((node) => {
-      node.extras = { uuid: uuidv4() };
+      node.extras = { local_id: uuidv4() };
     });
     return from(processGltf(gltf, options)).pipe(
       map((results: any) => {
