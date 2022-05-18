@@ -213,22 +213,24 @@ export class SceneService {
     const center = new THREE.Vector3();
     const finishPosition = center.add(offset);
 
-    const positionTween = new TWEEN.Tween(this.viewer.camera.position)
-      .to(finishPosition, 300)
-      .easing(TWEEN.Easing.Linear.None);
+    this.viewer.camera.position.set(finishPosition.x, finishPosition.y, finishPosition.z);
 
-    const euler = new THREE.Euler(axisAngle.x, axisAngle.y, axisAngle.z);
+    // const positionTween = new TWEEN.Tween(this.viewer.camera.position)
+    //   .to(finishPosition, 300)
+    //   .easing(TWEEN.Easing.Linear.None);
 
-    const finishQuaternion = new THREE.Quaternion()
-      .copy(this.viewer.camera.quaternion)
-      .setFromEuler(euler);
+    // const euler = new THREE.Euler(axisAngle.x, axisAngle.y, axisAngle.z);
 
-    const quaternionTween = new TWEEN.Tween(this.viewer.camera.quaternion)
-      .to(finishQuaternion, 300)
-      .easing(TWEEN.Easing.Linear.None);
+    // const finishQuaternion = new THREE.Quaternion()
+    //   .copy(this.viewer.camera.quaternion)
+    //   .setFromEuler(euler);
 
-    positionTween.start();
-    quaternionTween.start();
+    // const quaternionTween = new TWEEN.Tween(this.viewer.camera.quaternion)
+    //   .to(finishQuaternion, 300)
+    //   .easing(TWEEN.Easing.Linear.None);
+
+    // positionTween.start();
+    // quaternionTween.start();
   }
 
   moveCameraWithAnimation(onCompleteCallback: () => void) {
