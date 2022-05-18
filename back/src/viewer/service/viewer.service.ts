@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import * as nrc from 'node-run-cmd';
 import * as fs from 'fs';
-import { from, map, switchMap } from 'rxjs';
+import { from, map, of } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -55,6 +56,9 @@ export class ViewerService {
         compressionLevel: 10,
       },
     };
+    gltf.nodes.forEach((node) => {
+      node.extras = { uuid: uuidv4() };
+    });
     return from(processGltf(gltf, options)).pipe(
       map((results: any) => {
         fsExtra.writeJsonSync(outputPath, results.gltf);
