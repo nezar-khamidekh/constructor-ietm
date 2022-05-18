@@ -104,10 +104,15 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
     if (!newRepository.preview) delete newRepository.preview;
 
     this.subs.add(
-      this.repositoryService.create(newRepository).subscribe((res) => {
-        this.changeStep.emit({ nextStep: nextStep, repositoryId: res._id });
-        this.loadingService.setIsLoading(false);
-      }),
+      this.repositoryService.create(newRepository).subscribe(
+        (res) => {
+          this.changeStep.emit({ nextStep: nextStep, repositoryId: res._id });
+          this.loadingService.setIsLoading(false);
+        },
+        (err) => {
+          this.loadingService.setIsLoading(false);
+        },
+      ),
     );
   }
 }
