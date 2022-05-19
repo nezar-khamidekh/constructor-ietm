@@ -1,28 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-
-enum InstructionStep {
-  ListInstructions,
-  ListSteps,
-  Step,
-}
-
-interface InstructionI {
-  id: number;
-  title: string;
-  description: string;
-  steps: StepI[];
-}
-
-interface StepI {
-  id: number;
-  description: string;
-  actions: ActionI[];
-}
-
-interface ActionI {
-  id: number;
-  type: string;
-}
+import {
+  ActionI,
+  InstructionI,
+  InstructionStep,
+  StepI,
+} from 'src/app/shared/models/insruction.interface';
 
 @Component({
   selector: 'app-editor-instructions',
@@ -31,36 +13,15 @@ interface ActionI {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorInstructionsComponent implements OnInit {
-  instructions: InstructionI[] = [
-    {
-      id: 0,
-      title: 'инструкция 1',
-      description: 'описание 1',
-      steps: [
-        { id: 0, description: 'описание', actions: [{ id: 0, type: '0' }] },
-        { id: 1, description: 'описание', actions: [] },
-      ],
-    },
-    {
-      id: 1,
-      title: 'инструкция 2',
-      description: 'описание 2',
-      steps: [
-        { id: 0, description: 'описание', actions: [] },
-        { id: 1, description: 'описание', actions: [] },
-      ],
-    },
-  ];
+  instructions: InstructionI[] = [];
 
   instructionStep = InstructionStep.ListInstructions;
 
-  titleInstruction = '';
-  descriptionInstruction = '';
-
-  descriptionStep = '';
-
-  indexInstruction = 0;
-  indexStep = 0;
+  currentInstruction: InstructionI = {
+    title: '',
+    description: '',
+    steps: [],
+  };
 
   constructor() {}
 
@@ -71,23 +32,12 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   addInstruction() {
-    this.indexInstruction = this.instructions.length;
-    this.titleInstruction = '';
-    this.descriptionInstruction = '';
-    this.instructions.push({
-      id: this.instructions.length,
-      title: '',
-      description: '',
-      steps: [],
-    });
-    this.instructionStep = InstructionStep.ListSteps;
+    this.instructionStep = InstructionStep.Instruction;
   }
 
-  editInstruction(instruction: InstructionI, index: number) {
-    this.indexInstruction = index;
-    this.titleInstruction = instruction.title;
-    this.descriptionInstruction = instruction.description;
-    this.instructionStep = InstructionStep.ListSteps;
+  editInstruction(instruction: InstructionI) {
+    console.log(this.currentInstruction);
+    this.instructionStep = InstructionStep.Instruction;
   }
 
   deleteInstruction(instruction: InstructionI) {
@@ -96,44 +46,62 @@ export class EditorInstructionsComponent implements OnInit {
 
   backToInstructions() {
     this.instructionStep = InstructionStep.ListInstructions;
-    this.instructions[this.indexInstruction].title = this.titleInstruction;
-    this.instructions[this.indexInstruction].description = this.descriptionInstruction;
+    this.currentInstruction = {
+      title: '',
+      description: '',
+      steps: [],
+    };
+  }
+
+  saveInstruction(instruction: InstructionI) {
+    if (typeof instruction.id === 'number') {
+      const instructionInArray = this.instructions.find((el) => el.id === instruction.id);
+      if (instructionInArray) {
+        instructionInArray.title = instruction.title;
+        instructionInArray.description = instruction.description;
+      }
+    } else {
+      this.instructions.push({
+        id: this.instructions.length,
+        title: instruction.title,
+        description: instruction.description,
+        steps: instruction.steps,
+      });
+    }
   }
 
   addStep() {
-    this.descriptionStep = '';
-    this.indexStep = this.instructions[this.indexInstruction].steps.length;
-    this.instructions[this.indexInstruction].steps.push({
-      id: this.instructions[this.indexInstruction].steps.length,
-      description: '',
-      actions: [],
-    });
-    this.instructionStep = InstructionStep.Step;
+    // this.descriptionStep = '';
+    // this.indexStep = this.instructions[this.indexInstruction].steps.length;
+    // this.instructions[this.indexInstruction].steps.push({
+    //   id: this.instructions[this.indexInstruction].steps.length,
+    //   description: '',
+    //   actions: [],
+    // });
+    // this.instructionStep = InstructionStep.Step;
   }
 
   editStep(step: StepI, index: number) {
-    this.indexStep = index;
-    this.descriptionStep = step.description;
-    this.instructionStep = InstructionStep.Step;
+    // this.indexStep = index;
+    // this.descriptionStep = step.description;
+    // this.instructionStep = InstructionStep.Step;
   }
 
   deleteStep(step: StepI) {
-    this.instructions[this.indexInstruction].steps = this.instructions[
-      this.indexInstruction
-    ].steps.filter((el) => el.id !== step.id);
+    // this.instructions[this.indexInstruction].steps = this.instructions[
+    //   this.indexInstruction
+    // ].steps.filter((el) => el.id !== step.id);
   }
 
   backToSteps() {
-    this.instructions[this.indexInstruction].steps[this.indexStep].description =
-      this.descriptionStep;
-    this.instructionStep = InstructionStep.ListSteps;
+    // this.instructions[this.indexInstruction].steps[this.indexStep].description =
+    //   this.descriptionStep;
+    // this.instructionStep = InstructionStep.Instruction;
   }
 
   startRecordingAction() {}
 
   stopRecordingAction() {}
-
-  editAction(action: ActionI, index: number) {}
 
   deleteAction(action: ActionI) {}
 }

@@ -14,7 +14,7 @@ import { RepositoryService } from '../shared/services/repository.service';
 export class ProjectEditorComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
 
-  step: number = 1;
+  step: number = 3;
   repositoryId = '';
   newModelId = '';
 

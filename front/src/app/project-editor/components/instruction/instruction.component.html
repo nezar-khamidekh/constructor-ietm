@@ -1,0 +1,86 @@
+<div class="editor-instructions__wrapper-field">
+  <div class="editor-instructions__row-field">
+    <p class="editor-instructions__subtitle">Заголовок инструкции</p>
+    <input class="editor-instructions__input" [(ngModel)]="instruction.title" />
+  </div>
+  <div class="editor-instructions__row-field">
+    <p class="editor-instructions__subtitle">Описание инструкции</p>
+    <textarea
+      class="editor-instructions__textarea"
+      [(ngModel)]="instruction.description"
+    ></textarea>
+  </div>
+</div>
+<div class="editor-instructions__actions">
+  <button
+    class="editor-instructions__btn"
+    mat-raised-button
+    color="warn"
+    type="button"
+    (click)="backToInstructions.emit()"
+  >
+    Назад
+  </button>
+  <button
+    class="editor-instructions__btn"
+    mat-raised-button
+    color="primary"
+    type="button"
+    (click)="saveInstruction.emit(instruction)"
+  >
+    Сохранить
+  </button>
+</div>
+<!-- <button
+  *ngIf="instruction.title"
+  class="editor-instructions__btn"
+  mat-raised-button
+  color="primary"
+  type="button"
+  (click)="addStep()"
+>
+  Добавить шаг
+</button>
+<div
+  class="editor-instructions__wrapper-instructions"
+  [ngClass]="{
+    'editor-instructions__wrapper-instructions_empty': !instruction.steps.length
+  }"
+>
+  <ng-container *ngIf="instruction.steps.length; else emptySteps">
+    <table class="editor-instructions__table">
+      <thead>
+        <tr class="editor-instructions__row">
+          <th class="editor-instructions__column editor-instructions__column-time">№ Шага</th>
+          <th class="editor-instructions__column editor-instructions__column-action">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="item" *ngFor="let step of instruction.steps; let i = index">
+          <td class="editor-instructions__column editor-instructions__column-time">
+            {{ step.id }}
+          </td>
+          <td class="editor-instructions__column editor-instructions__column-action">
+            <button mat-icon-button matTooltip="Редактировать шаг" (click)="editStep(step, i)">
+              <img
+                class="editor-instructions__btn-icon"
+                src="assets/svg/edit.svg"
+                alt="редактировать"
+              />
+            </button>
+            <button mat-icon-button matTooltip="Удалить шаг" (click)="deleteStep(step)">
+              <img
+                class="editor-instructions__btn-icon"
+                src="assets/svg/delete.svg"
+                alt="удалить"
+              />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #emptySteps>
+    <p class="editor-instructions__notify">Список шагов пуст</p>
+  </ng-template> -->
+<!-- </div> -->

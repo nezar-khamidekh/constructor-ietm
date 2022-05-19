@@ -25,6 +25,7 @@ import { DndDirective } from './directives/dnd.directive';
 import { EditorManualComponent } from './components/editor-manual/editor-manual.component';
 import { TreeStructureModule } from '../tree-structure/tree-structure.module';
 import { EditorInstructionsComponent } from './components/editor-instructions/editor-instructions.component';
+import { InstructionComponent } from './components/instruction/instruction.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { EditorInstructionsComponent } from './components/editor-instructions/ed
     DndDirective,
     EditorManualComponent,
     EditorInstructionsComponent,
+    InstructionComponent,
   ],
   imports: [
     CommonModule,
