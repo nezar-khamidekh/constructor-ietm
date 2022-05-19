@@ -317,6 +317,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   setGui() {
+    this.gui.closed = true;
     const guiGridFolder = this.gui.addFolder('Сетка');
     guiGridFolder
       .add(this.settings, 'grid')
@@ -377,9 +378,6 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     guiCameraPositionFolder.add(this.settings, 'acceptPosition').name('Применить');
     guiCameraPositionFolder.add(this.settings, 'resetPosition').name('Сбросить');
-
-    guiSceneBackgroundFolder.open();
-    guiCameraPositionFolder.open();
     this.renderer.appendChild(this.viewerWrapper.nativeElement, this.gui.domElement);
   }
 
