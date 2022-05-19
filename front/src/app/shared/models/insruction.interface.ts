@@ -22,7 +22,7 @@ export interface InstructionI {
 }
 
 export interface StepI {
-  id: number;
+  id?: number;
   description: string;
   actions: ActionI[];
 }

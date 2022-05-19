@@ -19,8 +19,17 @@ export class InstructionComponent implements OnInit {
 
   @Output() saveInstruction = new EventEmitter();
   @Output() backToInstructions = new EventEmitter();
+  @Output() addStep = new EventEmitter();
+  @Output() editStep = new EventEmitter();
+  @Output() deleteStep = new EventEmitter();
+
+  // instructionSaved = false;
 
   constructor() {}
 
   ngOnInit(): void {}
+
+  hasInstructionId() {
+    return typeof this.instruction.id === 'number';
+  }
 }

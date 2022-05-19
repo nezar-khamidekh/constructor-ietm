@@ -1,0 +1,96 @@
+<p class="editor-instructions__title">
+  {{ hasStepId() ? 'Шаг ' + (step.id! + 1) : 'Создание шага' }}
+</p>
+<div class="editor-instructions__row-field">
+  <p class="editor-instructions__subtitle">Описание шага</p>
+  <textarea class="editor-instructions__textarea" [(ngModel)]="step.description"></textarea>
+</div>
+
+<div class="editor-instructions__actions">
+  <button
+    class="editor-instructions__btn"
+    mat-raised-button
+    color="warn"
+    type="button"
+    (click)="backToSteps.emit()"
+  >
+    Назад
+  </button>
+  <button
+    class="editor-instructions__btn"
+    mat-raised-button
+    color="accent"
+    type="button"
+    (click)="saveStep.emit(step)"
+  >
+    Сохранить
+  </button>
+</div>
+<div class="editor-instructions__actions">
+  <ng-container *ngIf="!isRecording; else stopRecordingTemplete">
+    <button
+      class="editor-instructions__btn"
+      mat-raised-button
+      color="primary"
+      type="button"
+      (click)="startRecording()"
+    >
+      Начать запись
+    </button>
+  </ng-container>
+  <ng-template #stopRecordingTemplete>
+    <button
+      class="editor-instructions__btn"
+      mat-raised-button
+      color="accent"
+      type="button"
+      (click)="stopRecording()"
+    >
+      Остановить запись
+    </button>
+  </ng-template>
+</div>
+<div
+  class="editor-instructions__wrapper-instructions"
+  [ngClass]="{
+    'editor-instructions__wrapper-instructions_empty': !step.actions.length
+  }"
+>
+  <ng-container *ngIf="step.actions.length; else emptyInstruction">
+    <table class="editor-instructions__table">
+      <thead>
+        <tr class="editor-instructions__row">
+          <th class="editor-instructions__column editor-instructions__column-time">id</th>
+          <th class="editor-instructions__column editor-instructions__column-time">Заголовок</th>
+          <th class="editor-instructions__column editor-instructions__column-action">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="item" *ngFor="let action of step.actions; let i = index">
+          <td class="editor-instructions__column editor-instructions__column-time">
+            {{ action.id }}
+          </td>
+          <td class="editor-instructions__column editor-instructions__column-time">
+            {{ action.type }}
+          </td>
+          <td class="editor-instructions__column editor-instructions__column-action">
+            <button
+              mat-icon-button
+              matTooltip="Удалить действие"
+              (click)="deleteAction.emit(action)"
+            >
+              <img
+                class="editor-instructions__btn-icon"
+                src="assets/svg/delete.svg"
+                alt="удалить"
+              />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+  <ng-template #emptyInstruction>
+    <p class="editor-instructions__notify">Список действий пуст</p>
+  </ng-template>
+</div>

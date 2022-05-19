@@ -23,6 +23,11 @@ export class EditorInstructionsComponent implements OnInit {
     steps: [],
   };
 
+  currentInstructionStep: StepI = {
+    description: '',
+    actions: [],
+  };
+
   constructor() {}
 
   ngOnInit(): void {}
@@ -36,6 +41,7 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   editInstruction(instruction: InstructionI) {
+    this.currentInstruction = { ...instruction };
     console.log(this.currentInstruction);
     this.instructionStep = InstructionStep.Instruction;
   }
@@ -61,6 +67,7 @@ export class EditorInstructionsComponent implements OnInit {
         instructionInArray.description = instruction.description;
       }
     } else {
+      this.currentInstruction = { ...this.currentInstruction, id: this.instructions.length };
       this.instructions.push({
         id: this.instructions.length,
         title: instruction.title,
@@ -71,32 +78,43 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   addStep() {
-    // this.descriptionStep = '';
-    // this.indexStep = this.instructions[this.indexInstruction].steps.length;
-    // this.instructions[this.indexInstruction].steps.push({
-    //   id: this.instructions[this.indexInstruction].steps.length,
-    //   description: '',
-    //   actions: [],
-    // });
-    // this.instructionStep = InstructionStep.Step;
+    this.instructionStep = InstructionStep.Step;
   }
 
-  editStep(step: StepI, index: number) {
-    // this.indexStep = index;
-    // this.descriptionStep = step.description;
-    // this.instructionStep = InstructionStep.Step;
+  saveStep(step: StepI) {
+    if (typeof step.id === 'number') {
+      const stepInArray = this.currentInstruction.steps.find((el) => el.id === step.id);
+      if (stepInArray) {
+        stepInArray.description = step.description;
+        stepInArray.actions = [...step.actions];
+      }
+    } else {
+      this.currentInstructionStep = {
+        ...this.currentInstructionStep,
+        id: this.currentInstruction.steps.length,
+      };
+      this.currentInstruction.steps.push({
+        id: this.currentInstruction.steps.length,
+        description: step.description,
+        actions: step.actions,
+      });
+    }
+  }
+
+  editStep(step: StepI) {
+    this.instructionStep = InstructionStep.Step;
   }
 
   deleteStep(step: StepI) {
-    // this.instructions[this.indexInstruction].steps = this.instructions[
-    //   this.indexInstruction
-    // ].steps.filter((el) => el.id !== step.id);
+    this.currentInstruction.steps = this.currentInstruction.steps.filter((el) => el.id !== step.id);
   }
 
   backToSteps() {
-    // this.instructions[this.indexInstruction].steps[this.indexStep].description =
-    //   this.descriptionStep;
-    // this.instructionStep = InstructionStep.Instruction;
+    this.currentInstructionStep = {
+      description: '',
+      actions: [],
+    };
+    this.instructionStep = InstructionStep.Instruction;
   }
 
   startRecordingAction() {}

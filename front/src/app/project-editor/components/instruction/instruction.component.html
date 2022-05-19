@@ -24,20 +24,20 @@
   <button
     class="editor-instructions__btn"
     mat-raised-button
-    color="primary"
+    color="accent"
     type="button"
     (click)="saveInstruction.emit(instruction)"
   >
     Сохранить
   </button>
 </div>
-<!-- <button
-  *ngIf="instruction.title"
+<button
+  *ngIf="hasInstructionId()"
   class="editor-instructions__btn"
   mat-raised-button
   color="primary"
   type="button"
-  (click)="addStep()"
+  (click)="addStep.emit(instruction)"
 >
   Добавить шаг
 </button>
@@ -51,24 +51,24 @@
     <table class="editor-instructions__table">
       <thead>
         <tr class="editor-instructions__row">
-          <th class="editor-instructions__column editor-instructions__column-time">№ Шага</th>
+          <th class="editor-instructions__column editor-instructions__column-time">Шаг</th>
           <th class="editor-instructions__column editor-instructions__column-action">Действия</th>
         </tr>
       </thead>
       <tbody>
         <tr class="item" *ngFor="let step of instruction.steps; let i = index">
           <td class="editor-instructions__column editor-instructions__column-time">
-            {{ step.id }}
+            {{ step.id! + 1 }}
           </td>
           <td class="editor-instructions__column editor-instructions__column-action">
-            <button mat-icon-button matTooltip="Редактировать шаг" (click)="editStep(step, i)">
+            <button mat-icon-button matTooltip="Редактировать шаг" (click)="editStep.emit(step)">
               <img
                 class="editor-instructions__btn-icon"
                 src="assets/svg/edit.svg"
                 alt="редактировать"
               />
             </button>
-            <button mat-icon-button matTooltip="Удалить шаг" (click)="deleteStep(step)">
+            <button mat-icon-button matTooltip="Удалить шаг" (click)="deleteStep.emit(step)">
               <img
                 class="editor-instructions__btn-icon"
                 src="assets/svg/delete.svg"
@@ -82,5 +82,5 @@
   </ng-container>
   <ng-template #emptySteps>
     <p class="editor-instructions__notify">Список шагов пуст</p>
-  </ng-template> -->
-<!-- </div> -->
+  </ng-template>
+</div>

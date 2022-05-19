@@ -75,105 +75,18 @@
         [instruction]="currentInstruction"
         (saveInstruction)="saveInstruction($event)"
         (backToInstructions)="backToInstructions()"
+        (addStep)="addStep()"
+        (editStep)="editStep($event)"
+        (deleteStep)="deleteStep($event)"
       ></app-instruction>
     </ng-template>
     <ng-template [ngSwitchCase]="getInsructionStep().Step">
-      <!-- <p class="editor-instructions__title">Шаг №{{ indexStep + 1 }}</p>
-      <div class="editor-instructions__row-field">
-        <p class="editor-instructions__subtitle">Описание шага</p>
-        <textarea class="editor-instructions__textarea" [(ngModel)]="descriptionStep"></textarea>
-      </div>
-      <div class="editor-instructions__actions">
-        <button
-          class="editor-instructions__btn"
-          mat-raised-button
-          color="accent"
-          type="button"
-          (click)="stopRecordingAction()"
-        >
-          Остановить запись
-        </button>
-        <button
-          class="editor-instructions__btn"
-          mat-raised-button
-          color="primary"
-          type="button"
-          (click)="startRecordingAction()"
-        >
-          Начать запись
-        </button>
-      </div>
-      <div
-        class="editor-instructions__wrapper-instructions"
-        [ngClass]="{
-          'editor-instructions__wrapper-instructions_empty':
-            !instructions[indexInstruction].steps[indexStep].actions.length
-        }"
-      >
-        <ng-container
-          *ngIf="
-            instructions[indexInstruction].steps[indexStep].actions.length;
-            else emptyInstruction
-          "
-        >
-          <table class="editor-instructions__table">
-            <thead>
-              <tr class="editor-instructions__row">
-                <th class="editor-instructions__column editor-instructions__column-time">id</th>
-                <th class="editor-instructions__column editor-instructions__column-time">
-                  Заголовок
-                </th>
-                <th class="editor-instructions__column editor-instructions__column-action">
-                  Действия
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                class="item"
-                *ngFor="
-                  let action of instructions[indexInstruction].steps[indexStep].actions;
-                  let i = index
-                "
-              >
-                <td class="editor-instructions__column editor-instructions__column-time">
-                  {{ action.id }}
-                </td>
-                <td class="editor-instructions__column editor-instructions__column-time">
-                  {{ action.type }}
-                </td>
-                <td class="editor-instructions__column editor-instructions__column-action">
-                  <button
-                    mat-icon-button
-                    matTooltip="Удалить действие"
-                    (click)="deleteAction(action)"
-                  >
-                    <img
-                      class="editor-instructions__btn-icon"
-                      src="assets/svg/delete.svg"
-                      alt="удалить"
-                    />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </ng-container>
-        <ng-template #emptyInstruction>
-          <p class="editor-instructions__notify">Список действий пуст</p>
-        </ng-template>
-      </div>
-      <div class="editor-instructions__actions">
-        <button
-          class="editor-instructions__btn"
-          mat-raised-button
-          color="warn"
-          type="button"
-          (click)="backToSteps()"
-        >
-          Назад
-        </button>
-      </div> -->
+      <app-step-action
+        [step]="currentInstructionStep"
+        (saveStep)="saveStep($event)"
+        (backToSteps)="backToSteps()"
+        (deleteAction)="deleteAction($event)"
+      ></app-step-action>
     </ng-template>
   </ng-container>
 </div>
