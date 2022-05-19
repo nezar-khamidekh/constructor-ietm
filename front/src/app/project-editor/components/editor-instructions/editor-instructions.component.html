@@ -32,7 +32,7 @@
             <tbody>
               <tr class="item" *ngFor="let instruction of instructions; let i = index">
                 <td class="editor-instructions__column editor-instructions__column-time">
-                  {{ instruction.id }}
+                  {{ instruction.id! + 1 }}
                 </td>
                 <td class="editor-instructions__column editor-instructions__column-time">
                   {{ instruction.title }}

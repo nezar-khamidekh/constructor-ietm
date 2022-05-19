@@ -42,7 +42,6 @@ export class EditorInstructionsComponent implements OnInit {
 
   editInstruction(instruction: InstructionI) {
     this.currentInstruction = { ...instruction };
-    console.log(this.currentInstruction);
     this.instructionStep = InstructionStep.Instruction;
   }
 
@@ -102,6 +101,7 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   editStep(step: StepI) {
+    this.currentInstructionStep = { ...step };
     this.instructionStep = InstructionStep.Step;
   }
 
