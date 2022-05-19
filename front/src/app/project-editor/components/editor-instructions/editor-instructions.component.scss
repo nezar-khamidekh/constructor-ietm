@@ -21,6 +21,11 @@
     height: 24px;
   }
 
+  &__img {
+    width: 30px;
+    height: 30px;
+  }
+
   &__btn {
     margin-top: 15px;
     width: 40%;
@@ -59,8 +64,18 @@
     margin-top: 10px;
   }
 
-  &__table-wrapper {
-    margin-top: 30px;
+  &__wrapper-instructions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 270px;
+    overflow: auto;
+    margin-top: 10px;
+
+    &_empty {
+      justify-content: center;
+      margin-top: 0;
+    }
   }
 
   &__table {
@@ -91,8 +106,7 @@
 
   &__wrapper-field {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
   }
 
   &__row-field {
@@ -100,8 +114,19 @@
     flex-direction: column;
   }
 
+  &__title {
+    margin-top: 20px;
+    font-size: 20px;
+  }
+
   &__subtitle {
     margin-top: 15px;
+  }
+
+  &__notify {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
   }
 }
 

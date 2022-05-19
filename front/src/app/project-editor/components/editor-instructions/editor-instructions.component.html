@@ -10,7 +10,12 @@
       >
         Добавить инструкцию
       </button>
-      <div class="editor-instructions__table-wrapper">
+      <div
+        class="editor-instructions__wrapper-instructions"
+        [ngClass]="{
+          'editor-instructions__wrapper-instructions_empty': !instructions.length
+        }"
+      >
         <ng-container *ngIf="instructions.length; else emptyInstruction">
           <table class="editor-instructions__table">
             <thead>
@@ -65,24 +70,133 @@
         </ng-template>
       </div>
     </ng-template>
-    <ng-template [ngSwitchCase]="getInsructionStep().ListSlides">
+    <ng-template [ngSwitchCase]="getInsructionStep().ListSteps">
       <div class="editor-instructions__wrapper-field">
+        <div class="editor-instructions__row-field">
+          <p class="editor-instructions__subtitle">Заголовок инструкции</p>
+          <input class="editor-instructions__input" [(ngModel)]="titleInstruction" />
+        </div>
+        <div class="editor-instructions__row-field">
+          <p class="editor-instructions__subtitle">Описание инструкции</p>
+          <textarea
+            class="editor-instructions__textarea"
+            [(ngModel)]="descriptionInstruction"
+          ></textarea>
+        </div>
+      </div>
+      <div class="editor-instructions__actions">
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="backToInstructions()"
+        >
+          Назад
+        </button>
         <button
           class="editor-instructions__btn"
           mat-raised-button
           color="primary"
           type="button"
-          (click)="addSlide()"
+          (click)="addStep()"
         >
-          Добавить слайд
+          Добавить шаг
         </button>
-        <div class="editor-instructions__row-field">
-          <p class="editor-instructions__subtitle">Заголовок инструкции</p>
-          <input class="editor-instructions__input" [(ngModel)]="titleInstruction" />
-        </div>
       </div>
-      <div class="editor-instructions__table-wrapper">
-        <ng-container *ngIf="instructions[indexInstruction].slides.length; else emptySlides">
+      <div
+        class="editor-instructions__wrapper-instructions"
+        [ngClass]="{
+          'editor-instructions__wrapper-instructions_empty':
+            !instructions[indexInstruction].steps.length
+        }"
+      >
+        <ng-container *ngIf="instructions[indexInstruction].steps.length; else emptySteps">
+          <table class="editor-instructions__table">
+            <thead>
+              <tr class="editor-instructions__row">
+                <th class="editor-instructions__column editor-instructions__column-time">№ Шага</th>
+                <th class="editor-instructions__column editor-instructions__column-action">
+                  Действия
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="item"
+                *ngFor="let step of instructions[indexInstruction].steps; let i = index"
+              >
+                <td class="editor-instructions__column editor-instructions__column-time">
+                  {{ step.id }}
+                </td>
+                <td class="editor-instructions__column editor-instructions__column-action">
+                  <button
+                    mat-icon-button
+                    matTooltip="Редактировать шаг"
+                    (click)="editStep(step, i)"
+                  >
+                    <img
+                      class="editor-instructions__btn-icon"
+                      src="assets/svg/edit.svg"
+                      alt="редактировать"
+                    />
+                  </button>
+                  <button mat-icon-button matTooltip="Удалить шаг" (click)="deleteStep(step)">
+                    <img
+                      class="editor-instructions__btn-icon"
+                      src="assets/svg/delete.svg"
+                      alt="удалить"
+                    />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
+        <ng-template #emptySteps>
+          <p class="editor-instructions__notify">Список шагов пуст</p>
+        </ng-template>
+      </div>
+    </ng-template>
+    <ng-template [ngSwitchCase]="getInsructionStep().Step">
+      <p class="editor-instructions__title">Шаг №{{ indexStep }}</p>
+      <div class="editor-instructions__row-field">
+        <p class="editor-instructions__subtitle">Описание шага</p>
+        <textarea class="editor-instructions__textarea" [(ngModel)]="descriptionStep"></textarea>
+      </div>
+      <div class="editor-instructions__actions">
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="warn"
+          type="button"
+          (click)="stopRecordingAction()"
+        >
+          Остановить запись
+        </button>
+        <button
+          class="editor-instructions__btn"
+          mat-raised-button
+          color="primary"
+          type="button"
+          (click)="startRecordingAction()"
+        >
+          Начать запись
+        </button>
+      </div>
+      <div
+        class="editor-instructions__wrapper-instructions"
+        [ngClass]="{
+          'editor-instructions__wrapper-instructions_empty':
+            !instructions[indexInstruction].steps[indexStep].actions.length
+        }"
+      >
+        <ng-container
+          *ngIf="
+            instructions[indexInstruction].steps[indexStep].actions.length;
+            else emptyInstruction
+          "
+        >
           <table class="editor-instructions__table">
             <thead>
               <tr class="editor-instructions__row">
@@ -98,19 +212,22 @@
             <tbody>
               <tr
                 class="item"
-                *ngFor="let slide of instructions[indexInstruction].slides; let i = index"
+                *ngFor="
+                  let action of instructions[indexInstruction].steps[indexStep].actions;
+                  let i = index
+                "
               >
                 <td class="editor-instructions__column editor-instructions__column-time">
-                  {{ slide.id }}
+                  {{ action.id }}
                 </td>
                 <td class="editor-instructions__column editor-instructions__column-time">
-                  {{ slide.title }}
+                  {{ action.type }}
                 </td>
                 <td class="editor-instructions__column editor-instructions__column-action">
                   <button
                     mat-icon-button
-                    matTooltip="Редактировать слайд"
-                    (click)="editSlide(slide, i)"
+                    matTooltip="Редактировать действие"
+                    (click)="editAction(action, i)"
                   >
                     <img
                       class="editor-instructions__btn-icon"
@@ -118,7 +235,11 @@
                       alt="редактировать"
                     />
                   </button>
-                  <button mat-icon-button matTooltip="Удалить слайд" (click)="deleteSlide(slide)">
+                  <button
+                    mat-icon-button
+                    matTooltip="Удалить действие"
+                    (click)="deleteAction(action)"
+                  >
                     <img
                       class="editor-instructions__btn-icon"
                       src="assets/svg/delete.svg"
@@ -130,8 +251,8 @@
             </tbody>
           </table>
         </ng-container>
-        <ng-template #emptySlides>
-          <p class="editor-instructions__notify">Список слайдов пуст</p>
+        <ng-template #emptyInstruction>
+          <p class="editor-instructions__notify">Список действий пуст</p>
         </ng-template>
       </div>
       <div class="editor-instructions__actions">
@@ -140,31 +261,7 @@
           mat-raised-button
           color="warn"
           type="button"
-          (click)="backToInstructions()"
-        >
-          Назад
-        </button>
-      </div>
-    </ng-template>
-    <ng-template [ngSwitchCase]="getInsructionStep().Slide">
-      <p class="editor-instructions__title">
-        Слайд №{{ instructions[indexInstruction].slides.length }}
-      </p>
-      <div class="editor-instructions__row-field">
-        <p class="editor-instructions__subtitle">Заголовок слайда</p>
-        <input class="editor-instructions__input" [(ngModel)]="titleSlide" />
-      </div>
-      <div class="editor-instructions__row-field">
-        <p class="editor-instructions__subtitle">Описание слайда</p>
-        <textarea class="editor-instructions__textarea" [(ngModel)]="descriptionSlide"></textarea>
-      </div>
-      <div class="editor-instructions__actions">
-        <button
-          class="editor-instructions__btn"
-          mat-raised-button
-          color="warn"
-          type="button"
-          (click)="backToSlides()"
+          (click)="backToSteps()"
         >
           Назад
         </button>
