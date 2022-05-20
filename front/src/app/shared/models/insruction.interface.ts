@@ -12,6 +12,8 @@ export enum ActionType {
   Hide,
   Isolate,
   Annotation,
+  RestoreView,
+  FitToView,
 }
 
 export interface InstructionI {

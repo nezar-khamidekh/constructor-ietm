@@ -24,6 +24,7 @@ import {
 } from '../components/view-cube/view-cube.component';
 import { Viewer } from '../classes/Viewer';
 import { VIEWER_STATE } from '../models/viewerState.enum';
+import { ActionI, ActionType } from 'src/app/shared/models/insruction.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -41,10 +42,13 @@ export class SceneService {
   hoveredObj: any = null;
   hiddenObjects$ = new BehaviorSubject<any[]>([]);
   annotations$ = new BehaviorSubject<any[]>([]);
+  isRecording$ = new BehaviorSubject<boolean>(false);
+  actions$ = new BehaviorSubject<ActionI[]>([]);
   annotationMarkers: THREE.Sprite[] = [];
   animations: any[] = [];
   crossSectionObject: any;
   preAnnotationId: number | null = null;
+  actions: ActionI[] = [];
 
   constructor(private http: HttpClient, private sectionService: SectionService) {}
 
@@ -104,6 +108,22 @@ export class SceneService {
 
   setAnnotations(annotations: any[]) {
     this.annotations$.next([...annotations]);
+  }
+
+  getIsRecording() {
+    return this.isRecording$.asObservable();
+  }
+
+  setIsRecording(isRecording: boolean) {
+    this.isRecording$.next(isRecording);
+  }
+
+  getActions() {
+    return this.actions$.asObservable();
+  }
+
+  setActions(actions: any[]) {
+    this.actions$.next(actions);
   }
 
   setObjectsCustomProperties() {
@@ -446,6 +466,8 @@ export class SceneService {
           child.material = child.defaultMaterial.clone();
         }
       });
+      if (this.isRecording$.value)
+        this.recordAction(ActionType.FitToView, this.selectedObj.userData.uuid);
     } else if (this.selectedObj) {
       this.resetSelectedObjView();
       this.viewer.model.traverse((child: any) => {
@@ -470,7 +492,22 @@ export class SceneService {
       this.resetSelectedObjView();
       this.selectedObj.visible = false;
       this.setHiddenObjects([...this.hiddenObjects$.value, this.selectedObj]);
+      if (this.isRecording$.value)
+        this.recordAction(ActionType.Hide, this.selectedObj.userData.uuid);
       this.selectedObj = null;
+    }
+  }
+
+  recordAction(type: number, value: any) {
+    const existingAction = this.actions.find((action) => action.type === type);
+    if (type !== ActionType.Hide && existingAction) {
+      existingAction.value = value;
+    } else {
+      this.actions.push({
+        id: this.actions.length,
+        type: type,
+        value: value,
+      });
     }
   }
 
@@ -481,7 +518,9 @@ export class SceneService {
       this.setHiddenObjects(
         this.hiddenObjects$.value.filter((obj: any) => obj.objectId !== objectId),
       );
-    else this.setHiddenObjects([...this.hiddenObjects$.value, obj]);
+    else {
+      this.setHiddenObjects([...this.hiddenObjects$.value, obj]);
+    }
   }
 
   objectByIdIsHidden(id: number) {
@@ -495,6 +534,7 @@ export class SceneService {
       });
       this.setHiddenObjects([]);
       this.viewer.outlinePass.selectedObjects = [];
+      this.recordAction(ActionType.RestoreView, '');
     }
     if (this.viewer.state === VIEWER_STATE.Isolated) this.resetObjectIsolation();
   }
@@ -618,6 +658,12 @@ export class SceneService {
       data.constantSection,
       data.inverted,
     );
+    if (this.isRecording$.value)
+      this.recordAction(ActionType.Section, {
+        indexPlane: data.indexPlane,
+        constantSection: data.constantSection,
+        inverted: data.inverted,
+      });
   }
 
   removePlane() {

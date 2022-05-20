@@ -1,10 +1,12 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { SceneService } from 'src/app/scene/services/scene.service';
 import {
   ActionI,
   InstructionI,
   InstructionStep,
   StepI,
 } from 'src/app/shared/models/insruction.interface';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-editor-instructions',
@@ -13,6 +15,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditorInstructionsComponent implements OnInit {
+  private subs = new SubSink();
+
   instructions: InstructionI[] = [];
 
   instructionStep = InstructionStep.ListInstructions;
@@ -28,9 +32,17 @@ export class EditorInstructionsComponent implements OnInit {
     actions: [],
   };
 
-  constructor() {}
+  actions: ActionI[];
 
-  ngOnInit(): void {}
+  constructor(private sceneService: SceneService) {}
+
+  ngOnInit(): void {
+    this.subs.add(
+      this.sceneService.getActions().subscribe((actions) => {
+        this.actions = actions;
+      }),
+    );
+  }
 
   getInsructionStep() {
     return InstructionStep;

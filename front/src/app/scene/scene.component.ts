@@ -35,8 +35,8 @@ import { MatDialog } from '@angular/material/dialog';
 import * as dat from 'dat.gui';
 import { ViewerAnnotationComponent } from './components/viewer-annotation/viewer-annotation.component';
 import { Viewer } from './classes/Viewer';
-import { DataStoreService } from '../shared/services/data-store.service';
 import { TreeStructureService } from '../tree-structure/services/tree-structure.service';
+import { ActionType } from '../shared/models/insruction.interface';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -114,6 +114,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   viewer: Viewer;
 
   animateRequestId: number;
+
+  isRecording = false;
 
   sections = [
     {
@@ -222,6 +224,17 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
             this.renderAnnotations(this.annotations);
             this.cdr.detectChanges();
           }
+        }
+      }),
+    );
+
+    this.subs.add(
+      this.sceneService.getIsRecording().subscribe((isRecording) => {
+        this.isRecording = isRecording;
+        if (isRecording === false) {
+          this.sceneService.setActions([...this.sceneService.actions]);
+        } else {
+          this.sceneService.actions = [];
         }
       }),
     );
@@ -467,6 +480,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.viewer.controls.autoRotate = true;
     this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
     this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+    if (this.isRecording)
+      this.sceneService.recordAction(ActionType.Rotation, -this.rotateSpeedValue);
   }
 
   stopRotatingCamera() {
@@ -478,11 +493,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   onRotateCameraSpeedChanged(valueSpeed: any) {
     this.rotateSpeedValue = valueSpeed;
     this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
+    if (this.isRecording)
+      this.sceneService.recordAction(ActionType.Rotation, -this.rotateSpeedValue);
   }
 
   explode() {
     this.btnIsInAction = true;
     this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
+    if (this.isRecording)
+      this.sceneService.recordAction(ActionType.Explode, this.explodePowerValue);
   }
 
   stopExplodingModel() {
@@ -506,12 +525,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     switch (data.index) {
       case SectionPlanes.YZ:
         this.sections[0].value = data.value;
+        if (this.isRecording) this.recordPlaneAction(0);
         break;
       case SectionPlanes.XZ:
         this.sections[1].value = data.value;
+        if (this.isRecording) this.recordPlaneAction(1);
         break;
       case SectionPlanes.XY:
         this.sections[2].value = data.value;
+        if (this.isRecording) this.recordPlaneAction(2);
         break;
       default:
         break;
@@ -523,18 +545,29 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       case SectionPlanes.YZ:
         this.sections[0].inverted = data.checked;
         this.sceneService.invertCurrentPlane(this.sections[0].inverted);
+        if (this.isRecording) this.recordPlaneAction(0);
         break;
       case SectionPlanes.XZ:
         this.sections[1].inverted = data.checked;
         this.sceneService.invertCurrentPlane(this.sections[1].inverted);
+        if (this.isRecording) this.recordPlaneAction(1);
         break;
       case SectionPlanes.XY:
         this.sections[2].inverted = data.checked;
         this.sceneService.invertCurrentPlane(this.sections[2].inverted);
+        if (this.isRecording) this.recordPlaneAction(2);
         break;
       default:
         break;
     }
+  }
+
+  recordPlaneAction(indexPlane: number) {
+    this.sceneService.recordAction(ActionType.Section, {
+      indexPlane: indexPlane,
+      constantSection: this.sections[indexPlane].value,
+      inverted: this.sections[indexPlane].inverted,
+    });
   }
 
   stopCuttingModel() {
@@ -579,7 +612,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case VIEWER_BUTTONS.Isolate:
         this.resetContextMenu();
-        this.sceneService.isolateObject();
+        this.sceneService.fitToView(this.sceneService.selectedObj.objectId, () => {});
         break;
       case VIEWER_BUTTONS.StopAnimation:
         this.sceneService.stopAnimation();
@@ -630,6 +663,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   onExplodePowerChanged(explodeValue: any) {
     this.explodePowerValue = explodeValue;
     this.sceneService.explodeModel(this.viewer.model, this.explodePowerValue);
+    if (this.isRecording)
+      this.sceneService.recordAction(ActionType.Explode, this.explodePowerValue);
   }
 
   onMouseUp(e: MouseEvent) {
