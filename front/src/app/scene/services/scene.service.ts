@@ -313,6 +313,7 @@ export class SceneService {
   }
 
   playAction(actions: ActionI[]) {
+    this.resetAction();
     actions.forEach((action) => {
       switch (action.type) {
         case ActionType.Camera:
@@ -348,6 +349,18 @@ export class SceneService {
         default:
           break;
       }
+    });
+  }
+
+  resetAction() {
+    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+    this.stopRotatingCamera();
+    this.explodeModel(this.viewer.model, 0);
+    this.removePlane();
+    this.restoreView();
+    this.resetObjectIsolation();
+    this.moveCameraToDefaultPosition(() => {
+      this.viewer.controls.enabled = true;
     });
   }
 
@@ -603,7 +616,7 @@ export class SceneService {
       });
       this.setHiddenObjects([]);
       this.viewer.outlinePass.selectedObjects = [];
-      this.recordAction(ActionType.RestoreView, '');
+      if (this.isRecording$.value) this.recordAction(ActionType.RestoreView, '');
     }
     if (this.viewer.state === VIEWER_STATE.Isolated) this.resetObjectIsolation();
   }

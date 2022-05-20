@@ -81,6 +81,10 @@ export class EditorViewerComponent implements OnInit {
   }
 
   changeTab(currentTab: MatTabChangeEvent) {
+    if (currentTab.index === 1 || currentTab.index === 2) {
+      this.sceneService.setIsRecording(false);
+      this.sceneService.actions = [];
+    }
     if (this.annotations.length) {
       if (currentTab.index === 1) {
         for (let i = 0; i < this.annotations.length; i++) {

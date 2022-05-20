@@ -66,6 +66,7 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   backToInstructions() {
+    this.sceneService.resetAction();
     this.instructionStep = InstructionStep.ListInstructions;
     this.currentInstruction = {
       title: '',
@@ -93,6 +94,11 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   addStep() {
+    this.currentInstructionStep = {
+      description: '',
+      actions: [],
+    };
+    this.sceneService.resetAction();
     this.instructionStep = InstructionStep.Step;
   }
 
@@ -131,6 +137,8 @@ export class EditorInstructionsComponent implements OnInit {
       actions: [],
     };
     this.sceneService.actions = [];
+    this.sceneService.setIsRecording(false);
+    this.sceneService.resetAction();
     this.instructionStep = InstructionStep.Instruction;
   }
 

@@ -456,12 +456,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     switch (this.activeBtnIndex) {
       case VIEWER_BUTTONS.RotateAnimation:
         this.stopRotatingCamera();
-        this.rotateSpeedValue = CAMERA_ROTATE_SPEED;
         this.resetCamera();
         break;
       case VIEWER_BUTTONS.Explode:
         this.stopExplodingModel();
-        this.explodePowerValue = EXPLODE_POWER;
         this.resetCamera();
         break;
       case VIEWER_BUTTONS.Isolate:
@@ -497,6 +495,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   stopRotatingCamera() {
     this.btnIsInAction = false;
+    this.rotateSpeedValue = CAMERA_ROTATE_SPEED;
     this.sceneService.stopRotatingCamera();
   }
 
@@ -516,6 +515,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   stopExplodingModel() {
     this.btnIsInAction = false;
+    this.explodePowerValue = EXPLODE_POWER;
     this.sceneService.explodeModel(this.viewer.model, 0);
   }
 
