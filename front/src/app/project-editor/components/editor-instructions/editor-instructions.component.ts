@@ -130,12 +130,9 @@ export class EditorInstructionsComponent implements OnInit {
       description: '',
       actions: [],
     };
+    this.sceneService.actions = [];
     this.instructionStep = InstructionStep.Instruction;
   }
-
-  startRecordingAction() {}
-
-  stopRecordingAction() {}
 
   deleteAction(action: ActionI) {
     this.currentInstructionStep.actions = this.currentInstructionStep.actions.filter(
