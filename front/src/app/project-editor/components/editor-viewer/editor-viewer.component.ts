@@ -84,6 +84,7 @@ export class EditorViewerComponent implements OnInit {
     if (currentTab.index === 1 || currentTab.index === 2) {
       this.sceneService.setIsRecording(false);
       this.sceneService.actions = [];
+      this.sceneService.resetAction();
     }
     if (this.annotations.length) {
       if (currentTab.index === 1) {
