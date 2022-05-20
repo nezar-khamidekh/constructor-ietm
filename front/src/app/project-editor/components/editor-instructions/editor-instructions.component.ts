@@ -3,10 +3,12 @@ import { skip } from 'rxjs/operators';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import {
   ActionI,
+  ActionType,
   InstructionI,
   InstructionStep,
   StepI,
 } from 'src/app/shared/models/insruction.interface';
+import { CAMERA_POSITION_RATE } from 'src/app/shared/models/viewerConstants';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -42,7 +44,6 @@ export class EditorInstructionsComponent implements OnInit {
         .pipe(skip(1))
         .subscribe((actions) => {
           this.currentInstructionStep.actions = [...actions];
-          console.log(this.currentInstructionStep);
         }),
     );
   }
@@ -136,5 +137,9 @@ export class EditorInstructionsComponent implements OnInit {
 
   stopRecordingAction() {}
 
-  deleteAction(action: ActionI) {}
+  deleteAction(action: ActionI) {
+    this.currentInstructionStep.actions = this.currentInstructionStep.actions.filter(
+      (el) => el.id !== action.id,
+    );
+  }
 }

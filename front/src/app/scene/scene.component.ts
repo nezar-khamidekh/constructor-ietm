@@ -241,7 +241,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
               {
                 id: this.sceneService.actions.length,
                 type: ActionType.Camera,
-                value: this.viewer.camera.position,
+                value: {
+                  position: this.viewer.camera.position,
+                  target: this.viewer.controls.target,
+                },
               },
             ]);
           } else {
