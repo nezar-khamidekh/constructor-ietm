@@ -253,7 +253,7 @@ export class SceneService {
     // quaternionTween.start();
   }
 
-  moveCameraWithAnimation(onCompleteCallback: () => void) {
+  moveCameraToDefaultPosition(onCompleteCallback: () => void) {
     const posCamera = JSON.parse(localStorage.getItem('positionCamera')!) || '';
     this.viewer.controls.enabled = false;
     const oldCameraPos = this.viewer.camera.position.clone();
@@ -264,16 +264,24 @@ export class SceneService {
       posCamera ? posCamera.z : this.modelLongestSide * CAMERA_POSITION_RATE,
     );
 
-    const tween = new TWEEN.Tween(oldCameraPos)
-      .to(newCameraPos, CAMERA_ANIM_DUR)
+    this.moveCameraWithAnimation(oldCameraPos, newCameraPos, onCompleteCallback);
+    this.viewer.controls.reset();
+  }
+
+  moveCameraWithAnimation(
+    oldPosition: THREE.Vector3,
+    newPosition: THREE.Vector3,
+    onCompleteCallback: () => void,
+  ) {
+    new TWEEN.Tween(oldPosition)
+      .to(newPosition, CAMERA_ANIM_DUR)
       .easing(TWEEN.Easing.Linear.None)
       .onUpdate(() => {
-        this.viewer.camera.position.set(oldCameraPos.x, oldCameraPos.y, oldCameraPos.z);
+        this.viewer.camera.position.set(oldPosition.x, oldPosition.y, oldPosition.z);
         this.viewer.camera.lookAt(new THREE.Vector3(0, 0, 0));
       })
       .onComplete(onCompleteCallback)
       .start();
-    this.viewer.controls.reset();
   }
 
   explodeModel(node: any, power = 0, plant = new THREE.Vector3(), level = 0) {
@@ -302,6 +310,61 @@ export class SceneService {
       )
         this.explodeModel(child, power, plant, level + 1);
     });
+  }
+
+  playAction(actions: ActionI[]) {
+    actions.forEach((action) => {
+      switch (action.type) {
+        case ActionType.Camera:
+          this.viewer.controls.target = action.value.target;
+          this.moveCameraWithAnimation(
+            this.viewer.camera.position.clone(),
+            action.value.position.clone(),
+            () => {},
+          );
+          break;
+        case ActionType.Rotation:
+          this.rotateCamera(action.value);
+          break;
+        case ActionType.Explode:
+          this.explodeModel(this.viewer.model, action.value);
+          break;
+        case ActionType.Section:
+          this.createSectionPlane({
+            indexPlane: action.value.indexPlane,
+            constantSection: action.value.constantSection,
+            inverted: action.value.inverted,
+          });
+          break;
+        case ActionType.Hide:
+          this.toggleObjectVisibilityById(action.value.objectId);
+          break;
+        case ActionType.RestoreView:
+          this.restoreView();
+          break;
+        case ActionType.FitToView:
+          this.fitToView(action.value.objectId, () => {});
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  rotateCamera(rotateSpeedValue: number) {
+    this.viewer.controls.enabled = false;
+    this.viewer.controls.autoRotate = true;
+    this.viewer.controls.autoRotateSpeed = rotateSpeedValue;
+    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+  }
+
+  stopRotatingCamera() {
+    this.viewer.controls.enabled = true;
+    this.viewer.controls.autoRotate = false;
+  }
+
+  onRotateCameraSpeedChanged(valueSpeed: any) {
+    this.viewer.controls.autoRotateSpeed = -valueSpeed;
   }
 
   setSelectedObj(isolateIsActive: boolean, mouseCoords: any, mouseMode: number) {

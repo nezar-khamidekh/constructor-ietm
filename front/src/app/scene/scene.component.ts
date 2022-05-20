@@ -242,8 +242,8 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: this.sceneService.actions.length,
                 type: ActionType.Camera,
                 value: {
-                  position: this.viewer.camera.position,
-                  target: this.viewer.controls.target,
+                  position: this.viewer.camera.position.clone(),
+                  target: this.viewer.controls.target.clone(),
                 },
               },
             ]);
@@ -483,30 +483,26 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   resetCamera() {
-    this.sceneService.moveCameraWithAnimation(() => {
+    this.sceneService.moveCameraToDefaultPosition(() => {
       this.viewer.controls.enabled = true;
     });
   }
 
   rotateCamera() {
     this.btnIsInAction = true;
-    this.viewer.controls.enabled = false;
-    this.viewer.controls.autoRotate = true;
-    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
-    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+    this.sceneService.rotateCamera(-this.rotateSpeedValue);
     if (this.isRecording)
       this.sceneService.recordAction(ActionType.Rotation, -this.rotateSpeedValue);
   }
 
   stopRotatingCamera() {
     this.btnIsInAction = false;
-    this.viewer.controls.enabled = true;
-    this.viewer.controls.autoRotate = false;
+    this.sceneService.stopRotatingCamera();
   }
 
   onRotateCameraSpeedChanged(valueSpeed: any) {
     this.rotateSpeedValue = valueSpeed;
-    this.viewer.controls.autoRotateSpeed = -this.rotateSpeedValue;
+    this.sceneService.onRotateCameraSpeedChanged(this.rotateSpeedValue);
     if (this.isRecording)
       this.sceneService.recordAction(ActionType.Rotation, -this.rotateSpeedValue);
   }

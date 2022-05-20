@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
+import { SceneService } from 'src/app/scene/services/scene.service';
 import { InstructionI } from 'src/app/shared/models/insruction.interface';
 
 @Component({
@@ -25,7 +26,7 @@ export class InstructionComponent implements OnInit {
 
   // instructionSaved = false;
 
-  constructor() {}
+  constructor(public sceneService: SceneService) {}
 
   ngOnInit(): void {}
 
