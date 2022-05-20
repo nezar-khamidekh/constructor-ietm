@@ -60,20 +60,32 @@
     <table class="editor-instructions__table">
       <thead>
         <tr class="editor-instructions__row">
-          <th class="editor-instructions__column editor-instructions__column-time">id</th>
-          <th class="editor-instructions__column editor-instructions__column-time">Заголовок</th>
-          <th class="editor-instructions__column editor-instructions__column-action">Действия</th>
+          <th class="editor-instructions__column editor-instructions__column_with-padding">id</th>
+          <th class="editor-instructions__column editor-instructions__column_with-padding">
+            Заголовок
+          </th>
+          <th class="editor-instructions__column editor-instructions__column_with-padding">
+            Значение
+          </th>
+          <th class="editor-instructions__column editor-instructions__column_with-padding">
+            Действия
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr class="item" *ngFor="let action of step.actions; let i = index">
-          <td class="editor-instructions__column editor-instructions__column-time">
+          <td class="editor-instructions__column editor-instructions__column_with-padding">
             {{ action.id }}
           </td>
-          <td class="editor-instructions__column editor-instructions__column-time">
-            {{ action.type }}
+          <td class="editor-instructions__column editor-instructions__column_with-padding">
+            {{ getNameByType(action.type) }}
           </td>
-          <td class="editor-instructions__column editor-instructions__column-action">
+          <td class="editor-instructions__column editor-instructions__column_with-padding">
+            <div class="editor-instructions__step-value">
+              {{ getValue(action) }}
+            </div>
+          </td>
+          <td class="editor-instructions__column editor-instructions__column_with-padding">
             <button
               mat-icon-button
               matTooltip="Удалить действие"

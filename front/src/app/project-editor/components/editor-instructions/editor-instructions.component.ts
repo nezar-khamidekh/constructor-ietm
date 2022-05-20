@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { skip } from 'rxjs/operators';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import {
   ActionI,
@@ -32,15 +33,17 @@ export class EditorInstructionsComponent implements OnInit {
     actions: [],
   };
 
-  actions: ActionI[];
-
   constructor(private sceneService: SceneService) {}
 
   ngOnInit(): void {
     this.subs.add(
-      this.sceneService.getActions().subscribe((actions) => {
-        this.actions = actions;
-      }),
+      this.sceneService
+        .getActions()
+        .pipe(skip(1))
+        .subscribe((actions) => {
+          this.currentInstructionStep.actions = [...actions];
+          console.log(this.currentInstructionStep);
+        }),
     );
   }
 

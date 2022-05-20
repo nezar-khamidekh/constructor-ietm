@@ -70,14 +70,16 @@
 
   &__column {
     text-align: left;
+
+    &_with-padding {
+      padding: 6px 12px;
+    }
   }
 
-  &__column-time {
-    padding: 6px 12px;
-  }
-
-  &__column-actoin {
-    padding: 6px 12px;
+  &__step-value {
+    max-width: 250px;
+    display: flex;
+    word-break: break-word;
   }
 
   &__actions {

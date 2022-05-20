@@ -37,6 +37,7 @@ import { ViewerAnnotationComponent } from './components/viewer-annotation/viewer
 import { Viewer } from './classes/Viewer';
 import { TreeStructureService } from '../tree-structure/services/tree-structure.service';
 import { ActionType } from '../shared/models/insruction.interface';
+import { skip } from 'rxjs/operators';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -229,14 +230,24 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.subs.add(
-      this.sceneService.getIsRecording().subscribe((isRecording) => {
-        this.isRecording = isRecording;
-        if (isRecording === false) {
-          this.sceneService.setActions([...this.sceneService.actions]);
-        } else {
-          this.sceneService.actions = [];
-        }
-      }),
+      this.sceneService
+        .getIsRecording()
+        .pipe(skip(1))
+        .subscribe((isRecording) => {
+          this.isRecording = isRecording;
+          if (isRecording === false) {
+            this.sceneService.setActions([
+              ...this.sceneService.actions,
+              {
+                id: this.sceneService.actions.length,
+                type: ActionType.Camera,
+                value: this.viewer.camera.position,
+              },
+            ]);
+          } else {
+            this.sceneService.actions = [];
+          }
+        }),
     );
   }
 

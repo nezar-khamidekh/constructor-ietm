@@ -10,7 +10,6 @@ export enum ActionType {
   Explode,
   Section,
   Hide,
-  Isolate,
   Annotation,
   RestoreView,
   FitToView,

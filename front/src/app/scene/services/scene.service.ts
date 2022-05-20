@@ -467,7 +467,10 @@ export class SceneService {
         }
       });
       if (this.isRecording$.value)
-        this.recordAction(ActionType.FitToView, this.selectedObj.userData.uuid);
+        this.recordAction(ActionType.FitToView, {
+          objectId: this.selectedObj.objectId,
+          name: this.selectedObj.userData.name || this.selectedObj.name,
+        });
     } else if (this.selectedObj) {
       this.resetSelectedObjView();
       this.viewer.model.traverse((child: any) => {
@@ -493,7 +496,10 @@ export class SceneService {
       this.selectedObj.visible = false;
       this.setHiddenObjects([...this.hiddenObjects$.value, this.selectedObj]);
       if (this.isRecording$.value)
-        this.recordAction(ActionType.Hide, this.selectedObj.userData.uuid);
+        this.recordAction(ActionType.Hide, {
+          objectId: this.selectedObj.objectId,
+          name: this.selectedObj.userData.name || this.selectedObj.name,
+        });
       this.selectedObj = null;
     }
   }
