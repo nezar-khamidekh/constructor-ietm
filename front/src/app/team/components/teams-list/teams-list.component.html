@@ -20,7 +20,12 @@
               {{ team.description }}
             </p>
           </div>
-          <button class="team__action" mat-flat-button color="warn" (click)="onLeaveTeam($event)">
+          <button
+            class="team__action"
+            mat-flat-button
+            color="warn"
+            (click)="onLeaveTeam($event, team)"
+          >
             <img class="team__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
           </button>
         </div>

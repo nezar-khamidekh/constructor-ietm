@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { RepositoriesModule } from '../repositories/repositories.module';
 import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
 import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
+import { DialogConfirmActionModule } from '../dialogs/dialog-confirm-action/dialog-confirm-action.module';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
     MatSelectModule,
     RepositoriesModule,
     HasRoleModule,
+    DialogConfirmActionModule,
   ],
 })
 export class TeamModule {}

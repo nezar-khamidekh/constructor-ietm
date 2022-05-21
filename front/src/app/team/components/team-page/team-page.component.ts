@@ -1,6 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { DialogConfirmActionComponent } from 'src/app/dialogs/dialog-confirm-action/dialog-confirm-action.component';
 import { ParticipantRole } from 'src/app/shared/models/participant.interface';
 import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { TeamI } from 'src/app/shared/models/team.interface';
@@ -14,7 +18,7 @@ import { TeamService } from '../../services/team.service';
   styleUrls: ['./team-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TeamPageComponent implements OnInit {
+export class TeamPageComponent implements OnInit, OnDestroy {
   private subs = new SubSink();
 
   team!: TeamI;
@@ -26,6 +30,7 @@ export class TeamPageComponent implements OnInit {
     private teamService: TeamService,
     private router: Router,
     private titleService: Title,
+    public dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -37,16 +42,38 @@ export class TeamPageComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
   getParticipantRoleEnum() {
     return ParticipantRole;
   }
 
   leaveFromTeam() {
+    const dialogRef = this.dialog.open(DialogConfirmActionComponent, {
+      width: '450px',
+      data: { message: `Вы действительно хотите покинуть команду "${this.team.title}"?` },
+      autoFocus: false,
+    });
+
     this.subs.add(
-      this.teamService
-        .removeParticipant({ teamId: this.team._id, userId: this.dataStore.getUserValue()!._id })
+      dialogRef
+        .afterClosed()
+        .pipe(
+          switchMap((result: { status: boolean }) => {
+            if (result.status)
+              return this.teamService.removeParticipant({
+                teamId: this.team._id,
+                userId: this.dataStore.getUserValue()!._id,
+              });
+            return of(null);
+          }),
+        )
         .subscribe((res) => {
-          this.router.navigate(['team', 'user-teams']);
+          if (res !== null) {
+            this.router.navigate(['team', 'user-teams']);
+          }
         }),
     );
   }

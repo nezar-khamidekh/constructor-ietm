@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DialogDeleteItemComponent } from './dialog-delete-item.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { DialogConfirmActionComponent } from './dialog-confirm-action.component';
 
 @NgModule({
-  declarations: [DialogDeleteItemComponent],
+  declarations: [DialogConfirmActionComponent],
   imports: [CommonModule, MatDialogModule, MatButtonModule],
-  exports: [DialogDeleteItemComponent],
+  exports: [DialogConfirmActionComponent],
 })
-export class DialogDeleteItemModule {}
+export class DialogConfirmActionModule {}

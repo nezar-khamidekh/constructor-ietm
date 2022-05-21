@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { isEmail } from 'src/app/shared/helpers/helpers';
 import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.interface';
-import { ParticipantRole } from 'src/app/shared/models/participant.interface';
+import { ParticipantI, ParticipantRole } from 'src/app/shared/models/participant.interface';
 import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRoles';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UserI } from 'src/app/shared/models/user.interface';
@@ -61,19 +61,21 @@ export class ManageTeamComponent implements OnInit {
       this.dataStore.getUser().subscribe((user) => {
         this.user = user;
 
-        const roles: number[] = this.route.snapshot.data.roles;
-        const userRole = this.teamToEdit!.participants?.find(
-          (participant) => participant.user._id === this.user._id,
-        )?.role;
+        if (this.editMode) {
+          const roles: number[] = this.route.snapshot.data.roles;
+          const userRole = this.teamToEdit!.participants?.find(
+            (participant) => participant.user._id === this.user._id,
+          )?.role;
 
-        if (typeof userRole === 'undefined' || !roles.includes(userRole)) {
-          this.router.navigate(['/main']);
-          this.snackBar.open('Недостаточно прав', '', {
-            duration: 5000,
-            panelClass: 'errorSnack',
-            horizontalPosition: 'right',
-            verticalPosition: 'top',
-          });
+          if (typeof userRole === 'undefined' || !roles.includes(userRole)) {
+            this.router.navigate(['/main']);
+            this.snackBar.open('Недостаточно прав', '', {
+              duration: 5000,
+              panelClass: 'errorSnack',
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+            });
+          } else this.hasAccess = true;
         } else this.hasAccess = true;
       }),
     );
@@ -156,6 +158,10 @@ export class ManageTeamComponent implements OnInit {
               _id: addedParticipant._id,
             },
           };
+          this.teamFormGroup.get('newParticipant')?.setValue({
+            username: '',
+            role: '',
+          });
           this.teamToEdit!.participants = [...this.teamToEdit!.participants!, newParticipant];
           (<FormArray>this.teamFormGroup.get('participants'))?.push(
             this.fb.control(newParticipant),

@@ -2,14 +2,14 @@ import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/cor
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-dialog-delete-item',
-  templateUrl: './dialog-delete-item.component.html',
-  styleUrls: ['./dialog-delete-item.component.scss'],
+  selector: 'app-dialog-confirm-action',
+  templateUrl: './dialog-confirm-action.component.html',
+  styleUrls: ['./dialog-confirm-action.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogDeleteItemComponent implements OnInit {
+export class DialogConfirmActionComponent implements OnInit {
   constructor(
-    public dialogRef: MatDialogRef<DialogDeleteItemComponent>,
+    public dialogRef: MatDialogRef<DialogConfirmActionComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { message: string },
   ) {}
 

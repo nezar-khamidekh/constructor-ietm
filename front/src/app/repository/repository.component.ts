@@ -5,8 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
-import { DialogDeleteItemComponent } from '../dialogs/dialog-delete-item/dialog-delete-item.component';
-import { SceneService } from '../scene/services/scene.service';
+import { DialogConfirmActionComponent } from '../dialogs/dialog-confirm-action/dialog-confirm-action.component';
 import { ParticipantRole } from '../shared/models/participant.interface';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
@@ -88,7 +87,7 @@ export class RepositoryComponent implements OnInit {
   onEdit() {}
 
   onDelete() {
-    const dialogRef = this.dialog.open(DialogDeleteItemComponent, {
+    const dialogRef = this.dialog.open(DialogConfirmActionComponent, {
       width: '450px',
       data: { message: `Вы действительно хотите удалить репозиторий "${this.repository.title}"?` },
       autoFocus: false,
