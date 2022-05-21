@@ -20,6 +20,7 @@ export class ParticipantsTableComponent implements OnInit {
   @Input() userIsAuthor = false;
   @Input() viewMode = false;
   @Output() removeParticipant = new EventEmitter();
+  @Output() updateParticipant = new EventEmitter();
 
   displayedColumns: string[] = ['user', 'role', 'actions'];
   displayedColumnsViewMode: string[] = ['user', 'role'];

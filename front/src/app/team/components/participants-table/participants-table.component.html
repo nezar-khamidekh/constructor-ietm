@@ -20,6 +20,9 @@
         <select
           class="participants-table__select"
           [(ngModel)]="participant.role"
+          (ngModelChange)="
+            updateParticipant.emit({ userId: participant.user._id, role: participant.role })
+          "
           [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
         >
           <ng-container *ngFor="let role of getParticipantRoles(); let i = index">

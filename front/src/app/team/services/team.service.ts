@@ -5,6 +5,7 @@ import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.inter
 import { CreateTeamDto } from 'src/app/shared/models/createTeamDto.interface';
 import { RemoveParticipantDto } from 'src/app/shared/models/removeParticipantDto.interface';
 import { TeamI } from 'src/app/shared/models/team.interface';
+import { UpdateParticipantDto } from 'src/app/shared/models/updateParticipantDto.interface';
 import { UpdateTeamDto } from 'src/app/shared/models/updateTeamDto.interface';
 import { UserI } from 'src/app/shared/models/user.interface';
 import { UserEntryDto } from 'src/app/shared/models/userEntryDto.interface';
@@ -48,6 +49,12 @@ export class TeamService {
 
   removeParticipant(removeParticipantDto: RemoveParticipantDto) {
     return this.http.post(`${this.apiUrl}/team/participant/remove`, removeParticipantDto, {
+      withCredentials: true,
+    });
+  }
+
+  updateParticipant(updateParticipantDto: UpdateParticipantDto) {
+    return this.http.post(`${this.apiUrl}/team/participant/update`, updateParticipantDto, {
       withCredentials: true,
     });
   }

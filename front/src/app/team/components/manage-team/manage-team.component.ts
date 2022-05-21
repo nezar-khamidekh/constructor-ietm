@@ -178,7 +178,6 @@ export class ManageTeamComponent implements OnInit {
 
   onSubmit() {
     const teamGroup = this.teamFormGroup.get('team')!;
-    const participantsGroup = this.teamFormGroup.get('participants')!;
     if (teamGroup.valid) {
       if (!this.editMode)
         this.subs.add(
@@ -194,7 +193,6 @@ export class ManageTeamComponent implements OnInit {
             .updateTeam({
               _id: this.teamToEdit?._id,
               ...teamGroup.value,
-              participants: [...participantsGroup.value],
             })
             .subscribe((res) => {
               this.teamToEdit!.title = teamGroup.get('title')!.value;
@@ -219,6 +217,14 @@ export class ManageTeamComponent implements OnInit {
           );
           this.cdr.detectChanges();
         }),
+    );
+  }
+
+  onUpdateParticipant(data: { userId: string; role: number }) {
+    this.subs.add(
+      this.teamService
+        .updateParticipant({ ...data, teamId: this.teamToEdit?._id! })
+        .subscribe((res) => {}),
     );
   }
 }

@@ -91,6 +91,7 @@
           [participants]="teamToEdit.participants || []"
           [userIsAuthor]="teamToEdit.participants! | isTeamAuthor: user._id!"
           (removeParticipant)="onRemoveParticipant($event)"
+          (updateParticipant)="onUpdateParticipant($event)"
         >
         </app-participants-table>
       </ng-container>
