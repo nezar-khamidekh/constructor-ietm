@@ -32,11 +32,6 @@ class MainScene extends THREE.Scene {
       if (node.type === 'Mesh') {
         if (node.name !== 'cubeMesh') {
           if (typeof node.material !== 'undefined') {
-            /*  node.material.polygonOffset = true;
-            node.material.polygonOffsetFactor = 1;
-            node.material.polygonOffsetUnits = 1;
-            node.material.color.convertSRGBToLinear(); */
-
             let mat = node.material.clone();
             node.material = mat.clone();
           }
@@ -91,21 +86,11 @@ class MainScene extends THREE.Scene {
 
     this.background = new THREE.Color(BACKGROUND_COLOR);
 
-    /* const helperLeftFrontLight = new THREE.DirectionalLightHelper(this._leftFrontLight, 5);
-    const helperRightFrontLight = new THREE.DirectionalLightHelper(this._rightFrontLight, 5);
-    const helperLeftBackLight = new THREE.DirectionalLightHelper(this._leftBackLight, 5);
-    const helperRightBackLight = new THREE.DirectionalLightHelper(this._rightBackLight, 5); */
-
     this.add(this._ambientLight);
     this.add(this._leftFrontLight);
     this.add(this._rightFrontLight);
     this.add(this._leftBackLight);
     this.add(this._rightBackLight);
-
-    /* this.add(helperLeftFrontLight);
-    this.add(helperRightFrontLight);
-    this.add(helperLeftBackLight);
-    this.add(helperRightBackLight); */
   }
 }
 

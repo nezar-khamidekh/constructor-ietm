@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
-import { SceneService } from '../scene/services/scene.service';
 import { AnnotationI } from '../shared/models/annotation.interface';
 import { TreeStructureI } from '../shared/models/treeStructure.interface';
 import { RepositoryService } from '../shared/services/repository.service';
@@ -18,11 +17,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
   repositoryId = '';
   newModelId = '';
 
-  constructor(
-    private repositoryService: RepositoryService,
-    private router: Router,
-    private sceneService: SceneService,
-  ) {}
+  constructor(private repositoryService: RepositoryService, private router: Router) {}
 
   ngOnInit(): void {}
 
