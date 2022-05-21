@@ -109,6 +109,7 @@
       class="repository__tab"
       [routerLink]="'/repository/' + repository._id + '/tree'"
       routerLinkActive="repository__tab_active"
+      *ngIf="repository.modelTree"
       >Дерево</a
     >
     <a
@@ -119,10 +120,13 @@
     >
   </div>
   <div class="repository__content">
-    <div class="loader" *ngIf="!viewerInitialized">
+    <div
+      class="loader"
+      *ngIf="repository && repository.models.length && !viewerInitialized; else emptyModels"
+    >
       <mat-spinner></mat-spinner>
     </div>
-    <div class="viewer" *ngIf="repository">
+    <div class="viewer" *ngIf="repository && repository.models.length">
       <app-scene
         [repositoryId]="repository._id"
         [modelId]="repository.models[repository.models.length - 1]._id"
@@ -135,3 +139,8 @@
     </div>
   </div>
 </div>
+<ng-template #emptyModels>
+  <div class="empty-models">
+    <p class="empty-models__text">Модель не была добавлена</p>
+  </div>
+</ng-template>

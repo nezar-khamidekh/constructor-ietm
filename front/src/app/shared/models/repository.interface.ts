@@ -3,6 +3,7 @@ import { ParticipantI } from './participant.interface';
 import { ModelI } from './model.interface';
 import { UserI } from './user.interface';
 import { TeamI } from './team.interface';
+import { TreeStructureI } from './treeStructure.interface';
 
 export interface RepositoryI {
   _id: string;
@@ -14,6 +15,7 @@ export interface RepositoryI {
   preview?: string;
   participants: ParticipantI[];
   models: ModelI[];
+  modelTree: TreeStructureI | null;
   createdAt?: string;
   updatedAt?: string;
 }

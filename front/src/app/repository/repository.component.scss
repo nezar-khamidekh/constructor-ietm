@@ -192,3 +192,20 @@
   border-radius: 12px;
   overflow: hidden;
 }
+
+.empty-models {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  border: 1px solid #d3d3d3;
+  border-radius: 12px;
+  align-items: center;
+
+  &__text {
+    flex: 1;
+    font-size: 32px;
+    line-height: 36px;
+    opacity: 0.8;
+    text-align: center;
+  }
+}
