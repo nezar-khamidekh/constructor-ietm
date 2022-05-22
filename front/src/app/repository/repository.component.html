@@ -120,13 +120,10 @@
     >
   </div>
   <div class="repository__content">
-    <div
-      class="loader"
-      *ngIf="repository && repository.models.length && !viewerInitialized; else emptyModels"
-    >
+    <div class="loader" *ngIf="repository.models.length && !viewerInitialized">
       <mat-spinner></mat-spinner>
     </div>
-    <div class="viewer" *ngIf="repository && repository.models.length">
+    <div class="viewer" *ngIf="repository.models.length; else emptyModels">
       <app-scene
         [repositoryId]="repository._id"
         [modelId]="repository.models[repository.models.length - 1]._id"
