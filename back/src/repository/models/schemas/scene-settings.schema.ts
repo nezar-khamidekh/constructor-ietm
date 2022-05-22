@@ -12,7 +12,7 @@ export class SceneSettings {
   @Prop()
   background: string;
 
-  @Prop({ type: [PositionSchema], default: null })
+  @Prop({ type: PositionSchema, default: null })
   cameraPosition: Position;
 }
 
