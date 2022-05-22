@@ -41,6 +41,10 @@ export class TeamService {
     return this.http.get<TeamI>(`${this.apiUrl}/team/one/${id}`, { withCredentials: true });
   }
 
+  removeTeam(teamId: string) {
+    return this.http.get<TeamI>(`${this.apiUrl}/team/delete/${teamId}`, { withCredentials: true });
+  }
+
   sendInvitation(addParticipantDto: AddParticipantDto): Observable<UserI> {
     return this.http.post<UserI>(`${this.apiUrl}/team/participant/add`, addParticipantDto, {
       withCredentials: true,

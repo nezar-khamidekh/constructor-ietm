@@ -50,6 +50,30 @@ export class TeamPageComponent implements OnInit, OnDestroy {
     return ParticipantRole;
   }
 
+  removeTeam() {
+    const dialogRef = this.dialog.open(DialogConfirmActionComponent, {
+      width: '450px',
+      data: { message: `Вы действительно хотите удалить команду "${this.team.title}"?` },
+      autoFocus: false,
+    });
+
+    this.subs.add(
+      dialogRef
+        .afterClosed()
+        .pipe(
+          switchMap((result: { status: boolean }) => {
+            if (result.status) return this.teamService.removeTeam(this.team._id);
+            return of(null);
+          }),
+        )
+        .subscribe((res) => {
+          if (res !== null) {
+            this.router.navigate(['team', 'user-teams']);
+          }
+        }),
+    );
+  }
+
   leaveFromTeam() {
     const dialogRef = this.dialog.open(DialogConfirmActionComponent, {
       width: '450px',

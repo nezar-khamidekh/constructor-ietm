@@ -42,6 +42,23 @@
                 mat-flat-button
                 color="warn"
                 *appHasRole="
+                  [getParticipantRoleEnum().Author];
+                  userId: user._id;
+                  participants: team.participants!
+                "
+                (click)="removeTeam()"
+              >
+                <img
+                  class="team-card__action-img"
+                  src="assets/svg/delete_white.svg"
+                  alt="удалить команду"
+                />
+              </button>
+              <button
+                class="team-card__action"
+                mat-flat-button
+                color="warn"
+                *appHasRole="
                   [getParticipantRoleEnum().Editor, getParticipantRoleEnum().Reader];
                   userId: user._id;
                   participants: team.participants!
