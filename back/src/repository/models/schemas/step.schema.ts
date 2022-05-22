@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Action, ActionSchema } from './actions.schema';
+import { Action, ActionSchema } from './action.schema';
 
 export type StepDocument = Step & Document;
 
