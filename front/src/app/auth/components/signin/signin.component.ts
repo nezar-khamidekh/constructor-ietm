@@ -18,12 +18,7 @@ export class SigninComponent implements OnInit, OnDestroy {
   hidePass = true;
   loginFormGroup: FormGroup;
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private dataStore: DataStoreService,
-  ) {}
+  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.initializeLoginForm();

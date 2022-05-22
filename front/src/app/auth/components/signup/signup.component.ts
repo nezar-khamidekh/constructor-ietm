@@ -18,12 +18,7 @@ export class SignupComponent implements OnInit {
   hidePass = true;
   registrationFormGroup: FormGroup;
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private dataStore: DataStoreService,
-  ) {}
+  constructor(private router: Router, private fb: FormBuilder, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.initializeRegistrationForm();
