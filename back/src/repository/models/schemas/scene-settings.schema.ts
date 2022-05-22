@@ -4,7 +4,7 @@ import { Position, PositionSchema } from './position.schema';
 
 export type SceneSettingsDocument = SceneSettings & Document;
 
-@Schema({ _id: false, versionKey: false })
+@Schema({ _id: false, versionKey: false, timestamps: false })
 export class SceneSettings {
   @Prop()
   grid: boolean;

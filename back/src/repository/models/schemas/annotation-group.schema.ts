@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 import { Annotation, AnnotationSchema } from './annotation.schema';
 export type AnnotationGroupDocument = AnnotationGroup & Document;
 
-@Schema()
+@Schema({ _id: false, versionKey: false, timestamps: false })
 export class AnnotationGroup {
   @Prop({ type: Types.ObjectId, ref: 'Model' })
   assinedModel: Types.ObjectId;
