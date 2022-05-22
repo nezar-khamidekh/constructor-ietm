@@ -176,6 +176,7 @@ export class SceneService {
       z: this.modelLongestSide * CAMERA_POSITION_RATE,
     };
     this.viewer.camera.position.set(posCamera.x, posCamera.y, posCamera.z);
+    console.log(this.viewer.camera.position);
     this.viewer.controls.update();
   }
 

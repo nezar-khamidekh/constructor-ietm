@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { SceneService } from 'src/app/scene/services/scene.service';
+import { SettingsService } from 'src/app/scene/services/settings.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
 import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
 import { LoadingService } from 'src/app/shared/services/loading.service';
@@ -43,7 +44,7 @@ export class EditorViewerComponent implements OnInit {
   @Input() step: number;
   @Input() repositoryId: string;
   @Input() modelId: string;
-  @Output() saveInstructions = new EventEmitter();
+  @Output() saveInteractiveData = new EventEmitter();
 
   tree: TreeStructureI;
 
@@ -64,6 +65,7 @@ export class EditorViewerComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
     private loadingService: LoadingService,
+    private settingsService: SettingsService,
   ) {}
 
   ngOnInit(): void {
@@ -100,7 +102,6 @@ export class EditorViewerComponent implements OnInit {
     }
   }
 
-  //не нужен??
   onApplyAnnotation(status: boolean) {
     this.viewerMouseMode = status ? VIEWER_MOUSE_MODE.ApplyAnnotation : VIEWER_MOUSE_MODE.Default;
   }
@@ -162,8 +163,11 @@ export class EditorViewerComponent implements OnInit {
     this.loadingService.setIsLoading(false);
   }
 
-  onSaveInstructions() {
-    this.saveInstructions.emit({ annotations: this.annotations, modelTree: this.tree });
+  onSaveInteractiveData() {
+    this.saveInteractiveData.emit({
+      modelTree: this.tree,
+      settings: this.settingsService.getSettings(),
+    });
   }
 
   onUpdateTree(tree: TreeStructureI) {

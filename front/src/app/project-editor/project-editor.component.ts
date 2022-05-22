@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
+import { Settings } from '../scene/classes/Settings';
 import { AnnotationI } from '../shared/models/annotation.interface';
 import { TreeStructureI } from '../shared/models/treeStructure.interface';
 import { RepositoryService } from '../shared/services/repository.service';
@@ -39,25 +40,17 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.newModelId = data.modelId;
   }
 
-  onSaveInstructions(data: { annotations: AnnotationI[]; modelTree: TreeStructureI }) {
+  onSaveInteractiveData(data: { modelTree: TreeStructureI; settings: Settings }) {
     this.subs.add(
       this.repositoryService
         .update({
           _id: this.repositoryId,
-          annotationGroups: [
-            {
-              assinedModel: this.newModelId,
-              annotations: data.annotations.map((annotation) => {
-                return {
-                  title: annotation.title,
-                  description: annotation.description,
-                  position: annotation.position,
-                  attachedObjectId: annotation.attachedObject.uuid,
-                };
-              }),
-            },
-          ],
           modelTree: data.modelTree,
+          sceneSettings: {
+            grid: data.settings.grid,
+            background: data.settings.background,
+            cameraPosition: data.settings.cameraPosition,
+          },
         })
         .subscribe((res) => {
           console.log(res);

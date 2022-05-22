@@ -128,6 +128,7 @@
         [repositoryId]="repository._id"
         [modelId]="repository.models[repository.models.length - 1]._id"
         [viewMode]="true"
+        [initialSettings]="repository.sceneSettings"
         (viewerIsReady)="viewerIsReady()"
       ></app-scene>
     </div>

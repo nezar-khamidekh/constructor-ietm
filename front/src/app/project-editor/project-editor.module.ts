@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { ProjectEditorRoutingModule } from './project-editor-routing.module';
 import { SceneModule } from '../scene/scene.module';
 import { ProjectEditorComponent } from './project-editor.component';

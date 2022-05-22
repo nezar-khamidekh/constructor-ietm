@@ -4,6 +4,7 @@ import { ModelI } from './model.interface';
 import { UserI } from './user.interface';
 import { TeamI } from './team.interface';
 import { TreeStructureI } from './treeStructure.interface';
+import { SceneSettingsI } from './sceneSettingsI.interface';
 
 export interface RepositoryI {
   _id: string;
@@ -18,4 +19,5 @@ export interface RepositoryI {
   modelTree: TreeStructureI | null;
   createdAt?: string;
   updatedAt?: string;
+  sceneSettings: SceneSettingsI;
 }

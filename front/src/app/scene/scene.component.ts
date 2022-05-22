@@ -38,6 +38,9 @@ import { Viewer } from './classes/Viewer';
 import { TreeStructureService } from '../tree-structure/services/tree-structure.service';
 import { ActionType } from '../shared/models/insruction.interface';
 import { skip } from 'rxjs/operators';
+import { Settings } from './classes/Settings';
+import { SettingsService } from './services/settings.service';
+import { SceneSettingsI } from '../shared/models/sceneSettingsI.interface';
 
 export enum VIEWER_BUTTONS {
   Default,
@@ -67,6 +70,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() repositoryId: string;
   @Input() modelId: string;
   @Input() viewMode: boolean;
+  @Input() initialSettings: SceneSettingsI | null = null;
   @Output() applyAnnotationPosition = new EventEmitter();
   @Output() viewerIsReady = new EventEmitter();
 
@@ -134,57 +138,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
   currentPlane: number | null = null;
 
-  gui = new dat.GUI({ name: 'Найстройки сцены', autoPlace: false });
+  gui = new dat.GUI({ name: 'Настройки сцены', autoPlace: false });
 
-  settings = {
-    grid: true,
-    background: '#' + RENDERER_CLEAR_COLOR.getHexString(),
-    resetBackground: () => {
-      this.settings.background = '#' + RENDERER_CLEAR_COLOR.getHexString();
-    },
-    cameraPosition: {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-    acceptPosition: () => {
-      localStorage.setItem(
-        'positionCamera',
-        JSON.stringify({
-          x: this.settings.cameraPosition.x,
-          y: this.settings.cameraPosition.y,
-          z: this.settings.cameraPosition.z,
-        }),
-      );
-      this.viewer.camera.position.set(
-        this.settings.cameraPosition.x,
-        this.settings.cameraPosition.y,
-        this.settings.cameraPosition.z,
-      );
-    },
-    resetPosition: () => {
-      this.settings.cameraPosition.x = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
-      this.settings.cameraPosition.y =
-        (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2;
-      this.settings.cameraPosition.z = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
-      localStorage.setItem(
-        'positionCamera',
-        JSON.stringify({
-          x: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
-          y: (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-          z: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
-        }),
-      );
-      this.viewer.camera.position.set(
-        this.settings.cameraPosition.x,
-        this.settings.cameraPosition.y,
-        this.settings.cameraPosition.z,
-      );
-      for (let i = 0; i < 3; i++) {
-        this.gui.__folders['Положение камеры по умолчанию'].__controllers[i].updateDisplay();
-      }
-    },
-  };
+  settings: Settings;
 
   constructor(
     public sceneService: SceneService,
@@ -192,9 +148,49 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     public dialog: MatDialog,
     private treeStructureService: TreeStructureService,
+    private settingsService: SettingsService,
   ) {}
 
   ngOnInit(): void {
+    this.settings = new Settings(
+      () => {
+        localStorage.setItem(
+          'positionCamera',
+          JSON.stringify({
+            x: this.settings.cameraPosition.x,
+            y: this.settings.cameraPosition.y,
+            z: this.settings.cameraPosition.z,
+          }),
+        );
+        this.viewer.camera.position.set(
+          this.settings.cameraPosition.x,
+          this.settings.cameraPosition.y,
+          this.settings.cameraPosition.z,
+        );
+      },
+      () => {
+        this.settings.cameraPosition.x = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
+        this.settings.cameraPosition.y =
+          (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2;
+        this.settings.cameraPosition.z = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
+        localStorage.setItem(
+          'positionCamera',
+          JSON.stringify({
+            x: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
+            y: (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+            z: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
+          }),
+        );
+        this.viewer.camera.position.set(
+          this.settings.cameraPosition.x,
+          this.settings.cameraPosition.y,
+          this.settings.cameraPosition.z,
+        );
+        for (let i = 0; i < 3; i++) {
+          this.gui.__folders['Положение камеры по умолчанию'].__controllers[i].updateDisplay();
+        }
+      },
+    );
     if (!this.viewMode) {
       const visibleGridHelper = localStorage.getItem('visibleGridHelper') || '';
       if (visibleGridHelper) this.settings.grid = visibleGridHelper === 'true' ? true : false;
@@ -207,6 +203,15 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.settings.cameraPosition.z = cameraPosition.z;
       }
     }
+    if (this.initialSettings) {
+      this.settings.grid = this.initialSettings.grid;
+      this.settings.background = this.initialSettings.background;
+      this.settings.cameraPosition = this.initialSettings.cameraPosition;
+    }
+
+    console.log(this.settings);
+
+    this.settingsService.setSettings(this.settings);
 
     this.subs.add(
       this.matMenuTrigger.menuClosed.subscribe((v) => {
@@ -740,10 +745,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     )
       this.settings.cameraPosition = { ...this.viewer.camera.position };
     if (this.annotations.length) this.renderAnnotations(this.annotations);
+    this.sceneService.setGridHelperVisibility(this.settings.grid);
+    this.sceneService.setBackgroundColorScene(this.settings.background);
+    this.sceneService.setCameraDefaultPosition(this.settings.cameraPosition);
     if (!this.viewMode) {
-      this.sceneService.setGridHelperVisibility(this.settings.grid);
-      this.sceneService.setBackgroundColorScene(this.settings.background);
-      this.sceneService.setCameraDefaultPosition(this.settings.cameraPosition);
       this.setGui();
     }
 
