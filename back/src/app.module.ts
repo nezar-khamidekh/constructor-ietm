@@ -6,21 +6,19 @@ import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { ViewerModule } from './viewer/viewer.module';
+import { ModelManagerModule } from './model-manager/model-manager.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TeamModule } from './team/team.module';
 import { RepositoryModule } from './repository/repository.module';
-import { ConverterModule } from './converter/converter.module';
 
 const modules = [
   ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env', './.env'] }),
   MongooseModule.forRoot(process.env.DATABASE_URL),
   UserModule,
   AuthModule,
-  ViewerModule,
+  ModelManagerModule,
   TeamModule,
   RepositoryModule,
-  ConverterModule,
 ];
 
 if (process.env.NODE_ENV !== 'development') {

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class ViewerService {
+export class ModelService {
   CONVERTER_PATH: string;
 
   constructor(private configService: ConfigService) {
@@ -59,6 +59,7 @@ export class ViewerService {
     gltf.nodes.forEach((node) => {
       node.extras = { uuid: uuidv4() };
     });
+    console.log(gltf.nodes);
     return from(processGltf(gltf, options)).pipe(
       map((results: any) => {
         fsExtra.writeJsonSync(outputPath, results.gltf);

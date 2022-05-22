@@ -15,7 +15,7 @@ import { RemoveParticipantDto } from 'src/team/models/dto/removeParticipant.dto'
 import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto';
 import { ParticipantRole } from 'src/team/models/schemas/participant.schema';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
-import { ViewerService } from 'src/viewer/service/viewer.service';
+import { ModelService } from 'src/model-manager/service/model.service';
 import { extname } from 'path';
 import { RemoveModelDto } from '../models/dto/removeModel.dto';
 import { TakeModelDto } from '../models/dto/takeModel.dto';
@@ -51,7 +51,7 @@ export class RepositoryService {
     private favoriteModel: Model<FavoriteDocument>,
     private teamService: TeamService,
     private userService: UserService,
-    private viewerService: ViewerService,
+    private modelService: ModelService,
   ) {}
 
   create(createRepositoryDto: CreateRepositoryDto) {
@@ -332,10 +332,10 @@ export class RepositoryService {
   registerModel(file: Express.Multer.File, registerModelDto: RegisterModelDto) {
     return this.getOneById(registerModelDto.repoId).pipe(
       switchMap((repo) => {
-        return this.viewerService.checkIfRepoDirectoryExists(repo._id).pipe(
+        return this.modelService.checkIfRepoDirectoryExists(repo._id).pipe(
           switchMap((check) => {
             if (check)
-              return this.viewerService
+              return this.modelService
                 .writeModelDirectoryById(
                   repo._id,
                   file.filename.replace(extname(file.filename), ''),
@@ -351,9 +351,9 @@ export class RepositoryService {
                   }),
                 );
             else
-              return this.viewerService.writeRepoDirectoryById(repo._id).pipe(
+              return this.modelService.writeRepoDirectoryById(repo._id).pipe(
                 switchMap(() => {
-                  return this.viewerService
+                  return this.modelService
                     .writeModelDirectoryById(
                       repo._id,
                       file.filename.replace(extname(file.filename), ''),
@@ -401,11 +401,11 @@ export class RepositoryService {
       file.originalname;
     switch (format) {
       case ModelFormat.gltf:
-        return this.viewerService
+        return this.modelService
           .saveModel(process.cwd() + '\\' + file.path, straightPath)
           .pipe(
             switchMap(() => {
-              return this.viewerService
+              return this.modelService
                 .saveCompressedModel(straightPath, modelPath)
                 .pipe(
                   switchMap(() => {
@@ -430,7 +430,7 @@ export class RepositoryService {
             }),
           );
       case ModelFormat.step:
-        return this.viewerService
+        return this.modelService
           .convertModelAndSave(
             process.cwd() + '\\' + file.path,
             modelPath,
@@ -473,7 +473,7 @@ export class RepositoryService {
             ).path;
             const modelDirectoryPath =
               './repositories/' + repo._id + '/' + fileDirectory;
-            return this.viewerService.deleteModel(modelDirectoryPath);
+            return this.modelService.deleteModel(modelDirectoryPath);
           }),
         );
       }),

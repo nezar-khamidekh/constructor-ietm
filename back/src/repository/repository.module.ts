@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from 'src/auth/auth.module';
 import { TeamModule } from 'src/team/team.module';
 import { UserModule } from 'src/user/user.module';
-import { ViewerModule } from 'src/viewer/viewer.module';
+import { ModelManagerModule } from 'src/model-manager/model-manager.module';
 import { RepositoryController } from './controller/repository.controller';
 import { Favorite, FavoriteSchema } from './models/schemas/favorite.schema';
 import {
@@ -20,7 +20,7 @@ import { RepositoryService } from './service/repository.service';
     ]),
     TeamModule,
     UserModule,
-    ViewerModule,
+    ModelManagerModule,
     AuthModule,
   ],
   controllers: [RepositoryController],

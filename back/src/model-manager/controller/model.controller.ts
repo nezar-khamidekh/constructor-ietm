@@ -7,11 +7,11 @@ import {
 } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { join } from 'path';
-import { ViewerService } from '../service/viewer.service';
+import { ModelService } from '../service/model.service';
 
-@Controller('viewer')
-export class ViewerController {
-  constructor(private viewerService: ViewerService) {}
+@Controller('model')
+export class ModelController {
+  constructor(private modelService: ModelService) {}
 
   @Get('default')
   defaultModel(@Response({ passthrough: true }) res): StreamableFile {
