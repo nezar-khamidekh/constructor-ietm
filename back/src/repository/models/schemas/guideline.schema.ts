@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Timestamp } from 'typeorm';
-import { TimestampSchema } from './timestamp.schema';
+import { Timestamp, TimestampSchema } from './timestamp.schema';
 
 export type GuidelineDocument = Guideline & Document;
 
