@@ -13,7 +13,6 @@ import { Response } from 'express';
 import { SessionI } from 'src/auth/models/interfaces/session.interface';
 import { CreateUserDto } from '../models/dto/CreateUser.dto';
 import { LoginUserDto } from '../models/dto/LoginUser.dto';
-import { UserI } from '../models/interfaces/user.inteface';
 import { UserService } from '../service/user.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserDocument } from '../models/schemas/user.schema';
@@ -73,7 +72,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  getCurUser(@Req() req): Observable<UserI> {
+  getCurUser(@Req() req): Observable<UserDocument> {
     return this.userService.findOne({ userId: req.user._id });
   }
 

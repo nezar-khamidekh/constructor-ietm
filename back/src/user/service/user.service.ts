@@ -5,7 +5,6 @@ import { SessionI } from 'src/auth/models/interfaces/session.interface';
 import { AuthService } from 'src/auth/service/auth.service';
 import { CreateUserDto } from '../models/dto/CreateUser.dto';
 import { LoginUserDto } from '../models/dto/LoginUser.dto';
-import { UserI } from '../models/interfaces/user.inteface';
 import { User, UserDocument } from '../models/schemas/user.schema';
 import { Model, Types } from 'mongoose';
 import { RefreshTokenDocument } from 'src/auth/models/schema/refresh-token.schema';
@@ -18,7 +17,7 @@ export class UserService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Observable<UserI> {
+  create(createUserDto: CreateUserDto): Observable<boolean> {
     return this.mailExists(createUserDto.email.toLowerCase()).pipe(
       switchMap((mailExists: boolean) => {
         if (!mailExists) {
@@ -35,8 +34,12 @@ export class UserService {
                       });
                       return from(newUser.save()).pipe(
                         map((savedUser: UserDocument) => {
-                          const { _id, password, ...user } = savedUser;
-                          return user;
+                          if (savedUser) return true;
+                          else
+                            throw new HttpException(
+                              'Ошибка при создании пользователя',
+                              HttpStatus.NOT_ACCEPTABLE,
+                            );
                         }),
                       );
                     }),

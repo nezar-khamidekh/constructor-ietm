@@ -8,7 +8,7 @@ import {
   AnnotationGroup,
   AnnotationGroupSchema,
 } from './annotation-group.schema';
-import { Guideline, GuidelineSchema } from './guideline.schema';
+import { Instruction, InstructionSchema } from './instruction.schema';
 import { Model, ModelSchema } from './model.schema';
 import { SceneSettings, SceneSettingsSchema } from './scene-settings.schema';
 
@@ -40,8 +40,8 @@ export class Repository {
   @Prop({ type: [ModelSchema], default: [] })
   models: Model[];
 
-  @Prop({ type: [GuidelineSchema], default: [] })
-  guidelines: Guideline[];
+  @Prop({ type: [InstructionSchema], default: [] })
+  instructions: Instruction[];
 
   @Prop({ type: [AnnotationGroupSchema], default: [] })
   annotationGroups: AnnotationGroup[];
