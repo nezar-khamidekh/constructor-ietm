@@ -52,7 +52,7 @@ export class RepositoryService {
     private teamService: TeamService,
     private userService: UserService,
     private modelService: ModelService,
-  ) { }
+  ) {}
 
   create(createRepositoryDto: CreateRepositoryDto) {
     return this.checkIfRepoTitleExits(createRepositoryDto.title).pipe(
@@ -383,8 +383,20 @@ export class RepositoryService {
     type: number,
   ) {
     const fileId: string = file.filename.replace(extname(file.filename), '');
-    const modelPath = join(process.cwd(), 'repositories', repo._id.toString(), fileId, file.filename.replace(extname(file.filename), '.gltf'));
-    const straightPath = join(process.cwd(), 'repositories', repo._id.toString(), fileId, file.originalname);
+    const modelPath = join(
+      process.cwd(),
+      'repositories',
+      repo._id.toString(),
+      fileId,
+      file.filename.replace(extname(file.filename), '.gltf'),
+    );
+    const straightPath = join(
+      process.cwd(),
+      'repositories',
+      repo._id.toString(),
+      fileId,
+      file.originalname,
+    );
     switch (format) {
       case ModelFormat.gltf:
         return this.modelService
@@ -457,7 +469,11 @@ export class RepositoryService {
             const fileDirectory = repo.models.find(
               (model: any) => model._id.toString() === removeModelDto.modelId,
             ).path;
-            const modelDirectoryPath = join('repositories', repo._id.toString(), fileDirectory);
+            const modelDirectoryPath = join(
+              'repositories',
+              repo._id.toString(),
+              fileDirectory,
+            );
             return this.modelService.deleteModel(modelDirectoryPath);
           }),
         );

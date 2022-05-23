@@ -26,4 +26,4 @@ import { RepositoryService } from './service/repository.service';
   controllers: [RepositoryController],
   providers: [RepositoryService],
 })
-export class RepositoryModule { }
+export class RepositoryModule {}

@@ -23,7 +23,8 @@ export class ModelService {
     return from(
       nrc.run(
         [
-          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${10 - compression
+          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
+            10 - compression
           }`,
         ],
         {
@@ -97,7 +98,9 @@ export class ModelService {
   writeModelDirectoryById(repoId: string, modelId: string) {
     return from(
       fs.promises
-        .mkdir(join('repositories', repoId.toString(), modelId.toString()), { recursive: true })
+        .mkdir(join('repositories', repoId.toString(), modelId.toString()), {
+          recursive: true,
+        })
         .then(() => true)
         .catch(() => false),
     );

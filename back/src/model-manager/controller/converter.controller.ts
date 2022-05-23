@@ -16,7 +16,7 @@ import { ConverterService } from '../service/converter.service';
 
 @Controller('converter')
 export class ConverterController {
-  constructor(private converterService: ConverterService) { }
+  constructor(private converterService: ConverterService) {}
   @Post()
   @UseInterceptors(
     FileInterceptor('model', {

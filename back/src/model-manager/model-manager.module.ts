@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Repository, RepositorySchema } from 'src/repository/models/schemas/repository.schema';
+import {
+  Repository,
+  RepositorySchema,
+} from 'src/repository/models/schemas/repository.schema';
 import { ConverterController } from './controller/converter.controller';
 import { FileController } from './controller/file.controller';
 import { ModelController } from './controller/model.controller';
@@ -18,4 +21,4 @@ import { ModelService } from './service/model.service';
   providers: [ModelService, ConverterService, FileService],
   exports: [ModelService, ConverterService, FileService],
 })
-export class ModelManagerModule { }
+export class ModelManagerModule {}
