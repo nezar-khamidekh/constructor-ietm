@@ -1,8 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { DataStoreService } from 'src/app/shared/services/data-store.service';
 import { SubSink } from 'subsink';
 import { AuthService } from '../../services/auth.service';
 
@@ -28,12 +26,18 @@ export class SigninComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  initializeLoginForm() {
+    this.loginFormGroup = this.fb.group({
+      login: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+    });
+  }
+
   onSubmit() {
     if (this.loginFormGroup.valid)
       this.subs.add(
         this.authService.login(this.loginFormGroup.value).subscribe(
           (user: any) => {
-            // this.dataStore.setUser(user);
             this.router.navigate(['main']);
           },
           (err: any) => {
@@ -41,12 +45,5 @@ export class SigninComponent implements OnInit, OnDestroy {
           },
         ),
       );
-  }
-
-  initializeLoginForm() {
-    this.loginFormGroup = this.fb.group({
-      login: ['', [Validators.required]],
-      password: ['', [Validators.required]],
-    });
   }
 }

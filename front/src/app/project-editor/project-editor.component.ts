@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { Settings } from '../scene/classes/Settings';
-import { AnnotationI } from '../shared/models/annotation.interface';
 import { TreeStructureI } from '../shared/models/treeStructure.interface';
 import { RepositoryService } from '../shared/services/repository.service';
 
