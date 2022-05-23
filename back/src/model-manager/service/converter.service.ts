@@ -6,8 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { join, basename, extname } from 'path';
 import { from, map } from 'rxjs';
-// const gltfPipeline = require('gltf-pipeline');
-// const fsExtra = require('fs-extra');
 
 @Injectable()
 export class ConverterService {

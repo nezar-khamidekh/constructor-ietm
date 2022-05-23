@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { from, map, of } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
+import { join } from 'path';
 
 @Injectable()
 export class ModelService {
@@ -22,8 +23,7 @@ export class ModelService {
     return from(
       nrc.run(
         [
-          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
-            10 - compression
+          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${10 - compression
           }`,
         ],
         {
@@ -59,7 +59,6 @@ export class ModelService {
     gltf.nodes.forEach((node) => {
       node.extras = { uuid: uuidv4() };
     });
-    console.log(gltf.nodes);
     return from(processGltf(gltf, options)).pipe(
       map((results: any) => {
         fsExtra.writeJsonSync(outputPath, results.gltf);
@@ -80,7 +79,7 @@ export class ModelService {
   checkIfRepoDirectoryExists(repoId: string) {
     return from(
       fs.promises
-        .access('./repositories/' + repoId, fs.constants.F_OK)
+        .access(join('repositories', repoId.toString()), fs.constants.F_OK)
         .then(() => true)
         .catch(() => false),
     );
@@ -89,7 +88,7 @@ export class ModelService {
   writeRepoDirectoryById(repoId: string) {
     return from(
       fs.promises
-        .mkdir('./repositories/' + repoId, { recursive: true })
+        .mkdir(join('repositories', repoId.toString()), { recursive: true })
         .then(() => true)
         .catch(() => false),
     );
@@ -98,7 +97,7 @@ export class ModelService {
   writeModelDirectoryById(repoId: string, modelId: string) {
     return from(
       fs.promises
-        .mkdir('./repositories/' + repoId + '/' + modelId, { recursive: true })
+        .mkdir(join('repositories', repoId.toString(), modelId.toString()), { recursive: true })
         .then(() => true)
         .catch(() => false),
     );
@@ -107,7 +106,7 @@ export class ModelService {
   deleteModel(path: string) {
     return from(
       fs.promises
-        .rm(path, { force: true, recursive: true })
+        .rm(path.toString(), { force: true, recursive: true })
         .then(() => true)
         .catch(() => false),
     );

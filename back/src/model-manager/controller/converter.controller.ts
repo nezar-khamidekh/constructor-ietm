@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Post,
   StreamableFile,
   UploadedFile,
@@ -11,13 +10,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { map } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ManageModelDto } from '../models/dto/manageModel.dto';
 import { ConverterService } from '../service/converter.service';
 
 @Controller('converter')
 export class ConverterController {
-  constructor(private converterService: ConverterService) {}
+  constructor(private converterService: ConverterService) { }
   @Post()
   @UseInterceptors(
     FileInterceptor('model', {
@@ -37,7 +36,7 @@ export class ConverterController {
   convertAndSendModel(
     @UploadedFile() file: Express.Multer.File,
     @Body() manageModelDto: ManageModelDto,
-  ) {
+  ): Observable<StreamableFile> {
     switch (extname(file.originalname)) {
       case '.gltf':
         return this.converterService

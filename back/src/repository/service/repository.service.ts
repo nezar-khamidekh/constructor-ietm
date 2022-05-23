@@ -16,7 +16,7 @@ import { UpdateParticipantDto } from 'src/team/models/dto/updateParticipant.dto'
 import { ParticipantRole } from 'src/team/models/schemas/participant.schema';
 import { UserDocument } from 'src/user/models/schemas/user.schema';
 import { ModelService } from 'src/model-manager/service/model.service';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { RemoveModelDto } from '../models/dto/removeModel.dto';
 import { TakeModelDto } from '../models/dto/takeModel.dto';
 import { ModelFormat, RegisterModelDto } from '../models/dto/registerModel.dto';
@@ -52,7 +52,7 @@ export class RepositoryService {
     private teamService: TeamService,
     private userService: UserService,
     private modelService: ModelService,
-  ) {}
+  ) { }
 
   create(createRepositoryDto: CreateRepositoryDto) {
     return this.checkIfRepoTitleExits(createRepositoryDto.title).pipe(
@@ -382,27 +382,13 @@ export class RepositoryService {
     format: number,
     type: number,
   ) {
-    const fileId = file.filename.replace(extname(file.filename), '');
-    const modelPath =
-      process.cwd() +
-      '\\repositories\\' +
-      repo._id +
-      '\\' +
-      fileId +
-      '\\' +
-      file.filename.replace(extname(file.filename), '.gltf');
-    const straightPath =
-      process.cwd() +
-      '\\repositories\\' +
-      repo._id +
-      '\\' +
-      fileId +
-      '\\' +
-      file.originalname;
+    const fileId: string = file.filename.replace(extname(file.filename), '');
+    const modelPath = join(process.cwd(), 'repositories', repo._id.toString(), fileId, file.filename.replace(extname(file.filename), '.gltf'));
+    const straightPath = join(process.cwd(), 'repositories', repo._id.toString(), fileId, file.originalname);
     switch (format) {
       case ModelFormat.gltf:
         return this.modelService
-          .saveModel(process.cwd() + '\\' + file.path, straightPath)
+          .saveModel(join(process.cwd(), file.path), straightPath)
           .pipe(
             switchMap(() => {
               return this.modelService
@@ -432,7 +418,7 @@ export class RepositoryService {
       case ModelFormat.step:
         return this.modelService
           .convertModelAndSave(
-            process.cwd() + '\\' + file.path,
+            join(process.cwd(), file.path),
             modelPath,
             straightPath,
             10,
@@ -471,8 +457,7 @@ export class RepositoryService {
             const fileDirectory = repo.models.find(
               (model: any) => model._id.toString() === removeModelDto.modelId,
             ).path;
-            const modelDirectoryPath =
-              './repositories/' + repo._id + '/' + fileDirectory;
+            const modelDirectoryPath = join('repositories', repo._id.toString(), fileDirectory);
             return this.modelService.deleteModel(modelDirectoryPath);
           }),
         );
