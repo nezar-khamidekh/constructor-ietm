@@ -6,8 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { join, basename, extname } from 'path';
 import { from, map } from 'rxjs';
-// const gltfPipeline = require('gltf-pipeline');
-// const fsExtra = require('fs-extra');
 
 @Injectable()
 export class ConverterService {
@@ -20,7 +18,7 @@ export class ConverterService {
 
   convertModel(filePath: string, params: ManageModelDto) {
     const inputPath = this.inputPath(filePath);
-    const outputPath = this.outputPath(filePath, params.format);
+    const outputPath = this.outputPath(filePath, params.targetFormat);
     return from(
       isNaN(params.compression)
         ? nrc.run([`gltf-converter ${inputPath} ${outputPath}`], {
@@ -45,7 +43,7 @@ export class ConverterService {
 
   compressModel(filePath: string, params: ManageModelDto) {
     const inputPath = this.inputPath(filePath);
-    const outputPath = this.outputPath(filePath, params.format);
+    const outputPath = this.outputPath(filePath, params.targetFormat);
     const gltfPipeline = require('gltf-pipeline');
     const fsExtra = require('fs-extra');
     const processGltf = gltfPipeline.processGltf;
@@ -58,7 +56,6 @@ export class ConverterService {
     gltf.nodes.forEach((node) => {
       node.extras = { uuid: uuidv4() };
     });
-    console.log(gltf.nodes);
     return from(processGltf(gltf, options)).pipe(
       map((results: any) => {
         fsExtra.writeJsonSync(inputPath, results.gltf);

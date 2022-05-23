@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   Post,
   StreamableFile,
   UploadedFile,
@@ -38,7 +37,7 @@ export class ConverterController {
     @UploadedFile() file: Express.Multer.File,
     @Body() manageModelDto: ManageModelDto,
   ) {
-    switch(extname(file.originalname)) {
+    switch (extname(file.originalname)) {
       case '.gltf':
         return this.converterService
           .compressModel(file.filename, manageModelDto)
