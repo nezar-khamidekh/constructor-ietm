@@ -3,7 +3,7 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ManageModelDto {
   @IsString()
-  format: string;
+  targetFormat: string;
 
   @IsNumber()
   @IsOptional()
