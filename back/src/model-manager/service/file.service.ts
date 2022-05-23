@@ -2,20 +2,22 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as fs from 'fs';
-import { Repository, RepositoryDocument } from 'src/repository/models/schemas/repository.schema';
+import {
+  Repository,
+  RepositoryDocument,
+} from 'src/repository/models/schemas/repository.schema';
 import { from, map } from 'rxjs';
 import { join } from 'path';
 
 @Injectable()
 export class FileService {
-  constructor(@InjectModel(Repository.name)
-  private repositoryModel: Model<RepositoryDocument>) { }
+  constructor(
+    @InjectModel(Repository.name)
+    private repositoryModel: Model<RepositoryDocument>,
+  ) {}
 
   getRepoById(repoId: string) {
-    return from(
-      this.repositoryModel
-        .findById(repoId)
-    ).pipe(
+    return from(this.repositoryModel.findById(repoId)).pipe(
       map((repo) => {
         if (repo) return repo;
         else
@@ -28,10 +30,14 @@ export class FileService {
   }
 
   getFilesByRepoId(repoId: string) {
-    const repoPath = join(process.cwd(), 'repositories', repoId.toString());
+    const repoPath = join('repositories', repoId.toString());
     let filenames = [];
     this.readDir(repoPath, filenames);
-    return filenames;
+    let paths = [];
+    filenames.forEach((file: string) => {
+      paths.push(file.slice(repoPath.length + 1));
+    });
+    return paths;
   }
 
   readDir(path: string, filenames: any[]) {
@@ -45,6 +51,4 @@ export class FileService {
     });
     return filenames;
   }
-
-
 }
