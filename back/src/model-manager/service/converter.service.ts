@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ConvertModelDto } from '../models/dto/convertModel.dto';
+import { ManageModelDto } from '../models/dto/manageModel.dto';
 import * as nrc from 'node-run-cmd';
 import * as fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 import { ConfigService } from '@nestjs/config';
 import { join, basename, extname } from 'path';
 import { from, map } from 'rxjs';
+// const gltfPipeline = require('gltf-pipeline');
+// const fsExtra = require('fs-extra');
 
 @Injectable()
 export class ConverterService {
@@ -15,7 +18,7 @@ export class ConverterService {
     this.CONVERTER_PATH = this.configService.get('CONVERTER_PATH');
   }
 
-  convertModel(filePath: string, params: ConvertModelDto) {
+  convertModel(filePath: string, params: ManageModelDto) {
     const inputPath = this.inputPath(filePath);
     const outputPath = this.outputPath(filePath, params.format);
     return from(
@@ -35,6 +38,30 @@ export class ConverterService {
           ),
     ).pipe(
       map(() => {
+        return outputPath;
+      }),
+    );
+  }
+
+  compressModel(filePath: string, params: ManageModelDto) {
+    const inputPath = this.inputPath(filePath);
+    const outputPath = this.outputPath(filePath, params.format);
+    const gltfPipeline = require('gltf-pipeline');
+    const fsExtra = require('fs-extra');
+    const processGltf = gltfPipeline.processGltf;
+    const gltf = fsExtra.readJsonSync(inputPath);
+    const options = {
+      dracoOptions: {
+        compressionLevel: Number(params.compression),
+      },
+    };
+    gltf.nodes.forEach((node) => {
+      node.extras = { uuid: uuidv4() };
+    });
+    console.log(gltf.nodes);
+    return from(processGltf(gltf, options)).pipe(
+      map((results: any) => {
+        fsExtra.writeJsonSync(inputPath, results.gltf);
         return outputPath;
       }),
     );

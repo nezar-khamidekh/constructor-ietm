@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   StreamableFile,
   UploadedFile,
@@ -11,13 +12,13 @@ import { createReadStream } from 'fs';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { map } from 'rxjs';
-import { ConvertModelDto } from '../models/dto/convertModel.dto';
+import { ManageModelDto } from '../models/dto/manageModel.dto';
 import { ConverterService } from '../service/converter.service';
 
 @Controller('converter')
 export class ConverterController {
   constructor(private converterService: ConverterService) {}
-  @Post('convert')
+  @Post()
   @UseInterceptors(
     FileInterceptor('model', {
       storage: diskStorage({
@@ -35,15 +36,27 @@ export class ConverterController {
   )
   convertAndSendModel(
     @UploadedFile() file: Express.Multer.File,
-    @Body() convertModelDto: ConvertModelDto,
+    @Body() manageModelDto: ManageModelDto,
   ) {
-    return this.converterService
-      .convertModel(file.filename, convertModelDto)
-      .pipe(
-        map((path) => {
-          const model = createReadStream(join(process.cwd(), path));
-          return new StreamableFile(model);
-        }),
-      );
+    switch(extname(file.originalname)) {
+      case '.gltf':
+        return this.converterService
+          .compressModel(file.filename, manageModelDto)
+          .pipe(
+            map((path) => {
+              const model = createReadStream(join(process.cwd(), path));
+              return new StreamableFile(model);
+            }),
+          );
+      default:
+        return this.converterService
+          .convertModel(file.filename, manageModelDto)
+          .pipe(
+            map((path) => {
+              const model = createReadStream(join(process.cwd(), path));
+              return new StreamableFile(model);
+            }),
+          );
+    }
   }
 }
