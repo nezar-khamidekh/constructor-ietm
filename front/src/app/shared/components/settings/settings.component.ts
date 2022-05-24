@@ -141,7 +141,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     this.imageLoadFailed = false;
 
-    if (this.croppie && this.croppie.nativeElement.className === 'croppie-container') {
+    if (this.croppie && this.croppieObj) {
+      this.previewImage = '';
+      this.previewImageUrl = '';
       this.croppieObj.destroy();
     }
 

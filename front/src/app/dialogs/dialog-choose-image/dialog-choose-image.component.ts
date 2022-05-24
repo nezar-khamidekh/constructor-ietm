@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   ChangeDetectionStrategy,
   ViewChild,
   ElementRef,
@@ -19,7 +18,7 @@ import { CropType } from 'croppie';
   styleUrls: ['./dialog-choose-image.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogChooseImageComponent implements OnInit {
+export class DialogChooseImageComponent {
   croppieObj: any;
   fileReader = new FileReader();
   previewImage: any;
@@ -35,16 +34,15 @@ export class DialogChooseImageComponent implements OnInit {
     private renderer: Renderer2,
   ) {}
 
-  ngOnInit(): void {}
-
   onFileChange(event: any) {
     if (event.target.files[0].size > 5242880) {
-      //snackbar
       event.target.value = '';
       return;
     }
 
-    if (this.croppie && this.croppie.nativeElement.className === 'croppie-container') {
+    if (this.croppie && this.croppieObj) {
+      this.previewImage = '';
+      this.previewImageUrl = '';
       this.croppieObj.destroy();
     }
 

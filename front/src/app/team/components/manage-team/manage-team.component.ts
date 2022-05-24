@@ -122,7 +122,7 @@ export class ManageTeamComponent implements OnInit {
       dialogRef.afterClosed().subscribe((result: { imageUrl: string; image: any }) => {
         if (result) {
           this.teamAvatar = result.image;
-          this.teamFormGroup.patchValue({
+          this.teamFormGroup.get('team')?.patchValue({
             avatar: result.imageUrl,
           });
           this.cdr.detectChanges();
