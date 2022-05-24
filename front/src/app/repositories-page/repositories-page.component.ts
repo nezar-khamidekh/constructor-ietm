@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { RepositoryI } from '../shared/models/repository.interface';
 
 @Component({
@@ -6,11 +6,9 @@ import { RepositoryI } from '../shared/models/repository.interface';
   templateUrl: './repositories-page.component.html',
   styleUrls: ['./repositories-page.component.scss'],
 })
-export class RepositoriesPageComponent implements OnInit {
+export class RepositoriesPageComponent {
   @Input() repositories: RepositoryI[] = [];
   @Input() title = '';
 
   constructor() {}
-
-  ngOnInit(): void {}
 }

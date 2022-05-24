@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 import { UserI } from '../shared/models/user.interface';
@@ -9,12 +9,10 @@ import { UserI } from '../shared/models/user.interface';
   styleUrls: ['./repositories.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RepositoriesComponent implements OnInit {
+export class RepositoriesComponent {
   @Input() repositories: RepositoryI[] = [];
 
   constructor() {}
-
-  ngOnInit(): void {}
 
   getRepositoryTypeEnum() {
     return RepositoryType;

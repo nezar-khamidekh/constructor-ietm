@@ -11,7 +11,7 @@ export interface RepositoryI {
   author: UserI;
   team?: TeamI;
   title: string;
-  type: RepositoryType;
+  type: number;
   description: string;
   preview?: string;
   participants: ParticipantI[];
