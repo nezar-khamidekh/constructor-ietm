@@ -8,13 +8,14 @@ import {
 } from 'src/repository/models/schemas/repository.schema';
 import { from, map } from 'rxjs';
 import { join } from 'path';
+import { ObjectDto } from '../models/dto/checkIfExists.dto';
 
 @Injectable()
 export class FileService {
   constructor(
     @InjectModel(Repository.name)
     private repositoryModel: Model<RepositoryDocument>,
-  ) {}
+  ) { }
 
   getRepoById(repoId: string) {
     return from(this.repositoryModel.findById(repoId)).pipe(
@@ -50,5 +51,10 @@ export class FileService {
       }
     });
     return filenames;
+  }
+
+  checkIfExists(repoId: string, object: ObjectDto): boolean {
+    const fullpath: string = join(process.cwd(), 'repositories', repoId, object.path, object.fullname);
+    return fs.existsSync(fullpath) ? true : false;
   }
 }

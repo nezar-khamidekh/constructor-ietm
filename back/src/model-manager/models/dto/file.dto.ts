@@ -6,4 +6,7 @@ export class FileDto {
 
   @IsString()
   path: string;
+
+  @IsString()
+  name: string;
 }
