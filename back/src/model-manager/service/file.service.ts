@@ -9,6 +9,7 @@ import {
 import { from, map } from 'rxjs';
 import { join } from 'path';
 import { ObjectDto } from '../models/dto/checkIfExists.dto';
+import { DirectoryDto } from '../models/dto/directory.dto';
 
 @Injectable()
 export class FileService {
@@ -53,8 +54,41 @@ export class FileService {
     return filenames;
   }
 
-  checkIfExists(repoId: string, object: ObjectDto): boolean {
-    const fullpath: string = join(process.cwd(), 'repositories', repoId, object.path, object.fullname);
-    return fs.existsSync(fullpath) ? true : false;
+  checkIfExists(fullpath: string) {
+    return from(
+      fs.promises
+        .access(fullpath, fs.constants.F_OK)
+        .then(() => true)
+        .catch(() => false),
+    );
+  }
+
+  createDirectory(fullpath: string) {
+    return from(
+      fs.promises
+        .mkdir(fullpath, {
+          recursive: true,
+        })
+        .then(() => true)
+        .catch(() => false),
+    );
+  }
+
+  saveFile(inputPath: string, outputPath: string) {
+    return from(
+      fs.promises
+        .rename(inputPath, outputPath)
+        .then(() => true)
+        .catch(() => false),
+    );
+  }
+
+  deleteFileOrDirectory(fullpath: string) {
+    return from(
+      fs.promises
+        .rm(fullpath.toString(), { force: true, recursive: true })
+        .then(() => true)
+        .catch(() => false),
+    );
   }
 }

@@ -1,9 +1,9 @@
 import { IsString } from 'class-validator';
 
-export class ObjectDto {
+export class DirectoryDto {
   @IsString()
   path: string;
 
   @IsString()
-  fullname: string;
+  name: string;
 }
