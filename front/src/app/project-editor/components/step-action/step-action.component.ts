@@ -83,7 +83,7 @@ export class StepActionComponent implements OnInit {
   }
 
   hasStepId() {
-    return typeof this.step.id === 'number';
+    return typeof this.step.index === 'number';
   }
 
   startRecording() {

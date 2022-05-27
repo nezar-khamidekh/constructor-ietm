@@ -31,6 +31,6 @@ export class InstructionComponent implements OnInit {
   ngOnInit(): void {}
 
   hasInstructionId() {
-    return typeof this.instruction.id === 'number';
+    return typeof this.instruction.index === 'number';
   }
 }

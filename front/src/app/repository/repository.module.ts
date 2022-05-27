@@ -12,9 +12,10 @@ import { TreeStructureModule } from '../tree-structure/tree-structure.module';
 import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DialogConfirmActionModule } from '../dialogs/dialog-confirm-action/dialog-confirm-action.module';
+import { InstructionsComponent } from './components/instructions/instructions.component';
 
 @NgModule({
-  declarations: [RepositoryComponent, SummaryComponent, TreeComponent],
+  declarations: [RepositoryComponent, SummaryComponent, TreeComponent, InstructionsComponent],
   imports: [
     CommonModule,
     RepositoryRoutingModule,

@@ -4,12 +4,10 @@ import { InstructionsService } from 'src/app/scene/services/instructions.service
 import { SceneService } from 'src/app/scene/services/scene.service';
 import {
   ActionI,
-  ActionType,
   InstructionI,
   InstructionStep,
   StepI,
 } from 'src/app/shared/models/insruction.interface';
-import { CAMERA_POSITION_RATE } from 'src/app/shared/models/viewerConstants';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -68,7 +66,7 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   deleteInstruction(instruction: InstructionI) {
-    this.instructions = this.instructions.filter((el) => el.id !== instruction.id);
+    this.instructions = this.instructions.filter((el) => el.index !== instruction.index);
     this.instructionService.setInstructions(this.instructions);
   }
 
@@ -83,16 +81,16 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   saveInstruction(instruction: InstructionI) {
-    if (typeof instruction.id === 'number') {
-      const instructionInArray = this.instructions.find((el) => el.id === instruction.id);
+    if (typeof instruction.index === 'number') {
+      const instructionInArray = this.instructions.find((el) => el.index === instruction.index);
       if (instructionInArray) {
         instructionInArray.title = instruction.title;
         instructionInArray.description = instruction.description;
       }
     } else {
-      this.currentInstruction = { ...this.currentInstruction, id: this.instructions.length };
+      this.currentInstruction = { ...this.currentInstruction, index: this.instructions.length };
       this.instructions.push({
-        id: this.instructions.length,
+        index: this.instructions.length,
         title: instruction.title,
         description: instruction.description,
         steps: instruction.steps,
@@ -110,8 +108,8 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   saveStep(step: StepI) {
-    if (typeof step.id === 'number') {
-      const stepInArray = this.currentInstruction.steps.find((el) => el.id === step.id);
+    if (typeof step.index === 'number') {
+      const stepInArray = this.currentInstruction.steps.find((el) => el.index === step.index);
       if (stepInArray) {
         stepInArray.description = step.description;
         stepInArray.actions = [...step.actions];
@@ -119,10 +117,10 @@ export class EditorInstructionsComponent implements OnInit {
     } else {
       this.currentInstructionStep = {
         ...this.currentInstructionStep,
-        id: this.currentInstruction.steps.length,
+        index: this.currentInstruction.steps.length,
       };
       this.currentInstruction.steps.push({
-        id: this.currentInstruction.steps.length,
+        index: this.currentInstruction.steps.length,
         description: step.description,
         actions: step.actions,
       });
@@ -135,7 +133,9 @@ export class EditorInstructionsComponent implements OnInit {
   }
 
   deleteStep(step: StepI) {
-    this.currentInstruction.steps = this.currentInstruction.steps.filter((el) => el.id !== step.id);
+    this.currentInstruction.steps = this.currentInstruction.steps.filter(
+      (el) => el.index !== step.index,
+    );
   }
 
   backToSteps() {
@@ -151,7 +151,7 @@ export class EditorInstructionsComponent implements OnInit {
 
   deleteAction(action: ActionI) {
     this.currentInstructionStep.actions = this.currentInstructionStep.actions.filter(
-      (el) => el.id !== action.id,
+      (el) => el.index !== action.index,
     );
   }
 }

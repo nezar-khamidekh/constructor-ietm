@@ -1,0 +1,133 @@
+<div class="instructions-page">
+  <ng-container [ngSwitch]="viewMode">
+    <ng-template [ngSwitchCase]="getViewMode().Instructions">
+      <div class="instructions-page__content" *ngFor="let instruction of instructions">
+        <div class="instruction" (click)="onSelectInstruction(instruction)">
+          {{ instruction.title }}
+        </div>
+      </div>
+    </ng-template>
+    <ng-template [ngSwitchCase]="getViewMode().Steps">
+      <ng-container *ngIf="selectedInstruction">
+        <div class="instructions-page__content">
+          <div class="instructions-page__title">
+            <button class="instructions-page__btn" (click)="backToInstructions()">
+              <img class="instructions-page__img" src="assets/svg/arrowBack.svg" />
+            </button>
+            <p class="instruction-title">{{ selectedInstruction.title }}</p>
+          </div>
+          <div class="steps">
+            <table class="steps__table">
+              <thead>
+                <tr class="steps__row">
+                  <th class="steps__column steps__column-time">Шаг</th>
+                  <th class="steps__column steps__column-action">Описание</th>
+                  <th class="steps__column steps__column-action">Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="item" *ngFor="let step of selectedInstruction!.steps">
+                  <td class="steps__column steps__column-time">
+                    {{ step.index! + 1 }}
+                  </td>
+                  <td class="steps__column steps__column-time">
+                    {{ step.description }}
+                  </td>
+                  <td class="steps__column steps__column-action">
+                    <button
+                      mat-icon-button
+                      matTooltip="Вопроизвести шаг"
+                      (click)="sceneService.playAction(step.actions)"
+                    >
+                      <img class="steps__btn-icon" src="assets/svg/play.svg" alt="вопроизвести" />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- <div class="instruction" (click)="onSelectInstruction()">
+            {{ instruction.title }}
+          </div> -->
+        </div>
+      </ng-container>
+    </ng-template>
+  </ng-container>
+</div>
+
+<!-- <div class="steps">
+  <ng-container [ngSwitch]="instructionStep">
+    <ng-template [ngSwitchCase]="getInsructionStep().ListInstructions">
+      <div
+        class="steps__wrapper-instructions"
+        [ngClass]="{
+          'steps__wrapper-instructions_empty': !instructions.length
+        }"
+      >
+        <ng-container *ngIf="instructions.length; else emptyInstruction">
+          <table class="steps__table">
+            <thead>
+              <tr class="steps__row">
+                <th class="steps__column steps__column-time">id</th>
+                <th class="steps__column steps__column-time">
+                  Заголовок
+                </th>
+                <th class="steps__column steps__column-action">
+                  Действия
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="item" *ngFor="let instruction of instructions; let i = index">
+                <td class="steps__column steps__column-time">
+                  {{ instruction.id! + 1 }}
+                </td>
+                <td class="steps__column steps__column-time">
+                  {{ instruction.title }}
+                </td>
+                <td class="steps__column steps__column-action">
+                  <button
+                    mat-icon-button
+                    matTooltip="Редактировать инструкцию"
+                    (click)="editInstruction(instruction)"
+                  >
+                    <img
+                      class="steps__btn-icon"
+                      src="assets/svg/edit.svg"
+                      alt="редактировать"
+                    />
+                  </button>
+                  <button
+                    mat-icon-button
+                    matTooltip="Удалить инструкцию"
+                    (click)="deleteInstruction(instruction)"
+                  >
+                    <img
+                      class="steps__btn-icon"
+                      src="assets/svg/delete.svg"
+                      alt="удалить"
+                    />
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
+        <ng-template #emptyInstruction>
+          <p class="steps__notify">Список инструкций пуст</p>
+        </ng-template>
+      </div>
+    </ng-template>
+    <ng-template [ngSwitchCase]="getInsructionStep().Instruction">
+      <app-instruction
+        [instruction]="currentInstruction"
+        (saveInstruction)="saveInstruction($event)"
+        (backToInstructions)="backToInstructions()"
+        (addStep)="addStep()"
+        (editStep)="editStep($event)"
+        (deleteStep)="deleteStep($event)"
+      ></app-instruction>
+    </ng-template>
+  </ng-container>
+</div>
+ -->

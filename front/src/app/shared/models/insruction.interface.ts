@@ -16,20 +16,20 @@ export enum ActionType {
 }
 
 export interface InstructionI {
-  id?: number;
+  index?: number;
   title: string;
   description: string;
   steps: StepI[];
 }
 
 export interface StepI {
-  id?: number;
+  index?: number;
   description: string;
   actions: ActionI[];
 }
 
 export interface ActionI {
-  id: number;
+  index: number;
   type: number;
   value: any;
 }

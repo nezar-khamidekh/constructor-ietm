@@ -11,8 +11,8 @@ export class Action {
   @Prop()
   type: ActionType;
 
-  @Prop()
-  actions: ActionType;
+  @Prop({ type: Object, default: null })
+  value: any;
 }
 
 export const ActionSchema = SchemaFactory.createForClass(Action);

@@ -315,13 +315,18 @@ export class SceneService {
 
   playAction(actions: ActionI[]) {
     this.resetAction();
+    console.log(this.viewer);
     actions.forEach((action) => {
       switch (action.type) {
         case ActionType.Camera:
-          this.viewer.controls.target = action.value.target;
+          this.viewer.controls.target = new THREE.Vector3(
+            action.value.target.x,
+            action.value.target.y,
+            action.value.target.z,
+          );
           this.moveCameraWithAnimation(
-            this.viewer.camera.position.clone(),
-            action.value.position.clone(),
+            this.viewer.camera.position,
+            action.value.position,
             () => {},
           );
           break;
@@ -587,7 +592,7 @@ export class SceneService {
       existingAction.value = value;
     } else {
       this.actions.push({
-        id: this.actions.length,
+        index: this.actions.length,
         type: type,
         value: value,
       });

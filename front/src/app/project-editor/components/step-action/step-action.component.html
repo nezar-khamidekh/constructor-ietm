@@ -1,5 +1,5 @@
 <p class="editor-instructions__title">
-  {{ hasStepId() ? 'Шаг ' + (step.id! + 1) : 'Создание шага' }}
+  {{ hasStepId() ? 'Шаг ' + (step.index! + 1) : 'Создание шага' }}
 </p>
 <div class="editor-instructions__row-field">
   <p class="editor-instructions__subtitle">Описание шага</p>
@@ -75,7 +75,7 @@
       <tbody>
         <tr class="item" *ngFor="let action of step.actions; let i = index">
           <td class="editor-instructions__column editor-instructions__column_with-padding">
-            {{ action.id }}
+            {{ action.index }}
           </td>
           <td class="editor-instructions__column editor-instructions__column_with-padding">
             {{ getNameByType(action.type) }}
