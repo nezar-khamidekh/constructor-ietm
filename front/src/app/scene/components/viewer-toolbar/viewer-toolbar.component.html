@@ -44,29 +44,6 @@
         ></mat-slider>
       </div>
     </div>
-    <div class="toolbar__btn" matTooltip="Остановить анимацию">
-      <app-viewer-button
-        [iconPath]="'assets/svg/stop.svg'"
-        [buttonName]="'Остановить анимацию'"
-        (btnClicked)="stopAnimation()"
-      ></app-viewer-button>
-    </div>
-    <div class="toolbar__btn" [matTooltip]="isPlayingAnimation() ? 'Пауза' : 'Запустить анимацию'">
-      <ng-container *ngIf="isPlayingAnimation(); else playAnimationButton">
-        <app-viewer-button
-          [iconPath]="'assets/svg/pause.svg'"
-          [buttonName]="'Пауза'"
-          (btnClicked)="pauseAnimation()"
-        ></app-viewer-button>
-      </ng-container>
-      <ng-template #playAnimationButton>
-        <app-viewer-button
-          [iconPath]="'assets/svg/play.svg'"
-          [buttonName]="'Запустить анимацию'"
-          (btnClicked)="playAnimation()"
-        ></app-viewer-button>
-      </ng-template>
-    </div>
     <div class="toolbar__btn" matTooltip="Разрез модели">
       <app-viewer-button
         [isActive]="cutModelBtnIsActive()"

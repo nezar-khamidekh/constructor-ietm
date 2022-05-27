@@ -17,18 +17,6 @@
             <app-editor-instructions></app-editor-instructions>
           </div>
         </mat-tab>
-        <mat-tab class="toolbar__tab" label="Аннотации">
-          <div class="toolbar__content">
-            <app-editor-annotations
-              [annotations]="annotations"
-              [currentAnnotation]="currentAnnotation"
-              [step]="step"
-              (saveAnnotation)="onSaveAnnotation($event)"
-              (applyAnnotation)="onApplyAnnotation($event)"
-              (deleteAnnotation)="onDeleteAnnotation($event)"
-            ></app-editor-annotations>
-          </div>
-        </mat-tab>
         <mat-tab class="toolbar__tab" label="Дерево элементов">
           <div class="toolbar__content">
             <app-tree-structure

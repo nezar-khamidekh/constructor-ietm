@@ -13,7 +13,7 @@ export class InstructionsService {
     return this._instructions;
   }
 
-  setInstrctions(instructions: InstructionI[]) {
+  setInstructions(instructions: InstructionI[]) {
     this._instructions = instructions;
   }
 }

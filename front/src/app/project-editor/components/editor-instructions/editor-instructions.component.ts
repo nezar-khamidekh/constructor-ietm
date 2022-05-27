@@ -51,7 +51,7 @@ export class EditorInstructionsComponent implements OnInit {
         }),
     );
 
-    this.instructionService.setInstrctions(this.instructions);
+    this.instructionService.setInstructions(this.instructions);
   }
 
   getInsructionStep() {
@@ -69,7 +69,7 @@ export class EditorInstructionsComponent implements OnInit {
 
   deleteInstruction(instruction: InstructionI) {
     this.instructions = this.instructions.filter((el) => el.id !== instruction.id);
-    this.instructionService.setInstrctions(this.instructions);
+    this.instructionService.setInstructions(this.instructions);
   }
 
   backToInstructions() {

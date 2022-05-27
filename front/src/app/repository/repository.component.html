@@ -72,14 +72,14 @@
           participants: repository.participants
         "
       >
-        <button class="repository__action" mat-icon-button>
+        <!-- <button class="repository__action" mat-icon-button>
           <img
             class="repository__action-icon"
             src="assets/svg/edit_blue.svg"
             alt="Редактировать"
             (click)="onEdit()"
           />
-        </button>
+        </button> -->
         <button class="repository__action" mat-icon-button>
           <img
             class="repository__action-icon"
@@ -101,9 +101,9 @@
     >
     <a
       class="repository__tab"
-      [routerLink]="'/repository/' + repository._id + '/manuals'"
+      [routerLink]="'/repository/' + repository._id + '/instructions'"
       routerLinkActive="repository__tab_active"
-      >Руководства</a
+      >Инструкции</a
     >
     <a
       class="repository__tab"
@@ -112,12 +112,12 @@
       *ngIf="repository.modelTree"
       >Дерево</a
     >
-    <a
+    <!-- <a
       class="repository__tab"
       [routerLink]="'/repository/' + repository._id + '/files'"
       routerLinkActive="repository__tab_active"
       >Файлы</a
-    >
+    > -->
   </div>
   <div class="repository__content">
     <div class="loader" *ngIf="repository.models.length && !viewerInitialized">

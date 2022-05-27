@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { Settings } from '../scene/classes/Settings';
+import { InstructionI } from '../shared/models/insruction.interface';
 import { TreeStructureI } from '../shared/models/treeStructure.interface';
 import { RepositoryService } from '../shared/services/repository.service';
 
@@ -39,7 +40,11 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.newModelId = data.modelId;
   }
 
-  onSaveInteractiveData(data: { modelTree: TreeStructureI; settings: Settings }) {
+  onSaveInteractiveData(data: {
+    modelTree: TreeStructureI;
+    settings: Settings;
+    instructions: InstructionI[];
+  }) {
     this.subs.add(
       this.repositoryService
         .update({
@@ -50,6 +55,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
             background: data.settings.background,
             cameraPosition: data.settings.cameraPosition,
           },
+          instructions: data.instructions,
         })
         .subscribe((res) => {
           console.log(res);

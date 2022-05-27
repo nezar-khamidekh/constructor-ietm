@@ -166,6 +166,7 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onSaveInteractiveData() {
+    console.log(this.instructionsService.getIntructions());
     this.saveInteractiveData.emit({
       modelTree: this.tree,
       settings: this.settingsService.getSettings(),
