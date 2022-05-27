@@ -85,6 +85,15 @@
     line-height: 18px;
   }
 
+  &__actions {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+  }
+
+  &__action {
+  }
+
   &__author {
     display: flex;
     align-items: center;

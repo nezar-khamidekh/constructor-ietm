@@ -2,6 +2,8 @@
   <app-repositories-page
     [title]="'Избранное'"
     [repositories]="repositories"
+    [withFavorite]="true"
+    (removeFromFavorite)="onRemoveFromFavorite($event)"
   ></app-repositories-page>
 </ng-container>
 <ng-template #noRepositories>

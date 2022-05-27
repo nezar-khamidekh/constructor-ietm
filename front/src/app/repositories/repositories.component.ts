@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 import { UserI } from '../shared/models/user.interface';
@@ -11,6 +11,8 @@ import { UserI } from '../shared/models/user.interface';
 })
 export class RepositoriesComponent {
   @Input() repositories: RepositoryI[] = [];
+  @Input() withFavorite = false;
+  @Output() removeFromFavorite = new EventEmitter();
 
   constructor() {}
 
@@ -22,5 +24,11 @@ export class RepositoriesComponent {
     return `(${author.lastName[0].toUpperCase()}${author.lastName.slice(
       1,
     )} ${author.firstName[0].toUpperCase()}${author.firstName.slice(1)})`;
+  }
+
+  onRemoveRepository(e: any, repositoryId: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.removeFromFavorite.emit(repositoryId);
   }
 }
