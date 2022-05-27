@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { skip } from 'rxjs/operators';
+import { InstructionsService } from 'src/app/scene/services/instructions.service';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import {
   ActionI,
@@ -35,7 +36,10 @@ export class EditorInstructionsComponent implements OnInit {
     actions: [],
   };
 
-  constructor(private sceneService: SceneService) {}
+  constructor(
+    private sceneService: SceneService,
+    private instructionService: InstructionsService,
+  ) {}
 
   ngOnInit(): void {
     this.subs.add(
@@ -46,6 +50,8 @@ export class EditorInstructionsComponent implements OnInit {
           this.currentInstructionStep.actions = [...actions];
         }),
     );
+
+    this.instructionService.setInstrctions(this.instructions);
   }
 
   getInsructionStep() {
@@ -63,6 +69,7 @@ export class EditorInstructionsComponent implements OnInit {
 
   deleteInstruction(instruction: InstructionI) {
     this.instructions = this.instructions.filter((el) => el.id !== instruction.id);
+    this.instructionService.setInstrctions(this.instructions);
   }
 
   backToInstructions() {

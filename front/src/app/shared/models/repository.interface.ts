@@ -5,6 +5,7 @@ import { UserI } from './user.interface';
 import { TeamI } from './team.interface';
 import { TreeStructureI } from './treeStructure.interface';
 import { SceneSettingsI } from './sceneSettingsI.interface';
+import { InstructionI } from './insruction.interface';
 
 export interface RepositoryI {
   _id: string;
@@ -20,4 +21,5 @@ export interface RepositoryI {
   createdAt?: string;
   updatedAt?: string;
   sceneSettings: SceneSettingsI;
+  instructions: InstructionI[];
 }

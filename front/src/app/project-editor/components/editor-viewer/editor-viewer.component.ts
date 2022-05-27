@@ -9,6 +9,7 @@ import {
   Renderer2,
 } from '@angular/core';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { InstructionsService } from 'src/app/scene/services/instructions.service';
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { SettingsService } from 'src/app/scene/services/settings.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
@@ -66,6 +67,7 @@ export class EditorViewerComponent implements OnInit {
     private renderer: Renderer2,
     private loadingService: LoadingService,
     private settingsService: SettingsService,
+    private instructionsService: InstructionsService,
   ) {}
 
   ngOnInit(): void {
@@ -167,6 +169,7 @@ export class EditorViewerComponent implements OnInit {
     this.saveInteractiveData.emit({
       modelTree: this.tree,
       settings: this.settingsService.getSettings(),
+      instructions: this.instructionsService.getIntructions(),
     });
   }
 
