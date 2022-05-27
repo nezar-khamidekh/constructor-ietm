@@ -48,6 +48,11 @@
               }}</span>
             </div>
           </div>
+          <div class="repository__actions" *ngIf="withFavorite">
+            <button class="repository__action" (click)="onRemoveRepository($event, repository._id)">
+              <img src="assets/svg/favorite_fill.svg" alt="удалить из избранного" />
+            </button>
+          </div>
         </div>
         <div class="repository__author">
           <img
