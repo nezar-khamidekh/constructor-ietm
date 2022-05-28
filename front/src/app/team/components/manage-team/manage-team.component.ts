@@ -169,7 +169,13 @@ export class ManageTeamComponent implements OnInit {
           this.cdr.detectChanges();
         }),
       );
-    }
+    } else
+      this.snackBar.open('Проверьте корректность введенных данных', 'Ошибка', {
+        duration: 5000,
+        panelClass: 'errorSnack',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
   }
 
   goBack() {
@@ -200,7 +206,13 @@ export class ManageTeamComponent implements OnInit {
             }),
         );
       }
-    }
+    } else
+      this.snackBar.open('Проверьте корректность введенных данных', 'Ошибка', {
+        duration: 5000,
+        panelClass: 'errorSnack',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
   }
 
   onRemoveParticipant(userId: string) {

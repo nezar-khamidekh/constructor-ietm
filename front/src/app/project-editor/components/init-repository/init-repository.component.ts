@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { CreateRepositoryDto } from 'src/app/shared/models/createRepositoryDto.interface';
@@ -45,6 +46,7 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
     private repositoryService: RepositoryService,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -115,6 +117,12 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
           },
         ),
       );
-    }
+    } else
+      this.snackBar.open('Проверьте корректность введенных данных', 'Ошибка', {
+        duration: 5000,
+        panelClass: 'errorSnack',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
   }
 }

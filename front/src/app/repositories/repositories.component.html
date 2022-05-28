@@ -70,16 +70,14 @@
           >
         </div>
         <div class="repository__author" *ngIf="repository.team">
-          <a class="repository__author-link" [routerLink]="'/team/' + repository.team._id">
-            <img
-              class="repository__author-avatar"
-              appImageSanitized
-              [imagePath]="repository.team.avatar || ''"
-              [defaultImage]="'assets/svg/team.svg'"
-              [alt]="'аватар ' + repository.team.title"
-            />
-            <span class="repository__author-text">{{ repository.team.title }}</span>
-          </a>
+          <img
+            class="repository__author-avatar"
+            appImageSanitized
+            [imagePath]="repository.team.avatar || ''"
+            [defaultImage]="'assets/svg/team.svg'"
+            [alt]="'аватар ' + repository.team.title"
+          />
+          <span class="repository__author-text">{{ repository.team.title }}</span>
         </div>
         <div class="repository__description">
           {{ repository.description }}
