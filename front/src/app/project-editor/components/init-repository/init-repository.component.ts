@@ -51,11 +51,11 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
     this.userTeams = this.route.snapshot.data.teams;
     this.repositoryGroup = this.fb.group({
       author: new FormControl(this.dataStore.getUserValue()?._id, [Validators.required]),
-      team: new FormControl('', [Validators.required]),
+      team: new FormControl('', []),
       title: new FormControl('', [Validators.required]),
       type: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
-      preview: new FormControl('', [Validators.required]),
+      preview: new FormControl('', []),
       //participants,
     });
   }
@@ -92,27 +92,29 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
   }
 
   create(nextStep: number) {
-    this.loadingService.setIsLoading(true);
-    const newRepository: CreateRepositoryDto = {
-      ...this.repositoryGroup.value,
-    };
-    if (newRepository.author !== this.dataStore.getUserValue()?._id) {
-      newRepository.team = newRepository.author;
-      newRepository.author = this.dataStore.getUserValue()!._id;
-    }
-    if (!newRepository.team) delete newRepository.team;
-    if (!newRepository.preview) delete newRepository.preview;
+    if (this.repositoryGroup.valid) {
+      this.loadingService.setIsLoading(true);
+      const newRepository: CreateRepositoryDto = {
+        ...this.repositoryGroup.value,
+      };
+      if (newRepository.author !== this.dataStore.getUserValue()?._id) {
+        newRepository.team = newRepository.author;
+        newRepository.author = this.dataStore.getUserValue()!._id;
+      }
+      if (!newRepository.team) delete newRepository.team;
+      if (!newRepository.preview) delete newRepository.preview;
 
-    this.subs.add(
-      this.repositoryService.create(newRepository).subscribe(
-        (res) => {
-          this.changeStep.emit({ nextStep: nextStep, repositoryId: res._id });
-          this.loadingService.setIsLoading(false);
-        },
-        (err) => {
-          this.loadingService.setIsLoading(false);
-        },
-      ),
-    );
+      this.subs.add(
+        this.repositoryService.create(newRepository).subscribe(
+          (res) => {
+            this.changeStep.emit({ nextStep: nextStep, repositoryId: res._id });
+            this.loadingService.setIsLoading(false);
+          },
+          (err) => {
+            this.loadingService.setIsLoading(false);
+          },
+        ),
+      );
+    }
   }
 }
