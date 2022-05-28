@@ -54,7 +54,9 @@ export class TreeStructureComponent implements OnInit {
   ngOnInit(): void {
     this.dataSource.data = [this.tree];
     this.treeControl.expand(this.dataSource.data[0]);
+  }
 
+  ngAfterViewInit(): void {
     this.subs.add(
       this.treeStructure.getSelectedTreeNodeObjectId().subscribe((res) => {
         this.selectedTreeNodeObjectId = res;
