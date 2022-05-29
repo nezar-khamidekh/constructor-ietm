@@ -14,7 +14,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { CreateRepositoryDto } from 'src/app/shared/models/createRepositoryDto.interface';
-import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { RepositoryType } from 'src/app/shared/models/repositoryTypeEnum';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
@@ -58,7 +57,6 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
       type: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
       preview: new FormControl('', []),
-      //participants,
     });
   }
 
