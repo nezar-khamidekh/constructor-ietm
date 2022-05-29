@@ -315,7 +315,6 @@ export class SceneService {
 
   playAction(actions: ActionI[]) {
     this.resetAction();
-    console.log(this.viewer);
     actions.forEach((action) => {
       switch (action.type) {
         case ActionType.Camera:
