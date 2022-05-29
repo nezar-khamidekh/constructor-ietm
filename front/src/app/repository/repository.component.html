@@ -103,6 +103,7 @@
       class="repository__tab"
       [routerLink]="'/repository/' + repository._id + '/instructions'"
       routerLinkActive="repository__tab_active"
+      *ngIf="repository.instructions.length"
       >Инструкции</a
     >
     <a

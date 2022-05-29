@@ -18,6 +18,7 @@ import { UserUpdateI } from '../../models/userUpdate.interface';
 import { DataStoreService } from '../../services/data-store.service';
 import { UserService } from '../../services/user.service';
 import * as Croppie from 'croppie';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface DIALOG_DATA {
   user: UserI;
@@ -51,6 +52,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef,
     private renderer: Renderer2,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -121,7 +123,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
           },
         ),
       );
-    }
+    } else
+      this.snackBar.open('Проверьте корректность введенных данных', 'Ошибка', {
+        duration: 5000,
+        panelClass: 'errorSnack',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
   }
 
   updateImageResult() {

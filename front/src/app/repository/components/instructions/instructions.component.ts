@@ -28,7 +28,7 @@ export class InstructionsComponent implements OnInit {
   ngOnInit(): void {
     this.instructions = this.route.snapshot.parent?.data.repository.instructions;
 
-    if (!this.instructions) this.router.navigate(['..'], { relativeTo: this.route });
+    if (!this.instructions.length) this.router.navigate(['..'], { relativeTo: this.route });
   }
 
   getViewMode() {
