@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
@@ -10,7 +18,7 @@ import { FileService } from '../service/file.service';
 
 @Controller('files')
 export class FileController {
-  constructor(private fileService: FileService) { }
+  constructor(private fileService: FileService) {}
 
   @Get('repository/:repoId')
   getRepoById(@Param('repoId') repoId: string) {
@@ -26,48 +34,71 @@ export class FileController {
     return this.fileService.getFilesByRepoId(repoId);
   }
 
-  @Post('check/:repoId')
-  checkIfExists(@Param('repoId') repoId: string, @Body() objectDto: ObjectDto) {
-    const fullpath: string = join(process.cwd(), 'repositories', repoId, objectDto.path, objectDto.fullname);
+  @Post('check')
+  checkIfExists(@Body() objectDto: ObjectDto) {
+    const fullpath: string = join(
+      process.cwd(),
+      'repositories',
+      objectDto.repoId,
+      objectDto.path,
+      objectDto.fullname,
+    );
     return this.fileService.checkIfExists(fullpath);
   }
 
-  @Post('delete/:repoId')
-  deleteFileORDirectory(@Param('repoId') repoId: string, @Body() objectDto: ObjectDto) {
-    const fullpath: string = join(process.cwd(), 'repositories', repoId, objectDto.path, objectDto.fullname);
+  @Post('delete')
+  deleteFileORDirectory(@Body() objectDto: ObjectDto) {
+    const fullpath: string = join(
+      process.cwd(),
+      'repositories',
+      objectDto.repoId,
+      objectDto.path,
+      objectDto.fullname,
+    );
     console.log(fullpath);
     return this.fileService.deleteFileOrDirectory(fullpath);
   }
 
-  @Post('newdir/:repoId')
-  createDirectory(@Param('repoId') repoId: string, @Body() dirDto: DirectoryDto) {
-    const fullpath: string = join(process.cwd(), 'repositories', repoId, dirDto.path, dirDto.name);
+  @Post('newdir')
+  createDirectory(@Body() dirDto: DirectoryDto) {
+    const fullpath: string = join(
+      process.cwd(),
+      'repositories',
+      dirDto.repoId,
+      dirDto.path,
+      dirDto.name,
+    );
     return this.fileService.createDirectory(fullpath);
   }
 
-  @Post('upload/:repoId')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './buffer/',
-      filename: (req, file, cb) => {
-        const randomName =
-          Array(8)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('') + extname(file.originalname);
-        return cb(null, randomName);
-      },
+  @Post('upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './buffer/',
+        filename: (req, file, cb) => {
+          const randomName =
+            Array(8)
+              .fill(null)
+              .map(() => Math.round(Math.random() * 16).toString(16))
+              .join('') + extname(file.originalname);
+          return cb(null, randomName);
+        },
+      }),
     }),
-  }))
+  )
   uploadFile(
-    @Param('repoId') repoId: string,
     @UploadedFile() file: Express.Multer.File,
-    @Body() fileDto: FileDto
+    @Body() fileDto: FileDto,
   ) {
     const oldpath: string = join(process.cwd(), 'buffer', file.filename);
-    const fullpath: string = join(process.cwd(), 'repositories', repoId, fileDto.path, fileDto.fullname);
+    const fullpath: string = join(
+      process.cwd(),
+      'repositories',
+      fileDto.repoId,
+      fileDto.path,
+      fileDto.fullname,
+    );
     return this.fileService.saveFile(oldpath, fullpath);
   }
-
-
 }
