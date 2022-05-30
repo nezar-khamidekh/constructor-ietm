@@ -64,6 +64,29 @@ export class ConverterService {
     );
   }
 
+  transformGLB2GLTF(filePath: string, params: ManageModelDto) {
+    const inputPath = this.inputPath(filePath);
+    const outputPath = this.outputPath(filePath, params.targetFormat);
+    const gltfPipeline = require('gltf-pipeline');
+    const fsExtra = require('fs-extra');
+    const glbToGltf = gltfPipeline.glbToGltf;
+    const glb = fsExtra.readFileSync(inputPath);
+    const options = {
+      dracoOptions: {
+        compressionLevel: Number(params.compression),
+      },
+    };
+    return from(glbToGltf(glb, options)).pipe(
+      map((results: any) => {
+        results.gltf.nodes.forEach((node) => {
+          node.extras = { uuid: uuidv4() };
+        });
+        fsExtra.writeJsonSync(outputPath, results.gltf);
+        return outputPath;
+      }),
+    );
+  }
+
   inputPath(filePath: string) {
     return join(this.DEFAULT_PATH, filePath);
   }

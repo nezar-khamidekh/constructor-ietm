@@ -33,14 +33,23 @@ export class ConverterController {
       }),
     }),
   )
-  convertAndSendModel(
+  processAndSendModel(
     @UploadedFile() file: Express.Multer.File,
     @Body() manageModelDto: ManageModelDto,
   ): Observable<StreamableFile> {
-    switch (extname(file.originalname)) {
+    switch (extname(file.originalname).toLowerCase()) {
       case '.gltf':
         return this.converterService
           .compressModel(file.filename, manageModelDto)
+          .pipe(
+            map((path) => {
+              const model = createReadStream(join(process.cwd(), path));
+              return new StreamableFile(model);
+            }),
+          );
+      case '.glb':
+        return this.converterService
+          .transformGLB2GLTF(file.filename, manageModelDto)
           .pipe(
             map((path) => {
               const model = createReadStream(join(process.cwd(), path));

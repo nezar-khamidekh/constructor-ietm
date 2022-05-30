@@ -23,7 +23,8 @@ export class ModelService {
     return from(
       nrc.run(
         [
-          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${10 - compression
+          `gltf-converter ${inputPath} ${outputPath} --draco --speed=${
+            10 - compression
           }`,
         ],
         {
