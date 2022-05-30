@@ -1,6 +1,5 @@
 import {
   Component,
-  OnInit,
   ChangeDetectionStrategy,
   Input,
   Output,
@@ -29,7 +28,7 @@ enum MODEL_TYPE {
   styleUrls: ['./upload-model.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UploadModelComponent implements OnInit, OnDestroy {
+export class UploadModelComponent implements OnDestroy {
   private subs = new SubSink();
 
   @Input() step: number;
@@ -41,8 +40,6 @@ export class UploadModelComponent implements OnInit, OnDestroy {
   @ViewChild('fileDropRef', { static: false }) fileDropEl: ElementRef;
 
   constructor(private fileModelService: FileModelService, private loadingService: LoadingService) {}
-
-  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
