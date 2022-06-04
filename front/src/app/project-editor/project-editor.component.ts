@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SubSink } from 'subsink';
 import { Settings } from '../scene/classes/Settings';
 import { InstructionI } from '../shared/models/insruction.interface';
+import { ParticipantI, ParticipantRole } from '../shared/models/participant.interface';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { TreeStructureI } from '../shared/models/treeStructure.interface';
 import { DataStoreService } from '../shared/services/data-store.service';
@@ -36,11 +37,15 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
       this.repositoryToEdit = this.route.snapshot.data.repository;
 
       const roles: number[] = this.route.snapshot.data.roles;
-      const userRole = this.repositoryToEdit!.participants?.find(
+      const userRole = this.getRepositoryParticipants().find(
         (participant) => participant.user._id === this.dataStore.getUserValue()!._id,
       )?.role;
 
-      if (typeof userRole === 'undefined' || !roles.includes(userRole)) {
+      if (
+        typeof userRole === 'undefined' ||
+        !roles.includes(userRole) ||
+        userRole !== ParticipantRole.Author
+      ) {
         this.router.navigate(['/main']);
         this.snackBar.open('Недостаточно прав', '', {
           duration: 5000,
@@ -57,13 +62,21 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  getRepositoryParticipants(): ParticipantI[] {
+    const participants: ParticipantI[] = [];
+    participants.push(...this.repositoryToEdit!.participants);
+    if (this.repositoryToEdit!.team && this.repositoryToEdit!.team.participants)
+      participants.push(...this.repositoryToEdit!.team?.participants);
+    return participants;
+  }
+
   changeStep(step: number) {
     this.step = step;
   }
 
   onRepositoryCreated(data: { nextStep: number; repositoryId: string }) {
     if (this.repositoryToEdit) {
-      this.changeStep(3);
+      if (this.repositoryToEdit.models.length) this.changeStep(3);
     } else {
       this.changeStep(data.nextStep);
       this.repositoryId = data.repositoryId;

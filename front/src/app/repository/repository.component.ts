@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SubSink } from 'subsink';
 import { DialogConfirmActionComponent } from '../dialogs/dialog-confirm-action/dialog-confirm-action.component';
-import { ParticipantRole } from '../shared/models/participant.interface';
+import { ParticipantI, ParticipantRole } from '../shared/models/participant.interface';
 import { RepositoryI } from '../shared/models/repository.interface';
 import { RepositoryType } from '../shared/models/repositoryTypeEnum';
 import { UserI } from '../shared/models/user.interface';
@@ -60,6 +60,14 @@ export class RepositoryComponent implements OnInit {
     return `(${author.lastName[0].toUpperCase()}${author.lastName.slice(
       1,
     )} ${author.firstName[0].toUpperCase()}${author.firstName.slice(1)})`;
+  }
+
+  getRepositoryParticipants(): ParticipantI[] {
+    const participants: ParticipantI[] = [];
+    participants.push(...this.repository.participants);
+    if (this.repository.team && this.repository.team.participants)
+      participants.push(...this.repository.team?.participants);
+    return participants;
   }
 
   onToggleFavorite() {

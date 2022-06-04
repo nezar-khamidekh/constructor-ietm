@@ -69,7 +69,7 @@
         *appHasRole="
           [getParticipantRoleEnum().Author, getParticipantRoleEnum().Editor];
           userId: user._id;
-          participants: repository.participants
+          participants: getRepositoryParticipants()
         "
       >
         <button class="repository__action" mat-icon-button>
