@@ -30,6 +30,7 @@
         [step]="3"
         [repositoryId]="repositoryToEdit ? repositoryToEdit._id : repositoryId"
         [modelId]="repositoryToEdit ? repositoryToEdit.models[0]._id : newModelId"
+        [repositoryToEdit]="repositoryToEdit"
         (saveInteractiveData)="onSaveInteractiveData($event)"
       ></app-editor-viewer>
     </ng-container>

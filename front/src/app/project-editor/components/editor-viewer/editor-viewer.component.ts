@@ -13,6 +13,7 @@ import { InstructionsService } from 'src/app/scene/services/instructions.service
 import { SceneService } from 'src/app/scene/services/scene.service';
 import { SettingsService } from 'src/app/scene/services/settings.service';
 import { AnnotationI } from 'src/app/shared/models/annotation.interface';
+import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { TreeStructureI } from 'src/app/shared/models/treeStructure.interface';
 import { LoadingService } from 'src/app/shared/services/loading.service';
 import { TreeStructureService } from 'src/app/tree-structure/services/tree-structure.service';
@@ -45,6 +46,7 @@ export class EditorViewerComponent implements OnInit {
   @Input() step: number;
   @Input() repositoryId: string;
   @Input() modelId: string;
+  @Input() repositoryToEdit: RepositoryI | null = null;
   @Output() saveInteractiveData = new EventEmitter();
 
   tree: TreeStructureI;
@@ -161,12 +163,12 @@ export class EditorViewerComponent implements OnInit {
   }
 
   onViewerIsReady() {
-    this.tree = this.treeStructureService.generate(this.sceneService.getModel());
+    if (this.repositoryToEdit?.modelTree) this.tree = this.repositoryToEdit.modelTree;
+    else this.tree = this.treeStructureService.generate(this.sceneService.getModel());
     this.loadingService.setIsLoading(false);
   }
 
   onSaveInteractiveData() {
-    console.log(this.instructionsService.getIntructions());
     this.saveInteractiveData.emit({
       modelTree: this.tree,
       settings: this.settingsService.getSettings(),

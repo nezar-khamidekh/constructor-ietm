@@ -96,7 +96,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.subs.add(
       this.repositoryService
         .update({
-          _id: this.repositoryId,
+          _id: this.repositoryToEdit ? this.repositoryToEdit._id : this.repositoryId,
           modelTree: data.modelTree,
           sceneSettings: {
             grid: data.settings.grid,
