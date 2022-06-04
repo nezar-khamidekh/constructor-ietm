@@ -14,7 +14,12 @@
       <button mat-icon-button matTooltip="Продолжить">
         <img class="editor-manual__btn-icon" src="assets/svg/playAnimation.svg" alt="продолжить" />
       </button>
-      <button mat-icon-button matTooltip="Пауза">
+      <button
+        mat-icon-button
+        matTooltip="Пауза"
+        matTooltipPosition="above"
+        matTooltipClass="tooltip"
+      >
         <img class="editor-manual__btn-icon" src="assets/svg/pauseAnimation.svg" alt="пауза" />
       </button>
     </div>
@@ -53,10 +58,20 @@
           <td class="editor-manual__column editor-manual__column-time">0:00</td>
           <td class="editor-manual__column editor-manual__column-time">0:05</td>
           <td class="editor-manual__column editor-manual__column-action">
-            <button mat-icon-button matTooltip="Редактировать руководство">
+            <button
+              mat-icon-button
+              matTooltip="Редактировать руководство"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+            >
               <img class="editor-manual__btn-icon" src="assets/svg/edit.svg" alt="редактировать" />
             </button>
-            <button mat-icon-button matTooltip="Удалить руководство">
+            <button
+              mat-icon-button
+              matTooltip="Удалить руководство"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+            >
               <img class="editor-manual__btn-icon" src="assets/svg/delete.svg" alt="удалить" />
             </button>
           </td>

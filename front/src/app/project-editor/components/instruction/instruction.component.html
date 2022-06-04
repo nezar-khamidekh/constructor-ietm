@@ -65,14 +65,26 @@
             {{ step.description }}
           </td>
           <td class="editor-instructions__column editor-instructions__column-action">
-            <button mat-icon-button matTooltip="Редактировать шаг" (click)="editStep.emit(step)">
+            <button
+              mat-icon-button
+              matTooltip="Редактировать шаг"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+              (click)="editStep.emit(step)"
+            >
               <img
                 class="editor-instructions__btn-icon"
                 src="assets/svg/edit.svg"
                 alt="редактировать"
               />
             </button>
-            <button mat-icon-button matTooltip="Удалить шаг" (click)="deleteStep.emit(step)">
+            <button
+              mat-icon-button
+              matTooltip="Удалить шаг"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+              (click)="deleteStep.emit(step)"
+            >
               <img
                 class="editor-instructions__btn-icon"
                 src="assets/svg/delete.svg"
@@ -82,6 +94,8 @@
             <button
               mat-icon-button
               matTooltip="Вопроизвести шаг"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
               (click)="sceneService.playAction(step.actions)"
             >
               <img

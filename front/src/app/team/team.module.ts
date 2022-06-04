@@ -20,6 +20,7 @@ import { RepositoriesModule } from '../repositories/repositories.module';
 import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
 import { IsTeamAuthorPipe } from './pipes/is-team-author.pipe';
 import { DialogConfirmActionModule } from '../dialogs/dialog-confirm-action/dialog-confirm-action.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { DialogConfirmActionModule } from '../dialogs/dialog-confirm-action/dial
     RepositoriesModule,
     HasRoleModule,
     DialogConfirmActionModule,
+    MatTooltipModule,
   ],
 })
 export class TeamModule {}

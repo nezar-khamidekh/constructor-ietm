@@ -16,10 +16,7 @@ export class HasRoleDirective implements OnInit {
       (participant) => participant.user._id === this.userId,
     )?.role;
 
-    if (
-      (typeof userRole !== 'undefined' && this.roles.includes(userRole)) ||
-      userRole === ParticipantRole.Author
-    )
+    if (typeof userRole !== 'undefined' && this.roles.includes(userRole))
       this.viewContainer.createEmbeddedView(this.templateRef);
     else this.viewContainer.clear();
   }

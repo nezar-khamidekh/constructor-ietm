@@ -21,6 +21,8 @@
               mat-icon-button
               (click)="toggleObjectVisibility(node)"
               [matTooltip]="objectIsHidden(node.objectId, hiddenObjects) ? 'Показать' : 'Скрыть'"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
             >
               <img
                 [src]="
@@ -37,6 +39,8 @@
             mat-icon-button
             (click)="fitToObject(node)"
             matTooltip="Приблизить"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
           >
             <img src="assets/svg/zoom.svg" alt="Приблизить" />
           </button>
@@ -44,6 +48,8 @@
             class="tree__button"
             mat-icon-button
             matTooltip="Переименовать"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
             (click)="renameElement(node)"
             *ngIf="viewMode"
           >
@@ -63,6 +69,8 @@
             matTreeNodeToggle
             [attr.aria-label]="'Toggle ' + node.name"
             [matTooltip]="treeControl.isExpanded(node) ? 'Свернуть' : 'Развернуть'"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
           >
             <img
               [src]="
@@ -86,6 +94,8 @@
               mat-icon-button
               (click)="toggleObjectVisibility(node)"
               [matTooltip]="objectIsHidden(node.objectId, hiddenObjects) ? 'Показать' : 'Скрыть'"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
             >
               <img
                 [src]="
@@ -102,6 +112,8 @@
             mat-icon-button
             (click)="fitToObject(node)"
             matTooltip="Приблизить"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
           >
             <img src="assets/svg/zoom.svg" alt="Приблизить" />
           </button>
@@ -109,6 +121,8 @@
             class="tree__button"
             mat-icon-button
             matTooltip="Переименовать"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
             (click)="renameElement(node)"
             *ngIf="viewMode"
           >

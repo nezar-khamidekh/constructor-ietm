@@ -1,13 +1,23 @@
 <div class="toolbar">
   <div class="toolbar__container">
-    <div class="toolbar__btn" matTooltip="Сброс камеры">
+    <div
+      class="toolbar__btn"
+      matTooltip="Сброс камеры"
+      matTooltipPosition="above"
+      matTooltipClass="tooltip"
+    >
       <app-viewer-button
         [iconPath]="'assets/svg/home.svg'"
         [buttonName]="'Сброс камеры'"
         (btnClicked)="resetCamera()"
       ></app-viewer-button>
     </div>
-    <div class="toolbar__btn" matTooltip="Облет модели">
+    <div
+      class="toolbar__btn"
+      matTooltip="Облет модели"
+      matTooltipPosition="above"
+      matTooltipClass="tooltip"
+    >
       <app-viewer-button
         [isActive]="rotateAnimationBtnIsActive()"
         [iconPath]="'assets/svg/rotationCamera.svg'"
@@ -26,7 +36,12 @@
         ></mat-slider>
       </div>
     </div>
-    <div class="toolbar__btn" matTooltip="Разнесение модели">
+    <div
+      class="toolbar__btn"
+      matTooltip="Разнесение модели"
+      matTooltipPosition="above"
+      matTooltipClass="tooltip"
+    >
       <app-viewer-button
         [isActive]="explodeBtnIsActive()"
         [iconPath]="'assets/svg/explode.svg'"
@@ -44,7 +59,12 @@
         ></mat-slider>
       </div>
     </div>
-    <div class="toolbar__btn" matTooltip="Разрез модели">
+    <div
+      class="toolbar__btn"
+      matTooltip="Разрез модели"
+      matTooltipPosition="above"
+      matTooltipClass="tooltip"
+    >
       <app-viewer-button
         [isActive]="cutModelBtnIsActive()"
         [iconPath]="'assets/svg/cutModel.svg'"
@@ -129,6 +149,8 @@
     <div
       class="toolbar__btn"
       [matTooltip]="viewMode ? 'Скрыть аннотации' : 'Отобразить аннотации'"
+      matTooltipPosition="above"
+      matTooltipClass="tooltip"
       *ngIf="router.url.startsWith('/repository')"
     >
       <app-viewer-button

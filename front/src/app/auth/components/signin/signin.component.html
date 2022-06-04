@@ -30,6 +30,8 @@
         (click)="hidePass = !hidePass"
         [attr.aria-label]="'Hide password'"
         [matTooltip]="hidePass ? 'Показать пароль' : 'Скрыть пароль'"
+        matTooltipPosition="above"
+        matTooltipClass="tooltip"
       >
         <img
           class="user-form__icon"

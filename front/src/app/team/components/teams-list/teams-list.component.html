@@ -25,6 +25,14 @@
             mat-flat-button
             color="warn"
             (click)="onLeaveTeam($event, team)"
+            *appHasRole="
+              [getParticipantRoleEnum().Editor, getParticipantRoleEnum().Reader];
+              userId: dataStore.getUserValue()!._id;
+              participants: team.participants!
+            "
+            matTooltip="Выйти из команды"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
           >
             <img class="team__action-img" src="assets/svg/leave.svg" alt="выйти из команды" />
           </button>

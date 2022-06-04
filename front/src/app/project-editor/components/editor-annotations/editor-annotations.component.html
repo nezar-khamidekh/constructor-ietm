@@ -15,6 +15,8 @@
             class="new-annotation-panel__btn"
             (click)="applyAnnotation.emit(true)"
             matTooltip="Прикрепить аннотацию"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
           >
             <img
               class="new-annotation-panel__btn-icon"
@@ -32,6 +34,8 @@
               onSaveAnnotation(editedAnnotation, currentAnnotation.text, currentAnnotation.title)
             "
             matTooltip="Сохранить аннотацию"
+            matTooltipPosition="above"
+            matTooltipClass="tooltip"
           >
             <img class="new-annotation-panel__btn-icon" src="assets/svg/save.svg" alt="сохранить" />
           </button>
@@ -69,6 +73,8 @@
                 mat-icon-button
                 class="annotations-editor__btn"
                 matTooltip="Редактировать аннотацию"
+                matTooltipPosition="above"
+                matTooltipClass="tooltip"
                 (click)="editAnnotation($event, annotation)"
               >
                 <img
@@ -81,6 +87,8 @@
                 mat-icon-button
                 class="annotations-editor__btn"
                 matTooltip="Удалить аннотацию"
+                matTooltipPosition="above"
+                matTooltipClass="tooltip"
                 (click)="deleteAnnotation.emit(annotation)"
               >
                 <img

@@ -10,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { DialogConfirmActionComponent } from 'src/app/dialogs/dialog-confirm-action/dialog-confirm-action.component';
+import { ParticipantRole } from 'src/app/shared/models/participant.interface';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
 import { SubSink } from 'subsink';
@@ -41,6 +42,10 @@ export class TeamsListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+
+  getParticipantRoleEnum() {
+    return ParticipantRole;
   }
 
   onNavigateToTeam(teamId: string) {

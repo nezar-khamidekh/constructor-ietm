@@ -13,6 +13,7 @@ import { HasRoleModule } from '../shared/directives/has-role/has-role.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DialogConfirmActionModule } from '../dialogs/dialog-confirm-action/dialog-confirm-action.module';
 import { InstructionsComponent } from './components/instructions/instructions.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [RepositoryComponent, SummaryComponent, TreeComponent, InstructionsComponent],
@@ -26,6 +27,7 @@ import { InstructionsComponent } from './components/instructions/instructions.co
     DialogConfirmActionModule,
     HasRoleModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
 })
 export class RepositoryModule {}

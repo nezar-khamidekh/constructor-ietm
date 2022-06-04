@@ -10,6 +10,13 @@
               : 'assets/svg/privateRepository.svg'
           "
           [alt]="repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'"
+          [matTooltip]="
+            repository.type === getRepositoryTypeEnum().Public
+              ? 'Публичный репозиторий'
+              : 'Приватный репозиторий'
+          "
+          matTooltipPosition="above"
+          matTooltipClass="tooltip"
         />
         <h2 class="repository__title">{{ repository.title }}</h2>
       </div>
@@ -43,11 +50,21 @@
         </div>
       </div>
       <div class="repository__dates">
-        <div class="repository__date">
+        <div
+          class="repository__date"
+          matTooltip="Дата изменения"
+          matTooltipPosition="above"
+          matTooltipClass="tooltip"
+        >
           <img class="repository__date-img" src="assets/svg/dateEdit.svg" alt="дата изменения" />
           <span class="repository__date-text">{{ repository.updatedAt | date: 'dd.MM.yyyy' }}</span>
         </div>
-        <div class="repository__date">
+        <div
+          class="repository__date"
+          matTooltip="Дата создания"
+          matTooltipPosition="above"
+          matTooltipClass="tooltip"
+        >
           <img class="repository__date-img" src="assets/svg/dateCreate.svg" alt="дата создания" />
           <span class="repository__date-text">{{ repository.createdAt | date: 'dd.MM.yyyy' }}</span>
         </div>
@@ -72,7 +89,13 @@
           participants: getRepositoryParticipants()
         "
       >
-        <button class="repository__action" mat-icon-button>
+        <button
+          class="repository__action"
+          mat-icon-button
+          matTooltip="Редактировать"
+          matTooltipPosition="above"
+          matTooltipClass="tooltip"
+        >
           <img
             class="repository__action-icon"
             src="assets/svg/edit_blue.svg"
@@ -80,7 +103,13 @@
             (click)="onEdit()"
           />
         </button>
-        <button class="repository__action" mat-icon-button>
+        <button
+          class="repository__action"
+          mat-icon-button
+          matTooltip="Удалить"
+          matTooltipPosition="above"
+          matTooltipClass="tooltip"
+        >
           <img
             class="repository__action-icon"
             src="assets/svg/delete.svg"

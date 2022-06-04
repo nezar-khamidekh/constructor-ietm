@@ -30,6 +30,9 @@
                   userId: user._id;
                   participants: team.participants!
                 "
+                matTooltip="Редактировать"
+                matTooltipPosition="above"
+                matTooltipClass="tooltip"
               >
                 <img
                   class="team-card__action-img"
@@ -46,6 +49,9 @@
                   userId: user._id;
                   participants: team.participants!
                 "
+                matTooltip="Удалить"
+                matTooltipPosition="above"
+                matTooltipClass="tooltip"
                 (click)="removeTeam()"
               >
                 <img
@@ -58,6 +64,9 @@
                 class="team-card__action"
                 mat-flat-button
                 color="warn"
+                matTooltip="Выйти из команды"
+                matTooltipPosition="above"
+                matTooltipClass="tooltip"
                 *appHasRole="
                   [getParticipantRoleEnum().Editor, getParticipantRoleEnum().Reader];
                   userId: user._id;

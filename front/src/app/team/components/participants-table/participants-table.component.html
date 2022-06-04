@@ -43,6 +43,9 @@
           mat-icon-button
           color="warn"
           [disabled]="!userIsAuthor || isAuthorRole(participant.role) || viewMode"
+          matTooltip="Удалить участника"
+          matTooltipPosition="above"
+          matTooltipClass="tooltip"
           (click)="removeParticipant.emit(participant.user._id)"
         >
           <img src="assets/svg/delete.svg" alt="удалить" />

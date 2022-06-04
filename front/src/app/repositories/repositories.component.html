@@ -23,11 +23,23 @@
                   : 'assets/svg/privateRepository.svg'
               "
               [alt]="repository.type === getRepositoryTypeEnum().Public ? 'Публичный' : 'Приватный'"
+              [matTooltip]="
+                repository.type === getRepositoryTypeEnum().Public
+                  ? 'Публичный репозиторий'
+                  : 'Приватный репозиторий'
+              "
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
             />
             <h2 class="repository__title">{{ repository.title }}</h2>
           </div>
           <div class="repository__dates">
-            <div class="repository__date">
+            <div
+              class="repository__date"
+              matTooltip="Дата изменения"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+            >
               <img
                 class="repository__date-img"
                 src="assets/svg/dateEdit.svg"
@@ -37,7 +49,12 @@
                 repository.updatedAt | date: 'dd.MM.yyyy'
               }}</span>
             </div>
-            <div class="repository__date">
+            <div
+              class="repository__date"
+              matTooltip="Дата создания"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+            >
               <img
                 class="repository__date-img"
                 src="assets/svg/dateCreate.svg"
@@ -49,7 +66,13 @@
             </div>
           </div>
           <div class="repository__actions" *ngIf="withFavorite">
-            <button class="repository__action" (click)="onRemoveRepository($event, repository._id)">
+            <button
+              class="repository__action"
+              (click)="onRemoveRepository($event, repository._id)"
+              matTooltip="Удалить из избранного"
+              matTooltipPosition="above"
+              matTooltipClass="tooltip"
+            >
               <img src="assets/svg/favorite_fill.svg" alt="удалить из избранного" />
             </button>
           </div>
