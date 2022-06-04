@@ -101,6 +101,10 @@
         </div>
       </div>
     </div>
-    <app-step-buttons [step]="step" (buttonClick)="create($event)"></app-step-buttons>
+    <app-step-buttons
+      [step]="step"
+      [nextBtnText]="editMode ? 'Сохранить' : 'Далее'"
+      (buttonClick)="editMode ? update() : create($event)"
+    ></app-step-buttons>
   </form>
 </div>

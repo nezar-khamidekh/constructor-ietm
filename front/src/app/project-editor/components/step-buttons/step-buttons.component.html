@@ -4,7 +4,7 @@
     mat-raised-button
     color="warn"
     type="button"
-    (click)="navigateToMain()"
+    (click)="navigateBack()"
     *ngIf="step === 1"
   >
     Отмена
@@ -16,6 +16,6 @@
     type="button"
     (click)="buttonClick.emit(step + 1)"
   >
-    {{ step !== 3 ? 'Далее' : 'Сохранить' }}
+    {{ nextBtnText }}
   </button>
 </div>

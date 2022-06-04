@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { CreateRepositoryDto } from 'src/app/shared/models/createRepositoryDto.interface';
+import { RepositoryI } from 'src/app/shared/models/repository.interface';
 import { RepositoryType } from 'src/app/shared/models/repositoryTypeEnum';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { DataStoreService } from 'src/app/shared/services/data-store.service';
@@ -36,6 +37,8 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
   repositoryGroup: FormGroup;
   repositoryPreview = '';
   userTeams: TeamI[] = [];
+  repositoryToEdit: RepositoryI | null = null;
+  editMode = false;
 
   constructor(
     public dataStore: DataStoreService,
@@ -50,13 +53,33 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userTeams = this.route.snapshot.data.teams;
+    if (this.route.snapshot.data.repository) {
+      this.repositoryToEdit = this.route.snapshot.data.repository;
+      this.editMode = true;
+    }
+
     this.repositoryGroup = this.fb.group({
-      author: new FormControl(this.dataStore.getUserValue()?._id, [Validators.required]),
-      team: new FormControl('', []),
-      title: new FormControl('', [Validators.required]),
-      type: new FormControl('', [Validators.required]),
-      description: new FormControl('', [Validators.required, Validators.maxLength(1000)]),
-      preview: new FormControl('', []),
+      author: new FormControl(
+        {
+          value: !this.editMode
+            ? this.dataStore.getUserValue()?._id
+            : this.repositoryToEdit?.author._id,
+          disabled: this.editMode,
+        },
+        [Validators.required],
+      ),
+      team: new FormControl(!this.editMode ? '' : this.repositoryToEdit?.team?._id, []),
+      title: new FormControl(!this.editMode ? '' : this.repositoryToEdit?.title, [
+        Validators.required,
+      ]),
+      type: new FormControl(!this.editMode ? '' : this.repositoryToEdit?.type, [
+        Validators.required,
+      ]),
+      description: new FormControl(!this.editMode ? '' : this.repositoryToEdit?.description, [
+        Validators.required,
+        Validators.maxLength(1000),
+      ]),
+      preview: new FormControl(!this.editMode ? '' : this.repositoryToEdit?.preview, []),
     });
   }
 
@@ -114,6 +137,24 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
             this.loadingService.setIsLoading(false);
           },
         ),
+      );
+    } else
+      this.snackBar.open('Проверьте корректность введенных данных', 'Ошибка', {
+        duration: 5000,
+        panelClass: 'errorSnack',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
+  }
+
+  update() {
+    if (this.repositoryGroup.valid) {
+      this.subs.add(
+        this.repositoryService
+          .update({ _id: this.repositoryToEdit?._id, ...this.repositoryGroup.value })
+          .subscribe((res) => {
+            this.changeStep.emit();
+          }),
       );
     } else
       this.snackBar.open('Проверьте корректность введенных данных', 'Ошибка', {

@@ -29,7 +29,11 @@
         </mat-tab>
       </mat-tab-group>
       <div class="toolbar__wrapper-step-buttons">
-        <app-step-buttons [step]="step" (buttonClick)="onSaveInteractiveData()"></app-step-buttons>
+        <app-step-buttons
+          [step]="step"
+          [nextBtnText]="'Сохранить'"
+          (buttonClick)="onSaveInteractiveData()"
+        ></app-step-buttons>
       </div>
     </div>
   </div>

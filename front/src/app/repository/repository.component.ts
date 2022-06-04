@@ -84,7 +84,9 @@ export class RepositoryComponent implements OnInit {
     }
   }
 
-  onEdit() {}
+  onEdit() {
+    this.router.navigate(['editor', 'edit', this.repository._id]);
+  }
 
   onDelete() {
     const dialogRef = this.dialog.open(DialogConfirmActionComponent, {

@@ -1,29 +1,37 @@
-<app-editor-step
-  [title]="step !== 1 ? 'Viewer' : 'Инициализация репозитория'"
-  [subtitle]="
-    step !== 1
-      ? 'Отображает 3D-модель и дерево элементов, позволяет создавать интерактивные инструкции.'
-      : 'Репозиторий содержит в себе файл 3D-модели, инструкции и документы.'
-  "
->
-  <ng-container [ngSwitch]="step">
-    <app-init-repository
-      *ngSwitchCase="1"
-      [step]="1"
-      (changeStep)="onRepositoryCreated($event)"
-    ></app-init-repository>
-    <app-upload-model
-      *ngSwitchCase="2"
-      [step]="2"
-      [repositoryId]="repositoryId"
-      (changeStep)="onModelLoaded($event)"
-    ></app-upload-model>
-    <app-editor-viewer
-      *ngSwitchCase="3"
-      [step]="3"
-      [repositoryId]="repositoryId"
-      [modelId]="newModelId"
-      (saveInteractiveData)="onSaveInteractiveData($event)"
-    ></app-editor-viewer>
-  </ng-container>
-</app-editor-step>
+<ng-container *ngIf="hasAccess">
+  <app-editor-step
+    [title]="
+      step !== 1
+        ? 'Viewer'
+        : repositoryToEdit
+        ? 'Редактирование репозитория'
+        : 'Инициализация репозитория'
+    "
+    [subtitle]="
+      step !== 1
+        ? 'Отображает 3D-модель и дерево элементов, позволяет создавать интерактивные инструкции.'
+        : 'Репозиторий содержит в себе файл 3D-модели, инструкции и документы.'
+    "
+  >
+    <ng-container [ngSwitch]="step">
+      <app-init-repository
+        *ngSwitchCase="1"
+        [step]="1"
+        (changeStep)="onRepositoryCreated($event)"
+      ></app-init-repository>
+      <app-upload-model
+        *ngSwitchCase="2"
+        [step]="2"
+        [repositoryId]="repositoryId"
+        (changeStep)="onModelLoaded($event)"
+      ></app-upload-model>
+      <app-editor-viewer
+        *ngSwitchCase="3"
+        [step]="3"
+        [repositoryId]="repositoryToEdit ? repositoryToEdit._id : repositoryId"
+        [modelId]="repositoryToEdit ? repositoryToEdit.models[0]._id : newModelId"
+        (saveInteractiveData)="onSaveInteractiveData($event)"
+      ></app-editor-viewer>
+    </ng-container>
+  </app-editor-step>
+</ng-container>

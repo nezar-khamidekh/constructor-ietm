@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import {
   Component,
   OnInit,
@@ -6,7 +7,6 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-step-buttons',
@@ -16,13 +16,14 @@ import { Router } from '@angular/router';
 })
 export class StepButtonsComponent implements OnInit {
   @Input() step: number;
+  @Input() nextBtnText = '';
   @Output() buttonClick = new EventEmitter();
 
-  constructor(private router: Router) {}
+  constructor(private location: Location) {}
 
   ngOnInit(): void {}
 
-  navigateToMain() {
-    this.router.navigate(['/main']);
+  navigateBack() {
+    this.location.back();
   }
 }
