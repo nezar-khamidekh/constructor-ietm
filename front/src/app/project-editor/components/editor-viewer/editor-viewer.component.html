@@ -5,6 +5,7 @@
       [repositoryId]="repositoryId"
       [modelId]="modelId"
       [viewMode]="false"
+      [initialSettings]="repositoryToEdit?.sceneSettings ?? null"
       (applyAnnotationPosition)="onApplyAnnotationPosition($event)"
       (viewerIsReady)="onViewerIsReady()"
     ></app-scene>

@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { skip } from 'rxjs/operators';
 import { InstructionsService } from 'src/app/scene/services/instructions.service';
 import { SceneService } from 'src/app/scene/services/scene.service';
@@ -37,6 +38,7 @@ export class EditorInstructionsComponent implements OnInit {
   constructor(
     private sceneService: SceneService,
     private instructionService: InstructionsService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -49,6 +51,8 @@ export class EditorInstructionsComponent implements OnInit {
         }),
     );
 
+    if (this.route.snapshot.data.repository?.instructions.length)
+      this.instructions = [...this.route.snapshot.data.repository?.instructions];
     this.instructionService.setInstructions(this.instructions);
   }
 

@@ -107,7 +107,10 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
         })
         .subscribe((res) => {
           console.log(res);
-          this.router.navigate(['/repository', this.repositoryId]);
+          this.router.navigate([
+            '/repository',
+            this.repositoryToEdit ? this.repositoryToEdit._id : this.repositoryId,
+          ]);
         }),
     );
   }
