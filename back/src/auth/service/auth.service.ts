@@ -58,7 +58,7 @@ export class AuthService {
     );
   }
 
-  generateRefreshTokenDto(userId?: number): RefreshTokenDto {
+  private generateRefreshTokenDto(userId?: number): RefreshTokenDto {
     const date = new Date();
     date.setDate(date.getDate() + 15);
     const refreshTokenDto: RefreshTokenDto = {

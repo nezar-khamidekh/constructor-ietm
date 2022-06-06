@@ -116,20 +116,6 @@ export class UserService {
     );
   }
 
-  checkLogin(login: string): Observable<UserDocument> {
-    return from(this.userModel.findOne({ login })).pipe(
-      map((user) => {
-        if (user) {
-          return user;
-        } else
-          throw new HttpException(
-            'Пользователь не найден',
-            HttpStatus.NOT_FOUND,
-          );
-      }),
-    );
-  }
-
   private findUserWithPassword(str: string): Observable<UserDocument> {
     return from(
       this.userModel.findOne({ $or: [{ login: str }, { email: str }] }, [

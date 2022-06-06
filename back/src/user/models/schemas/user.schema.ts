@@ -22,9 +22,6 @@ export class User {
 
   @Prop({ default: null })
   avatar: string;
-
-  @Prop({ type: Types.ObjectId, ref: 'RefreshToken' })
-  refreshTokens: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

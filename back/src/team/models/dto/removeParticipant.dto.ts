@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 import { UserEntryDto } from 'src/user/models/dto/userEntry.dto';
 
 export class RemoveParticipantDto extends UserEntryDto {
