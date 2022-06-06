@@ -14,18 +14,13 @@
     margin-top: 15px;
   }
 
-  &__cropper {
-    max-width: 150px;
-  }
-
   &__crop-result {
-    display: flex;
     flex: 1;
+    display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: space-between;
     margin-left: 30px;
-    height: 200px;
   }
 
   &__result-image {
@@ -33,15 +28,8 @@
     object-fit: cover;
     display: block;
 
-    &_big {
-      width: 100px;
-      height: 100px;
-    }
-
     &_small {
       margin-top: 30px;
-      width: 36px;
-      height: 36px;
     }
 
     &_square {

@@ -110,11 +110,19 @@ export class ManageTeamComponent implements OnInit {
 
   openDialogChooseImage(): void {
     const dialogRef = this.dialog.open(DialogChooseImageComponent, {
-      width: '450px',
+      width: '530px',
       height: '450px',
       autoFocus: false,
       data: {
-        type: 'circle',
+        viewport: {
+          width: 128,
+          height: 128,
+          type: 'circle',
+        },
+        boundary: {
+          width: 180,
+          height: 230,
+        },
       },
     });
 

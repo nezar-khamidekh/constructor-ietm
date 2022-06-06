@@ -16,17 +16,34 @@
       (change)="onFileChange($event)"
     />
     <div class="choose-image__crop-wrapper">
-      <div class="choose-image__cropper" id="croppie" #croppie></div>
-      <div class="choose-image__crop-result" *ngIf="previewImage">
+      <div
+        class="choose-image__cropper"
+        [ngStyle]="{ 'max-width': data.boundary.width }"
+        id="croppie"
+        #croppie
+      ></div>
+      <div
+        class="choose-image__crop-result"
+        *ngIf="previewImage"
+        [ngStyle]="{ height: data.boundary.height + 'px' }"
+      >
         <img
-          class="choose-image__result-image choose-image__result-image_big"
+          class="choose-image__result-image"
+          [ngStyle]="{
+            width: data.viewport.width + 'px',
+            height: data.viewport.height + 'px'
+          }"
+          [ngClass]="{ 'choose-image__result-image_square': data.viewport.type === 'square' }"
           [src]="previewImage"
           alt="аватар"
-          [ngClass]="{ 'choose-image__result-image_square': data.type === 'square' }"
         />
         <img
           class="choose-image__result-image choose-image__result-image_small"
-          [ngClass]="{ 'choose-image__result-image_square': data.type === 'square' }"
+          [ngStyle]="{
+            width: data.viewport.width / 3 + 'px',
+            height: data.viewport.height / 3 + 'px'
+          }"
+          [ngClass]="{ 'choose-image__result-image_square': data.viewport.type === 'square' }"
           [src]="previewImage"
           alt="аватар"
         />

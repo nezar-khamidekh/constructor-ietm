@@ -56,6 +56,7 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
     if (this.route.snapshot.data.repository) {
       this.repositoryToEdit = this.route.snapshot.data.repository;
       this.editMode = true;
+      this.repositoryPreview = this.repositoryToEdit?.preview ?? '';
     }
 
     this.repositoryGroup = this.fb.group({
@@ -93,11 +94,19 @@ export class InitRepositoryComponent implements OnInit, OnDestroy {
 
   openDialogChooseImage(): void {
     const dialogRef = this.dialog.open(DialogChooseImageComponent, {
-      width: '450px',
-      height: '450px',
+      width: '600px',
+      height: '600px',
       autoFocus: false,
       data: {
-        type: 'square',
+        viewport: {
+          width: 220,
+          height: 220,
+          type: 'square',
+        },
+        boundary: {
+          width: 250,
+          height: 300,
+        },
       },
     });
 
