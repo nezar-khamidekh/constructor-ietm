@@ -12,6 +12,18 @@ import { DomSanitizer } from '@angular/platform-browser';
 import * as Croppie from 'croppie';
 import { CropType } from 'croppie';
 
+interface DIALOG_DATA {
+  viewport: {
+    width: number;
+    height: number;
+    type: CropType;
+  };
+  boundary: {
+    width: number;
+    height: number;
+  };
+}
+
 @Component({
   selector: 'app-dialog-choose-image',
   templateUrl: './dialog-choose-image.component.html',
@@ -27,7 +39,7 @@ export class DialogChooseImageComponent {
   @ViewChild('croppie') croppie!: ElementRef;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { type: CropType },
+    @Inject(MAT_DIALOG_DATA) public data: DIALOG_DATA,
     public dialogRef: MatDialogRef<DialogChooseImageComponent>,
     private sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef,
@@ -49,13 +61,13 @@ export class DialogChooseImageComponent {
     this.croppieObj = new Croppie(this.croppie.nativeElement, {
       enableExif: true,
       viewport: {
-        width: 100,
-        height: 100,
-        type: this.data.type,
+        width: this.data.viewport.width,
+        height: this.data.viewport.height,
+        type: this.data.viewport.type,
       },
       boundary: {
-        width: 150,
-        height: 200,
+        width: this.data.boundary.width,
+        height: this.data.boundary.height,
       },
       mouseWheelZoom: false,
       enableOrientation: true,
