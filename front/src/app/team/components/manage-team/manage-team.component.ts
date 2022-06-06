@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogChooseImageComponent } from 'src/app/dialogs/dialog-choose-image/dialog-choose-image.component';
 import { isEmail } from 'src/app/shared/helpers/helpers';
 import { AddParticipantDto } from 'src/app/shared/models/addParticipantDto.interface';
-import { ParticipantI, ParticipantRole } from 'src/app/shared/models/participant.interface';
+import { ParticipantRole } from 'src/app/shared/models/participant.interface';
 import { PARTICIPANT_ROLES } from 'src/app/shared/models/participantRoles';
 import { TeamI } from 'src/app/shared/models/team.interface';
 import { UserI } from 'src/app/shared/models/user.interface';

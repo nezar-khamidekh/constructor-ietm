@@ -1,5 +1,5 @@
 import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
-import { ParticipantI, ParticipantRole } from '../../models/participant.interface';
+import { ParticipantI } from '../../models/participant.interface';
 
 @Directive({
   selector: '[appHasRole]',

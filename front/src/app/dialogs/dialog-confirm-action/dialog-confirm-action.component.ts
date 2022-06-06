@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -7,13 +7,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./dialog-confirm-action.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DialogConfirmActionComponent implements OnInit {
+export class DialogConfirmActionComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogConfirmActionComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { message: string },
   ) {}
-
-  ngOnInit(): void {}
 
   onNoClick(): void {
     this.dialogRef.close();
