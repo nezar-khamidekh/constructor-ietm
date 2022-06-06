@@ -1,12 +1,5 @@
 import { Location } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  Input,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-step-buttons',
@@ -14,14 +7,12 @@ import {
   styleUrls: ['./step-buttons.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StepButtonsComponent implements OnInit {
+export class StepButtonsComponent {
   @Input() step: number;
   @Input() nextBtnText = '';
   @Output() buttonClick = new EventEmitter();
 
   constructor(private location: Location) {}
-
-  ngOnInit(): void {}
 
   navigateBack() {
     this.location.back();

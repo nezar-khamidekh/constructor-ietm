@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-loader',
@@ -6,8 +6,6 @@ import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core
   styleUrls: ['./loader.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoaderComponent implements OnInit {
+export class LoaderComponent {
   constructor() {}
-
-  ngOnInit(): void {}
 }

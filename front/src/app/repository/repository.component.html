@@ -142,12 +142,6 @@
       *ngIf="repository.modelTree"
       >Дерево</a
     >
-    <!-- <a
-      class="repository__tab"
-      [routerLink]="'/repository/' + repository._id + '/files'"
-      routerLinkActive="repository__tab_active"
-      >Файлы</a
-    > -->
   </div>
   <div class="repository__content">
     <div class="loader" *ngIf="repository.models.length && !viewerInitialized">
