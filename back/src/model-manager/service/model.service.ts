@@ -47,7 +47,7 @@ export class ModelService {
     );
   }
 
-  saveCompressedModel(originalPath, outputPath: string) {
+  compressModelAndSave(originalPath, outputPath: string) {
     const gltfPipeline = require('gltf-pipeline');
     const fsExtra = require('fs-extra');
     const processGltf = gltfPipeline.processGltf;
@@ -62,6 +62,27 @@ export class ModelService {
     });
     return from(processGltf(gltf, options)).pipe(
       map((results: any) => {
+        fsExtra.writeJsonSync(outputPath, results.gltf);
+        return true;
+      }),
+    );
+  }
+
+  transformGLB2GLTFAndSave(originalPath, outputPath) {
+    const gltfPipeline = require('gltf-pipeline');
+    const fsExtra = require('fs-extra');
+    const glbToGltf = gltfPipeline.glbToGltf;
+    const glb = fsExtra.readFileSync(originalPath);
+    const options = {
+      dracoOptions: {
+        compressionLevel: 10,
+      },
+    };
+    return from(glbToGltf(glb, options)).pipe(
+      map((results: any) => {
+        results.gltf.nodes.forEach((node) => {
+          node.extras = { uuid: uuidv4() };
+        });
         fsExtra.writeJsonSync(outputPath, results.gltf);
         return true;
       }),

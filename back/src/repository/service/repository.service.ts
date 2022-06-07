@@ -404,7 +404,7 @@ export class RepositoryService {
           .pipe(
             switchMap(() => {
               return this.modelService
-                .saveCompressedModel(straightPath, modelPath)
+                .compressModelAndSave(straightPath, modelPath)
                 .pipe(
                   switchMap(() => {
                     repo.models.push({
