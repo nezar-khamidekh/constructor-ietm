@@ -11,7 +11,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { map } from 'rxjs';
-import { ObjectDto } from '../models/dto/checkIfExists.dto';
+import { ObjectDto } from '../models/dto/object.dto';
 import { DirectoryDto } from '../models/dto/directory.dto';
 import { FileDto } from '../models/dto/file.dto';
 import { FileService } from '../service/file.service';
@@ -46,19 +46,6 @@ export class FileController {
     return this.fileService.checkIfExists(fullpath);
   }
 
-  @Post('delete')
-  deleteFileORDirectory(@Body() objectDto: ObjectDto) {
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
-      objectDto.repoId,
-      objectDto.path,
-      objectDto.fullname,
-    );
-    console.log(fullpath);
-    return this.fileService.deleteFileOrDirectory(fullpath);
-  }
-
   @Post('newdir')
   createDirectory(@Body() dirDto: DirectoryDto) {
     const fullpath: string = join(
@@ -66,7 +53,7 @@ export class FileController {
       'repositories',
       dirDto.repoId,
       dirDto.path,
-      dirDto.name,
+      dirDto.fullname,
     );
     return this.fileService.createDirectory(fullpath);
   }
@@ -100,5 +87,18 @@ export class FileController {
       fileDto.fullname,
     );
     return this.fileService.saveFile(oldpath, fullpath);
+  }
+
+  @Post('delete')
+  deleteFileOrDirectory(@Body() objectDto: ObjectDto) {
+    const fullpath: string = join(
+      process.cwd(),
+      'repositories',
+      objectDto.repoId,
+      objectDto.path,
+      objectDto.fullname,
+    );
+    console.log(fullpath);
+    return this.fileService.deleteFileOrDirectory(fullpath);
   }
 }

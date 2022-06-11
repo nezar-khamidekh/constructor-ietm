@@ -1,12 +1,3 @@
-import { IsString } from 'class-validator';
+import { ObjectDto } from './object.dto';
 
-export class FileDto {
-  @IsString()
-  repoId: string;
-
-  @IsString()
-  path: string;
-
-  @IsString()
-  fullname: string;
-}
+export class FileDto extends ObjectDto {}

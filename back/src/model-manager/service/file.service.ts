@@ -8,15 +8,13 @@ import {
 } from 'src/repository/models/schemas/repository.schema';
 import { from, map } from 'rxjs';
 import { join } from 'path';
-import { ObjectDto } from '../models/dto/checkIfExists.dto';
-import { DirectoryDto } from '../models/dto/directory.dto';
 
 @Injectable()
 export class FileService {
   constructor(
     @InjectModel(Repository.name)
     private repositoryModel: Model<RepositoryDocument>,
-  ) { }
+  ) {}
 
   getRepoById(repoId: string) {
     return from(this.repositoryModel.findById(repoId)).pipe(
@@ -33,7 +31,7 @@ export class FileService {
 
   getFilesByRepoId(repoId: string) {
     const repoPath = join('repositories', repoId.toString());
-    let filenames = [];
+    let filenames: string[] = [];
     this.readDir(repoPath, filenames);
     let paths = [];
     filenames.forEach((file: string) => {
@@ -42,7 +40,7 @@ export class FileService {
     return paths;
   }
 
-  readDir(path: string, filenames: any[]) {
+  private readDir(path: string, filenames: string[]) {
     fs.readdirSync(path, { withFileTypes: true }).forEach((file) => {
       let filepath = join(path, file.name);
       if (file.isFile()) {
@@ -51,7 +49,6 @@ export class FileService {
         this.readDir(filepath, filenames);
       }
     });
-    return filenames;
   }
 
   checkIfExists(fullpath: string) {
