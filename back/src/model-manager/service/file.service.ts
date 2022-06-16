@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as fs from 'fs';
+import * as zipper from 'zip-local';
 import {
   Repository,
   RepositoryDocument,
@@ -78,6 +79,10 @@ export class FileService {
         .then(() => true)
         .catch(() => false),
     );
+  }
+
+  zip(folderpath: string) {
+    return zipper.sync.zip(folderpath).compress().memory();
   }
 
   deleteFileOrDirectory(fullpath: string) {
