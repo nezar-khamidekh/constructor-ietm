@@ -9,6 +9,10 @@ import {
 } from 'src/repository/models/schemas/repository.schema';
 import { from, map } from 'rxjs';
 import { join } from 'path';
+import { RenameDto } from '../models/dto/rename.dto';
+import { ObjectDto } from '../models/dto/object.dto';
+import { FileDto } from '../models/dto/file.dto';
+import { DirectoryDto } from '../models/dto/directory.dto';
 
 @Injectable()
 export class FileService {
@@ -52,7 +56,14 @@ export class FileService {
     });
   }
 
-  checkIfExists(fullpath: string) {
+  checkIfExists(objectDto: ObjectDto) {
+    const fullpath: string = join(
+      process.cwd(),
+      'repositories',
+      objectDto.repoId,
+      objectDto.path,
+      objectDto.fullname,
+    );
     return from(
       fs.promises
         .access(fullpath, fs.constants.F_OK)
@@ -61,7 +72,12 @@ export class FileService {
     );
   }
 
-  createDirectory(fullpath: string) {
+  createDirectory(dirDto: DirectoryDto) {
+    const fullpath: string = this.joiner(
+      dirDto.repoId,
+      dirDto.path,
+      dirDto.fullname,
+    );
     return from(
       fs.promises
         .mkdir(fullpath, {
@@ -72,23 +88,58 @@ export class FileService {
     );
   }
 
-  saveFile(inputPath: string, outputPath: string) {
-    return from(
-      fs.promises
-        .rename(inputPath, outputPath)
-        .then(() => true)
-        .catch(() => false),
+  // renameObject(renameDto: RenameDto) {
+  //   const oldpath =
+  //   return this.rename();
+  // }
+
+  saveFile(filename: string, fileDto: FileDto) {
+    const oldpath: string = join(process.cwd(), 'buffer', filename);
+    const newpath: string = this.joiner(
+      fileDto.repoId,
+      fileDto.path,
+      fileDto.fullname,
     );
+    return this.rename(oldpath, newpath);
   }
 
-  zip(folderpath: string) {
+  zip(fileDto: FileDto) {
+    const folderpath: string = this.joiner(
+      fileDto.repoId,
+      fileDto.path,
+      fileDto.fullname,
+    );
     return zipper.sync.zip(folderpath).compress().memory();
   }
 
-  deleteFileOrDirectory(fullpath: string) {
+  deleteFileOrDirectory(objectDto: ObjectDto) {
+    const fullpath: string = this.joiner(
+      objectDto.repoId,
+      objectDto.path,
+      objectDto.fullname,
+    );
+    return this.checkIfExists(objectDto).pipe(
+      map((result) => {
+        if (result === true) {
+          return fs.promises
+            .rm(fullpath, { force: true, recursive: true })
+            .then(() => true)
+            .catch(() => false);
+        } else {
+          return false;
+        }
+      }),
+    );
+  }
+
+  public joiner(repoId: string, subpath: string, fullname?: string): string {
+    return join(process.cwd(), 'repositories', repoId, subpath, fullname ?? '');
+  }
+
+  private rename(oldpath: string, newpath: string) {
     return from(
       fs.promises
-        .rm(fullpath.toString(), { force: true, recursive: true })
+        .rename(oldpath, newpath)
         .then(() => true)
         .catch(() => false),
     );

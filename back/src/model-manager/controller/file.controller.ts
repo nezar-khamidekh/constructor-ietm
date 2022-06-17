@@ -39,38 +39,22 @@ export class FileController {
 
   @Post('check')
   checkIfExists(@Body() objectDto: ObjectDto) {
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
-      objectDto.repoId,
-      objectDto.path,
-      objectDto.fullname,
-    );
-    return this.fileService.checkIfExists(fullpath);
+    return this.fileService.checkIfExists(objectDto);
   }
 
   @Post('newdir')
   createDirectory(@Body() dirDto: DirectoryDto) {
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
-      dirDto.repoId,
-      dirDto.path,
-      dirDto.fullname,
-    );
-    return this.fileService.createDirectory(fullpath);
+    return this.fileService.createDirectory(dirDto);
   }
 
   @Post('download')
   download(@Res({ passthrough: true }) res, @Body() fileDto: FileDto) {
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
+    const fullpath: string = this.fileService.joiner(
       fileDto.repoId,
       fileDto.path,
       fileDto.fullname,
     );
-    return this.fileService.checkIfExists(fullpath).pipe(
+    return this.fileService.checkIfExists(fileDto).pipe(
       map((result) => {
         if (result == true) {
           const file = createReadStream(fullpath);
@@ -88,14 +72,7 @@ export class FileController {
 
   @Post('zip')
   zip(@Res({ passthrough: true }) res, @Body() fileDto: FileDto) {
-    const rootpath: string = join(
-      process.cwd(),
-      'repositories',
-      fileDto.repoId,
-      fileDto.path,
-    );
-    const folderpath: string = join(rootpath, fileDto.fullname);
-    const buffer = this.fileService.zip(folderpath);
+    const buffer = this.fileService.zip(fileDto);
     res.set({
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename=${
@@ -125,32 +102,20 @@ export class FileController {
     @UploadedFile() file: Express.Multer.File,
     @Body() fileDto: FileDto,
   ) {
-    const oldpath: string = join(process.cwd(), 'buffer', file.filename);
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
-      fileDto.repoId,
-      fileDto.path,
-      fileDto.fullname,
-    );
-    return this.fileService.saveFile(oldpath, fullpath);
+    const filename: string = file.filename;
+    return this.fileService.saveFile(filename, fileDto);
   }
 
   @Post('delete')
   deleteFileOrDirectory(@Body() objectDto: ObjectDto) {
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
-      objectDto.repoId,
-      objectDto.path,
-      objectDto.fullname,
-    );
-    return this.fileService.deleteFileOrDirectory(fullpath).pipe(
+    return this.fileService.deleteFileOrDirectory(objectDto).pipe(
       map((result) => {
-        if (result == true) {
+        if (result != false) {
+          console.log('True', result);
           console.log(`Deleted ${join(objectDto.path, objectDto.fullname)}`);
           return 'Successfuly deleted';
         } else {
+          console.log('False', result);
           return `${join(objectDto.path, objectDto.fullname)} doesn't exists`;
         }
       }),
