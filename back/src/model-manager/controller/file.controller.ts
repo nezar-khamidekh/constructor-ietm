@@ -88,7 +88,7 @@ export class FileController {
     res.set({
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename=${
-        fileDto.fullname + '.zip'
+        (fileDto.fullname !== '' ? fileDto.fullname : 'root') + '.zip'
       }`,
     });
     return new StreamableFile(buffer);
