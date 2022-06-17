@@ -13,6 +13,7 @@ import { RenameDto } from '../models/dto/rename.dto';
 import { ObjectDto } from '../models/dto/object.dto';
 import { FileDto } from '../models/dto/file.dto';
 import { DirectoryDto } from '../models/dto/directory.dto';
+import { MoveDto } from '../models/dto/move.dto';
 
 @Injectable()
 export class FileService {
@@ -88,19 +89,42 @@ export class FileService {
     );
   }
 
-  // renameObject(renameDto: RenameDto) {
-  //   const oldpath =
-  //   return this.rename();
-  // }
+  renameObject(renameDto: RenameDto) {
+    const oldPath: string = this.joiner(
+      renameDto.repoId,
+      renameDto.path,
+      renameDto.fullname,
+    );
+    const newPath: string = this.joiner(
+      renameDto.repoId,
+      renameDto.path,
+      renameDto.newName,
+    );
+    return this.rename(oldPath, newPath);
+  }
+
+  move(moveDto: MoveDto) {
+    const oldPath: string = this.joiner(
+      moveDto.repoId,
+      moveDto.path,
+      moveDto.fullname,
+    );
+    const newPath: string = this.joiner(
+      moveDto.repoId,
+      moveDto.newPath,
+      moveDto.fullname,
+    );
+    return this.rename(oldPath, newPath);
+  }
 
   saveFile(filename: string, fileDto: FileDto) {
-    const oldpath: string = join(process.cwd(), 'buffer', filename);
-    const newpath: string = this.joiner(
+    const oldPath: string = join(process.cwd(), 'buffer', filename);
+    const newPath: string = this.joiner(
       fileDto.repoId,
       fileDto.path,
       fileDto.fullname,
     );
-    return this.rename(oldpath, newpath);
+    return this.rename(oldPath, newPath);
   }
 
   zip(fileDto: FileDto) {
@@ -112,7 +136,7 @@ export class FileService {
     return zipper.sync.zip(folderpath).compress().memory();
   }
 
-  deleteFileOrDirectory(objectDto: ObjectDto) {
+  delete(objectDto: ObjectDto) {
     const fullpath: string = this.joiner(
       objectDto.repoId,
       objectDto.path,
@@ -136,10 +160,10 @@ export class FileService {
     return join(process.cwd(), 'repositories', repoId, subpath, fullname ?? '');
   }
 
-  private rename(oldpath: string, newpath: string) {
+  private rename(oldPath: string, newPath: string) {
     return from(
       fs.promises
-        .rename(oldpath, newpath)
+        .rename(oldPath, newPath)
         .then(() => true)
         .catch(() => false),
     );

@@ -18,6 +18,8 @@ import { DirectoryDto } from '../models/dto/directory.dto';
 import { FileDto } from '../models/dto/file.dto';
 import { FileService } from '../service/file.service';
 import { createReadStream } from 'fs';
+import { RenameDto } from '../models/dto/rename.dto';
+import { MoveDto } from '../models/dto/move.dto';
 
 @Controller('files')
 export class FileController {
@@ -45,6 +47,16 @@ export class FileController {
   @Post('newdir')
   createDirectory(@Body() dirDto: DirectoryDto) {
     return this.fileService.createDirectory(dirDto);
+  }
+
+  @Post('rename')
+  rename(@Body() renameDto: RenameDto) {
+    return this.fileService.renameObject(renameDto);
+  }
+
+  @Post('move')
+  move(@Body() moveDto: MoveDto) {
+    return this.fileService.move(moveDto);
   }
 
   @Post('download')
@@ -107,8 +119,8 @@ export class FileController {
   }
 
   @Post('delete')
-  deleteFileOrDirectory(@Body() objectDto: ObjectDto) {
-    return this.fileService.deleteFileOrDirectory(objectDto).pipe(
+  delete(@Body() objectDto: ObjectDto) {
+    return this.fileService.delete(objectDto).pipe(
       map((result) => {
         if (result != false) {
           console.log('True', result);
