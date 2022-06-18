@@ -34,9 +34,19 @@ export class FileController {
     );
   }
 
-  @Get(':repoId')
+  @Get('scan/files/:repoId')
   getFilesByRepoId(@Param('repoId') repoId: string) {
     return this.fileService.getFilesByRepoId(repoId);
+  }
+
+  @Get('scan/directories/:repoId')
+  getDirectoriesByRepoId(@Param('repoId') repoId: string) {
+    return this.fileService.getDirectoriesByRepoId(repoId);
+  }
+
+  @Get('scan/full/:repoId')
+  getAllInRepoByRepoId(@Param('repoId') repoId: string) {
+    return this.fileService.getAllInRepoByRepoId(repoId);
   }
 
   @Post('check')

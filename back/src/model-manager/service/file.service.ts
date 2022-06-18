@@ -15,6 +15,12 @@ import { FileDto } from '../models/dto/file.dto';
 import { DirectoryDto } from '../models/dto/directory.dto';
 import { MoveDto } from '../models/dto/move.dto';
 
+enum SearchType {
+  'files',
+  'directories',
+  'all',
+}
+
 @Injectable()
 export class FileService {
   constructor(
@@ -36,9 +42,21 @@ export class FileService {
   }
 
   getFilesByRepoId(repoId: string) {
+    return this.scanRepo(repoId, SearchType.files);
+  }
+
+  getDirectoriesByRepoId(repoId: string) {
+    return this.scanRepo(repoId, SearchType.directories);
+  }
+
+  getAllInRepoByRepoId(repoId: string) {
+    return this.scanRepo(repoId, SearchType.all);
+  }
+
+  private scanRepo(repoId: string, searchFor: SearchType) {
     const repoPath = join('repositories', repoId.toString());
     let filenames: string[] = [];
-    this.readDir(repoPath, filenames);
+    this.readDir(repoPath, filenames, searchFor);
     let paths = [];
     filenames.forEach((file: string) => {
       paths.push(file.slice(repoPath.length + 1));
@@ -46,13 +64,21 @@ export class FileService {
     return paths;
   }
 
-  private readDir(path: string, filenames: string[]) {
+  private readDir(path: string, filenames: string[], searchFor: SearchType) {
     fs.readdirSync(path, { withFileTypes: true }).forEach((file) => {
       let filepath = join(path, file.name);
       if (file.isFile()) {
-        filenames.push(filepath);
+        if (searchFor === SearchType.files || searchFor === SearchType.all) {
+          filenames.push(filepath);
+        }
       } else {
-        this.readDir(filepath, filenames);
+        if (
+          searchFor === SearchType.directories ||
+          searchFor === SearchType.all
+        ) {
+          filenames.push(filepath);
+        }
+        this.readDir(filepath, filenames, searchFor);
       }
     });
   }
