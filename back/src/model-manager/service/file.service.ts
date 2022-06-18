@@ -18,7 +18,7 @@ import { MoveDto } from '../models/dto/move.dto';
 enum SearchType {
   'files',
   'directories',
-  'all',
+  'full',
 }
 
 @Injectable()
@@ -50,7 +50,7 @@ export class FileService {
   }
 
   getAllInRepoByRepoId(repoId: string) {
-    return this.scanRepo(repoId, SearchType.all);
+    return this.scanRepo(repoId, SearchType.full);
   }
 
   private scanRepo(repoId: string, searchFor: SearchType) {
@@ -68,17 +68,45 @@ export class FileService {
     fs.readdirSync(path, { withFileTypes: true }).forEach((file) => {
       let filepath = join(path, file.name);
       if (file.isFile()) {
-        if (searchFor === SearchType.files || searchFor === SearchType.all) {
+        if (searchFor === SearchType.files || searchFor === SearchType.full) {
           filenames.push(filepath);
         }
       } else {
         if (
           searchFor === SearchType.directories ||
-          searchFor === SearchType.all
+          searchFor === SearchType.full
         ) {
           filenames.push(filepath);
         }
         this.readDir(filepath, filenames, searchFor);
+      }
+    });
+  }
+
+  getRepoTreeInJSON(repoId: string) {
+    const repoPath = join('repositories', repoId.toString());
+    let repo = {};
+    this.readDirJSON(repoPath, repo);
+    return repo;
+  }
+
+  getStorageTreeInJSON() {
+    const repoPath = 'repositories';
+    let tree = { repositories: {} };
+    let repo = {};
+    this.readDirJSON(repoPath, repo);
+    tree.repositories = repo;
+    return tree;
+  }
+
+  private readDirJSON(path: string, dir) {
+    let id = 0;
+    fs.readdirSync(path, { withFileTypes: true }).forEach((file) => {
+      if (file.isFile()) {
+        dir[id++] = { filename: file.name };
+      } else {
+        dir[file.name] = {};
+        this.readDirJSON(join(path, file.name), dir[file.name]);
       }
     });
   }

@@ -49,6 +49,16 @@ export class FileController {
     return this.fileService.getAllInRepoByRepoId(repoId);
   }
 
+  @Get('tree/:repoId')
+  getRepoTreeInJSON(@Param('repoId') repoId: string) {
+    return this.fileService.getRepoTreeInJSON(repoId);
+  }
+
+  @Get('tree')
+  getStorageTreeInJSON() {
+    return this.fileService.getStorageTreeInJSON();
+  }
+
   @Post('check')
   checkIfExists(@Body() objectDto: ObjectDto) {
     return this.fileService.checkIfExists(objectDto);
