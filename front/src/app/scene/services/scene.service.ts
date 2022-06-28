@@ -25,6 +25,7 @@ import {
 import { Viewer } from '../classes/Viewer';
 import { VIEWER_STATE } from '../models/viewerState.enum';
 import { ActionI, ActionType } from 'src/app/shared/models/insruction.interface';
+import { SettingsService } from './settings.service';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +53,11 @@ export class SceneService {
 
   targetPosition: any;
 
-  constructor(private http: HttpClient, private sectionService: SectionService) {}
+  constructor(
+    private http: HttpClient,
+    private sectionService: SectionService,
+    private settingsService: SettingsService,
+  ) {}
 
   loadDefaultModel(): Observable<any> {
     return this.http.get(`${this.apiUrl}/viewer/default`, { withCredentials: true });
@@ -306,14 +311,16 @@ export class SceneService {
   }
 
   moveCameraToDefaultPosition(onCompleteCallback: () => void) {
-    const posCamera = JSON.parse(localStorage.getItem('positionCamera')!) || '';
+    // const posCamera = JSON.parse(localStorage.getItem('positionCamera')!) || '';
     this.viewer.controls.enabled = false;
     const oldCameraPos = this.viewer.camera.position.clone();
 
+    const settings = this.settingsService.getSettings();
+
     const newCameraPos = new THREE.Vector3(
-      posCamera ? posCamera.x : this.modelLongestSide * CAMERA_POSITION_RATE,
-      posCamera ? posCamera.y : (this.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-      posCamera ? posCamera.z : this.modelLongestSide * CAMERA_POSITION_RATE,
+      settings.cameraPosition.x,
+      settings.cameraPosition.y,
+      settings.cameraPosition.z,
     );
 
     this.moveCameraWithAnimation(oldCameraPos, newCameraPos, onCompleteCallback);

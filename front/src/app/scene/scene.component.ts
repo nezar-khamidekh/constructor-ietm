@@ -154,14 +154,14 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.settings = new Settings(
       () => {
-        localStorage.setItem(
-          'positionCamera',
-          JSON.stringify({
-            x: this.settings.cameraPosition.x,
-            y: this.settings.cameraPosition.y,
-            z: this.settings.cameraPosition.z,
-          }),
-        );
+        // localStorage.setItem(
+        //   'positionCamera',
+        //   JSON.stringify({
+        //     x: this.settings.cameraPosition.x,
+        //     y: this.settings.cameraPosition.y,
+        //     z: this.settings.cameraPosition.z,
+        //   }),
+        // );
         this.viewer.camera.position.set(
           this.settings.cameraPosition.x,
           this.settings.cameraPosition.y,
@@ -173,14 +173,14 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         this.settings.cameraPosition.y =
           (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2;
         this.settings.cameraPosition.z = this.sceneService.modelLongestSide * CAMERA_POSITION_RATE;
-        localStorage.setItem(
-          'positionCamera',
-          JSON.stringify({
-            x: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
-            y: (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2,
-            z: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
-          }),
-        );
+        // localStorage.setItem(
+        //   'positionCamera',
+        //   JSON.stringify({
+        //     x: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
+        //     y: (this.sceneService.modelLongestSide * CAMERA_POSITION_RATE) / 2,
+        //     z: this.sceneService.modelLongestSide * CAMERA_POSITION_RATE,
+        //   }),
+        // );
         this.viewer.camera.position.set(
           this.settings.cameraPosition.x,
           this.settings.cameraPosition.y,
@@ -191,18 +191,18 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
     );
-    if (!this.viewMode) {
-      const visibleGridHelper = localStorage.getItem('visibleGridHelper') || '';
-      if (visibleGridHelper) this.settings.grid = visibleGridHelper === 'true' ? true : false;
-      const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
-      if (backgroundColorScene) this.settings.background = backgroundColorScene;
-      const cameraPosition = JSON.parse(localStorage.getItem('positionCamera')!) || '';
-      if (cameraPosition) {
-        this.settings.cameraPosition.x = cameraPosition.x;
-        this.settings.cameraPosition.y = cameraPosition.y;
-        this.settings.cameraPosition.z = cameraPosition.z;
-      }
-    }
+    // if (!this.viewMode) {
+    //   const visibleGridHelper = localStorage.getItem('visibleGridHelper') || '';
+    //   if (visibleGridHelper) this.settings.grid = visibleGridHelper === 'true' ? true : false;
+    //   const backgroundColorScene = localStorage.getItem('backgroundColorScene') || '';
+    //   if (backgroundColorScene) this.settings.background = backgroundColorScene;
+    //   const cameraPosition = JSON.parse(localStorage.getItem('positionCamera')!) || '';
+    //   if (cameraPosition) {
+    //     this.settings.cameraPosition.x = cameraPosition.x;
+    //     this.settings.cameraPosition.y = cameraPosition.y;
+    //     this.settings.cameraPosition.z = cameraPosition.z;
+    //   }
+    // }
     if (this.initialSettings) {
       this.settings.grid = this.initialSettings.grid;
       this.settings.background = this.initialSettings.background;
@@ -355,7 +355,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       .add(this.settings, 'grid')
       .name('Включить')
       .onChange((value) => {
-        localStorage.setItem('visibleGridHelper', value);
+        // localStorage.setItem('visibleGridHelper', value);
         this.sceneService.setGridHelperVisibility(value);
       });
 
@@ -365,14 +365,14 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       .name('Цвет')
       .listen()
       .onChange((color) => {
-        localStorage.setItem('backgroundColorScene', color);
+        // localStorage.setItem('backgroundColorScene', color);
         this.sceneService.setBackgroundColorScene(color);
       });
     guiSceneBackgroundFolder
       .add(this.settings, 'resetBackground')
       .name('Сбросить')
       .onChange(() => {
-        localStorage.setItem('backgroundColorScene', '#' + RENDERER_CLEAR_COLOR.getHexString());
+        // localStorage.setItem('backgroundColorScene', '#' + RENDERER_CLEAR_COLOR.getHexString());
         this.sceneService.setBackgroundColorScene('#' + RENDERER_CLEAR_COLOR.getHexString());
       });
 
