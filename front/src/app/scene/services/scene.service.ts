@@ -50,6 +50,8 @@ export class SceneService {
   preAnnotationId: number | null = null;
   actions: ActionI[] = [];
 
+  targetPosition: any;
+
   constructor(private http: HttpClient, private sectionService: SectionService) {}
 
   loadDefaultModel(): Observable<any> {
@@ -180,6 +182,21 @@ export class SceneService {
     this.viewer.controls.update();
   }
 
+  setDefaultTarget(name: string) {
+    const obj = this.viewer.model.getObjectByName(name)!;
+
+    const boundingBox = new THREE.Box3().setFromObject(obj);
+    const vector = new THREE.Vector3();
+
+    const center = boundingBox.getCenter(vector);
+    this.viewer.controls.target = new THREE.Vector3(center.x, center.y, center.z);
+
+    this.targetPosition = center;
+
+    this.viewer.camera.updateProjectionMatrix();
+    this.viewer.controls.update();
+  }
+
   setBackgroundColorScene(color: string) {
     this.viewer.scene.background = new THREE.Color(color);
   }
@@ -223,15 +240,49 @@ export class SceneService {
     offsetFactor: OffsetFactorOrientationI,
     axisAngle: AxisAngleOrientationI,
   ) {
-    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
-    const offsetUnit = this.viewer.camera.position.length();
+    // this.viewer.controls.target = new THREE.Vector3(
+    //   this.targetPosition.x,
+    //   this.targetPosition.y,
+    //   this.targetPosition.z,
+    // );
+    // const offsetUnit = this.viewer.camera.position.length();
+    // const offset = new THREE.Vector3(
+    //   offsetUnit * offsetFactor.x,
+    //   offsetUnit * offsetFactor.y,
+    //   offsetUnit * offsetFactor.z,
+    // );
+
+    // const center = new THREE.Vector3();
+    // const finishPosition = center.add(offset);
+
+    // this.viewer.camera.position.set(finishPosition.x, finishPosition.y, finishPosition.z);
+
+    this.viewer.controls.target = new THREE.Vector3(
+      this.targetPosition.x,
+      this.targetPosition.y,
+      this.targetPosition.z,
+    );
+
+    const oldCamPos = this.viewer.camera.position.clone();
+
+    const lengthVec = Math.sqrt(
+      Math.pow(oldCamPos.x - this.targetPosition.x, 2) +
+        Math.pow(oldCamPos.y - this.targetPosition.y, 2) +
+        Math.pow(oldCamPos.z - this.targetPosition.z, 2),
+    );
+
+    const offsetUnit = lengthVec;
     const offset = new THREE.Vector3(
       offsetUnit * offsetFactor.x,
       offsetUnit * offsetFactor.y,
       offsetUnit * offsetFactor.z,
     );
 
-    const center = new THREE.Vector3();
+    const center = new THREE.Vector3(
+      this.targetPosition.x,
+      this.targetPosition.y,
+      this.targetPosition.z,
+    );
     const finishPosition = center.add(offset);
 
     this.viewer.camera.position.set(finishPosition.x, finishPosition.y, finishPosition.z);
@@ -266,7 +317,12 @@ export class SceneService {
     );
 
     this.moveCameraWithAnimation(oldCameraPos, newCameraPos, onCompleteCallback);
-    this.viewer.controls.reset();
+    // this.viewer.controls.reset();
+    this.viewer.controls.target = new THREE.Vector3(
+      this.targetPosition.x,
+      this.targetPosition.y,
+      this.targetPosition.z,
+    );
   }
 
   moveCameraWithAnimation(
@@ -358,7 +414,11 @@ export class SceneService {
   }
 
   resetAction() {
-    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+    this.viewer.controls.target = new THREE.Vector3(
+      this.targetPosition.x,
+      this.targetPosition.y,
+      this.targetPosition.z,
+    );
     this.stopRotatingCamera();
     this.explodeModel(this.viewer.model, 0);
     this.removePlane();
@@ -373,7 +433,11 @@ export class SceneService {
     this.viewer.controls.enabled = false;
     this.viewer.controls.autoRotate = true;
     this.viewer.controls.autoRotateSpeed = rotateSpeedValue;
-    this.viewer.controls.target = new THREE.Vector3(0, 0, 0);
+    this.viewer.controls.target = new THREE.Vector3(
+      this.targetPosition.x,
+      this.targetPosition.y,
+      this.targetPosition.z,
+    );
   }
 
   stopRotatingCamera() {
