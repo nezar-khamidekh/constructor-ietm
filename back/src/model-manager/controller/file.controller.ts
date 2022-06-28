@@ -12,7 +12,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
-import { map, switchMap } from 'rxjs';
+import { map } from 'rxjs';
 import { ObjectDto } from '../models/dto/object.dto';
 import { DirectoryDto } from '../models/dto/directory.dto';
 import { FileDto } from '../models/dto/file.dto';
@@ -76,7 +76,7 @@ export class FileController {
 
   @Post('move')
   move(@Body() moveDto: MoveDto) {
-    return this.fileService.move(moveDto);
+    return this.fileService.moveObject(moveDto);
   }
 
   @Post('download')
@@ -103,12 +103,12 @@ export class FileController {
   }
 
   @Post('zip')
-  zip(@Res({ passthrough: true }) res, @Body() fileDto: FileDto) {
-    const buffer = this.fileService.zip(fileDto);
+  zip(@Res({ passthrough: true }) res, @Body() directoryDto: DirectoryDto) {
+    const buffer = this.fileService.zip(directoryDto);
     res.set({
       'Content-Type': 'application/zip',
       'Content-Disposition': `attachment; filename=${
-        (fileDto.fullname !== '' ? fileDto.fullname : 'root') + '.zip'
+        (directoryDto.fullname !== '' ? directoryDto.fullname : 'root') + '.zip'
       }`,
     });
     return new StreamableFile(buffer);
@@ -143,11 +143,9 @@ export class FileController {
     return this.fileService.delete(objectDto).pipe(
       map((result) => {
         if (result != false) {
-          console.log('True', result);
           console.log(`Deleted ${join(objectDto.path, objectDto.fullname)}`);
           return 'Successfuly deleted';
         } else {
-          console.log('False', result);
           return `${join(objectDto.path, objectDto.fullname)} doesn't exists`;
         }
       }),

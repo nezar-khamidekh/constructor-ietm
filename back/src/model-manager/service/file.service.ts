@@ -112,9 +112,7 @@ export class FileService {
   }
 
   checkIfExists(objectDto: ObjectDto) {
-    const fullpath: string = join(
-      process.cwd(),
-      'repositories',
+    const fullpath: string = this.joiner(
       objectDto.repoId,
       objectDto.path,
       objectDto.fullname,
@@ -157,7 +155,7 @@ export class FileService {
     return this.rename(oldPath, newPath);
   }
 
-  move(moveDto: MoveDto) {
+  moveObject(moveDto: MoveDto) {
     const oldPath: string = this.joiner(
       moveDto.repoId,
       moveDto.path,
@@ -181,11 +179,11 @@ export class FileService {
     return this.rename(oldPath, newPath);
   }
 
-  zip(fileDto: FileDto) {
+  zip(directoryDto: DirectoryDto) {
     const folderpath: string = this.joiner(
-      fileDto.repoId,
-      fileDto.path,
-      fileDto.fullname,
+      directoryDto.repoId,
+      directoryDto.path,
+      directoryDto.fullname,
     );
     return zipper.sync.zip(folderpath).compress().memory();
   }
