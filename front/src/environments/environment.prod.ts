@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  baseUrl: 'http://constructor.mpu-cloud.ru:4014/api',
 };
