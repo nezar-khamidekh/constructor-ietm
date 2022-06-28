@@ -379,9 +379,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     const guiCameraPositionFolder = this.gui.addFolder('Положение камеры по умолчанию');
     guiCameraPositionFolder
       .add(this.settings.cameraPosition, 'x')
-      .min(-10)
-      .max(10)
-      .step(0.1)
+      .min(-800)
+      .max(800)
+      .step(1)
       .name('x')
       .onChange((x) => {
         this.settings.cameraPosition.x = x;
@@ -389,9 +389,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     guiCameraPositionFolder
       .add(this.settings.cameraPosition, 'y')
-      .min(-10)
-      .max(10)
-      .step(0.1)
+      .min(-800)
+      .max(800)
+      .step(1)
       .name('y')
       .onChange((y) => {
         this.settings.cameraPosition.y = y;
@@ -399,9 +399,9 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     guiCameraPositionFolder
       .add(this.settings.cameraPosition, 'z')
-      .min(-10)
-      .max(10)
-      .step(0.1)
+      .min(-800)
+      .max(800)
+      .step(1)
       .name('z')
       .onChange((z) => {
         this.settings.cameraPosition.z = z;
@@ -738,6 +738,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.sceneService.setGridHelper(gltf);
     this.sceneService.setLight();
     this.sceneService.setCameraDefaultPosition();
+    this.sceneService.setDefaultTarget(gltf.scene.children[0].name);
     if (
       this.settings.cameraPosition.x === 0 &&
       this.settings.cameraPosition.y === 0 &&
