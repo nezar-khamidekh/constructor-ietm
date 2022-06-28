@@ -54,10 +54,11 @@ export class RepositoryComponent implements OnInit {
     if (
       this.repository.type === RepositoryType.Private &&
       (!this.user ||
-        this.user._id !== this.repository.author._id ||
-        !this.repository.participants.some(
-          (participant) => participant.user._id === this.user?._id,
-        ))
+        (!this.repository.team && this.user._id !== this.repository.author._id) ||
+        (this.repository.team &&
+          !this.repository.team?.participants?.some(
+            (participant) => participant.user._id === this.user?._id,
+          )))
     ) {
       this.router.navigate(['/main']);
       this.snackBar.open('Недостаточно прав', '', {
