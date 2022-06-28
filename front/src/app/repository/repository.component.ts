@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -28,6 +29,8 @@ export class RepositoryComponent implements OnInit {
 
   user: UserI | null = null;
 
+  hasAccess = false;
+
   constructor(
     public dialog: MatDialog,
     private router: Router,
@@ -36,6 +39,7 @@ export class RepositoryComponent implements OnInit {
     private dataStore: DataStoreService,
     private titleService: Title,
     private cdr: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +50,23 @@ export class RepositoryComponent implements OnInit {
     this.titleService.setTitle(
       `Репозиторий "${this.repository.title}" | Конструктор интерактивных инструкций`,
     );
+
+    if (
+      this.repository.type === RepositoryType.Private &&
+      (!this.user ||
+        this.user._id !== this.repository.author._id ||
+        !this.repository.participants.some(
+          (participant) => participant.user._id === this.user?._id,
+        ))
+    ) {
+      this.router.navigate(['/main']);
+      this.snackBar.open('Недостаточно прав', '', {
+        duration: 5000,
+        panelClass: 'errorSnack',
+        horizontalPosition: 'right',
+        verticalPosition: 'top',
+      });
+    } else this.hasAccess = true;
   }
 
   getRepositoryTypeEnum() {
