@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Req,
@@ -12,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createReadStream } from 'fs';
+import { createReadStream, existsSync } from 'fs';
 import { diskStorage } from 'multer';
 import { extname, join } from 'path';
 import { map, Observable } from 'rxjs';
@@ -153,19 +155,24 @@ export class RepositoryController {
   ): Observable<StreamableFile> {
     return this.repositoryService.takeModel(takeModelDto).pipe(
       map((model) => {
-        const valve = createReadStream(
-          join(
-            process.cwd(),
-            '/repositories/' +
-              takeModelDto.repoId +
-              '/' +
-              model.path +
-              '/' +
-              model.path +
-              '.gltf',
-          ),
+        const modelPath = join(
+          process.cwd(),
+          '/repositories/' +
+            takeModelDto.repoId +
+            '/' +
+            model.path +
+            '/' +
+            model.path +
+            '.gltf',
         );
-        return new StreamableFile(valve);
+        if (!existsSync(modelPath)) {
+          throw new HttpException(
+            'Модель репозитория не найдена',
+            HttpStatus.NOT_FOUND,
+          );
+        }
+        const modelFile = createReadStream(modelPath);
+        return new StreamableFile(modelFile);
       }),
     );
   }

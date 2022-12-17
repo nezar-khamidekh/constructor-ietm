@@ -1,4 +1,4 @@
-<div class="viewer-wrapper" #viewerWrapper>
+<div *ngIf="!showError; else loadingError" class="viewer-wrapper" #viewerWrapper>
   <ng-container *ngIf="viewerInitialized">
     <app-viewer-toolbar
       [activeBtnIndex]="activeBtnIndex"
@@ -86,3 +86,9 @@
     </div>
   </mat-menu>
 </div>
+
+<ng-template #loadingError>
+  <div class="loading-error">
+    Модель отсутствует
+  </div>
+</ng-template>

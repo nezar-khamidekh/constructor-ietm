@@ -82,18 +82,19 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('window:resize', ['$event']) onResize($event: any) {
     this.viewer.resize(
-      this.viewerWrapper.nativeElement.getBoundingClientRect(),
-      this.canvas.nativeElement,
+      this.viewerWrapper?.nativeElement.getBoundingClientRect(),
+      this.canvas?.nativeElement,
     );
   }
 
   @HostListener('document:click', ['$event'])
   clickOutside(event: any) {
-    if (!this.viewerContextMenuInnerRef.nativeElement.contains(event.target)) {
+    if (!this.viewerContextMenuInnerRef?.nativeElement.contains(event.target)) {
       this.resetContextMenu();
     }
   }
 
+  showError = false;
   viewerInitialized = false;
   rotateAnimationBtnIsActive = false;
   rotateSpeedValue = CAMERA_ROTATE_SPEED;
@@ -214,10 +215,10 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.settingsService.setSettings(this.settings);
 
     this.subs.add(
-      this.matMenuTrigger.menuClosed.subscribe((v) => {
+      this.matMenuTrigger?.menuClosed.subscribe((v) => {
         if (!this.contextMenuClickedOutside) {
           this.contextMenuIsOpened = true;
-          this.matMenuTrigger.openMenu();
+          this.matMenuTrigger?.openMenu();
         }
       }),
     );
@@ -264,8 +265,14 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
       this.subs.add(
         this.sceneService
           .getRepositoryModel({ repoId: this.repositoryId, modelId: this.modelId })
-          .subscribe((file) => {
-            this.initializeViewer(file);
+          .subscribe({
+            next: (file) => {
+              this.initializeViewer(file);
+            },
+            error: (err) => {
+              console.error(err);
+              this.initializeViewer();
+            },
           }),
       );
     else
@@ -283,16 +290,21 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  initializeViewer(file: any) {
+  initializeViewer(file?: any) {
+    if (!file) {
+      this.showError = true;
+      this.viewerInitialized = true;
+      this.viewerIsReady.emit();
+      this.ngOnDestroy();
+
+      return;
+    }
+
     console.log(file);
 
     const loader = new GLTFLoader();
 
-    loader.setDRACOLoader(
-      new DRACOLoader().setDecoderPath(
-        'https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/',
-      ),
-    );
+    loader.setDRACOLoader(new DRACOLoader().setDecoderPath('./assets/draco/'));
 
     loader.parse(JSON.stringify(file), '', (gltf) => {
       this.onLoadModel(gltf);
@@ -528,7 +540,7 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.contextMenuIsOpened = false;
     this.contextMenuClickedOutside = true;
     this.contextMenuFirstOpen = true;
-    this.matMenuTrigger.closeMenu();
+    this.matMenuTrigger?.closeMenu();
   }
 
   createSectionPlane(data: any) {
@@ -711,18 +723,16 @@ export class SceneComponent implements OnInit, AfterViewInit, OnDestroy {
     this.contextMenuPosition.y = event.clientY + 'px';
     if (this.contextMenuIsOpened) {
       this.contextMenuIsOpened = false;
-      this.matMenuTrigger.closeMenu();
+      this.matMenuTrigger?.closeMenu();
     }
     if (this.contextMenuFirstOpen) {
       this.contextMenuIsOpened = true;
       this.contextMenuFirstOpen = false;
-      this.matMenuTrigger.openMenu();
+      this.matMenuTrigger?.openMenu();
     }
   }
 
-  onLoadModel(gltf: any) {
-    console.log(gltf);
-
+  onLoadModel(gltf?: any) {
     this.viewer = new Viewer(
       this.canvas.nativeElement,
       window.devicePixelRatio,

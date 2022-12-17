@@ -44,6 +44,12 @@ export class AuthService {
   getUserByToken(refresh: string): Observable<UserDocument> {
     return from(this.refreshTokenModel.findOne({ token: refresh })).pipe(
       switchMap((rToken) => {
+        if (!rToken) {
+          throw new HttpException(
+            'Refresh token не найден. Пожалуйста, обновите страницу или авторизуйтесь снова',
+            HttpStatus.UNAUTHORIZED,
+          );
+        }
         return from(this.userModel.findById(rToken.userId)).pipe(
           map((user) => {
             if (user) return user;
@@ -65,7 +71,9 @@ export class AuthService {
       token: uuidv4(),
       expireDate: date,
     };
-    refreshTokenDto.userId = userId;
+    if (userId) {
+      refreshTokenDto.userId = userId;
+    }
     return refreshTokenDto;
   }
 
